@@ -48,6 +48,8 @@ export function AuthProvider({ children }) {
             // Update the last login date
             await updateUserLastLogin(userCredential.user.uid);
             
+            history.push('/');
+            
             return userCredential.user;
         } catch (error) {
             console.error('Login Error:', error);
