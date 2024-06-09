@@ -1,5 +1,5 @@
 // src/userService.js
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const usersCollection = 'Users';
@@ -26,8 +26,8 @@ export const createUserProfile = async (user) => {
 }
 
 export const updateUserLastLogin = async (uid) => {
-    const userDoc = doc(usersCollection, uid);
-    await userDoc.update({
+    const userDoc = doc(db, usersCollection, uid);
+    await updateDoc(userDoc, {
         lastLoginDate: serverTimestamp()
     });
 }
