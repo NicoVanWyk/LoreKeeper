@@ -34,7 +34,7 @@ function LoginPage() {
         <div className='container'>
             <h2 className='TitleText'>Login</h2>
             {error && <p>{error}</p>}
-            <form onSubmit={handleSubmit}>
+            <form style={{ display: 'flow' }} onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Email</label>
                     <input type="email" ref={emailRef} required />
