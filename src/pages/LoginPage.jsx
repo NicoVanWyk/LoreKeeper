@@ -1,7 +1,8 @@
+// src/pages/LoginPage.js
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/authContext';
-import './css/RegisterPage.css'
+import './css/RegisterPage.css';
 
 function LoginPage() {
     const emailRef = useRef();
@@ -10,7 +11,7 @@ function LoginPage() {
 
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,7 +21,7 @@ function LoginPage() {
             setLoading(true);
             await login(emailRef.current.value, passwordRef.current.value);
             console.log('LoginPage - Login Successful');
-            navigate('/'); // Navigate to home page on successful login
+            navigate('/'); // Navigate to the home screen after successful login
         } catch (error) {
             console.error('LoginPage - Login Failed:', error);
             setError('Failed to log in');

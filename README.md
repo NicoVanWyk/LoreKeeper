@@ -10,3 +10,6 @@ commit changes:
 
 Deploy new build:
 1. npm run deploy
+
+Collect changes:
+1. git pull origin main

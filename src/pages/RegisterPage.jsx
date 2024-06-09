@@ -1,7 +1,8 @@
+// src/pages/RegisterPage.js
 import React, { useRef, useState } from 'react';
 import { useAuth } from '../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
-import './css/RegisterPage.css'
+import './css/RegisterPage.css';
 
 function RegisterPage() {
     const emailRef = useRef();
@@ -28,7 +29,7 @@ function RegisterPage() {
             await register(emailRef.current.value, passwordRef.current.value, usernameRef.current.value);
             console.log('Registration Successful'); // Debug log
 
-            // Navigate to the home screen
+            // Navigate to the home screen after successful registration
             navigate('/');
         } catch (error) {
             console.error('Registration Failed:', error); // Debug log
@@ -70,7 +71,7 @@ function RegisterPage() {
             <button style={{ textDecorationLine: 'underline', marginTop: '0px' }} className='btnSecondary' onClick={() => navigate('/login')}>Log In</button>
 
         </div>
-    )
+    );
 }
 
 export default RegisterPage;
