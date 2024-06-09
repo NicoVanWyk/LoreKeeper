@@ -5,16 +5,24 @@ body {
 }
 
 label {
-    font-size: 36px;
+    font-size: 24px;
     margin-bottom: 5px;
 }
 
 input {
     width: 300px;
     height: 45px;
+    max-width: 100%;
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 18px;
+}
 
+textarea {
+    width: 300px;
+    height: 135px;
     max-width: 300px;
-
     border-radius: 10px;
     padding: 10px;
     box-sizing: border-box;
@@ -25,57 +33,68 @@ input {
     display: flex;
     width: 100%;
     height: auto;
-
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
     padding: 20px;
-
     max-width: 100vw;
     box-sizing: border-box;
+}
+
+.section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .TitleText {
     font-size: 48px;
 }
 
+.avatarImg {
+    height: 200px;
+    width: auto;
+    border-radius: 100px;
+    border: 5px solid #ddae79;
+}
+
 .btnPrimary {
     width: auto;
-    height: 60px;
+    height: 50px;
 
     max-width: 300px;
 
     border: none;
-    border-radius: 20px;
+    border-radius: 10px;
 
     font-family: "Cormorant Garamond", serif;
-    font-size: 36px;
+    font-size: 28px;
 
-    background-color: #020818;
-    color: #ddae79;
+    background-color: #ddae79;
+    color: #020818;
 
     margin-top: 10px;
     margin-bottom: 10px;
-
     padding-left: 20px;
     padding-right: 20px;
 }
 
 .btnPrimary:hover {
-    background-color: #ddae79;
-    color: #020818;
-
+    background-color: #020818;
+    color: #ddae79;
     cursor: pointer;
 }
 
 .btnSecondary {
-    width: 200px;
-    height: 60px;
+    width: auto;
+    height: 50px;
+
     border: none;
+    border-radius: 10px;
 
     font-family: "Cormorant Garamond", serif;
-    font-size: 32px;
+    font-size: 28px;
 
     background-color: transparent;
     color: #ddae79;
@@ -86,6 +105,13 @@ input {
 
 .btnSecondary:hover {
     color: #020818;
-
     cursor: pointer;
+}
+
+/* Loading Screen */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }

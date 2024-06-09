@@ -39,10 +39,10 @@ function HomePage() {
                 <h2>Media Gallery</h2>
                 {/* TODO: Example content - replace with dynamic data */}
                 <div className="gallery-item">
-                    <img src="path/to/image1.jpg" alt="Gallery Image 1" />
+                    <img src="path/to/image1.jpg" alt="Gallery 1" />
                 </div>
                 <div className="gallery-item">
-                    <img src="path/to/image2.jpg" alt="Gallery Image 2" />
+                    <img src="path/to/image2.jpg" alt="Gallery 2" />
                 </div>
             </section>
 

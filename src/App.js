@@ -10,6 +10,9 @@ import LoginPage from './pages/LoginPage';
 import './globalStyles.css';
 import NavbarComponent from './components/NavbarComponent';
 import ProfilePage from './pages/ProfilePage';
+import CharactersPage from './pages/CharactersPage';
+import CharacterAddPage from './pages/subPages/CharacterAddPage';
+import SingleCharacterPage from './pages/subPages/SingleCharacterPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -28,6 +31,11 @@ const AppWrapper = () => {
 
         {/* Profile */}
         <Route path="/profile" element={<PrivateRoute element={<ProfilePage />} />} />
+
+        {/* Characters */}
+        <Route path="/characters" element={<PrivateRoute element={<CharactersPage />} />} />
+        <Route path="/characters/add" element={<PrivateRoute element={<CharacterAddPage />} />} />
+        <Route path="/characters/:characterId" element={<PrivateRoute element={<SingleCharacterPage />} />} />
 
         {/* Search */}
         <Route path="/search" element={<PrivateRoute element={<SearchPage />} />} />

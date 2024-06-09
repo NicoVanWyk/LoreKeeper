@@ -1,5 +1,4 @@
-// src/userService.js
-import { doc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const usersCollection = 'Users';
@@ -31,3 +30,14 @@ export const updateUserLastLogin = async (uid) => {
         lastLoginDate: serverTimestamp()
     });
 }
+
+export const getUserProfile = async (uid) => {
+    const userDoc = doc(db, usersCollection, uid);
+    const userSnapshot = await getDoc(userDoc);
+    return userSnapshot.exists() ? userSnapshot.data() : null;
+};
+
+export const updateUserProfile = async (uid, data) => {
+    const userDoc = doc(db, usersCollection, uid);
+    await setDoc(userDoc, data, { merge: true });
+};
