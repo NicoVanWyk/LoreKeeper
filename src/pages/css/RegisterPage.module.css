@@ -1,0 +1,13 @@
+/* src/pages/css/RegisterPage.module.css */
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}

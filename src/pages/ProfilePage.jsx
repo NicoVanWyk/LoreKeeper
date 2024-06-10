@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { getUserProfile, updateUserProfile } from '../services/userService';
 import { Oval } from 'react-loader-spinner';
 import { handleImageUpload } from '../services/bucketService';
+import { EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
+import styles from './css/ProfilePage.module.css';
 
 function ProfilePage() {
-    const { logout, currentUser } = useAuth();
+    const { logout, currentUser, changePassword } = useAuth();
     const navigate = useNavigate();
     const [profileInfo, setProfileInfo] = useState({});
     const [newUsername, setNewUsername] = useState('');
@@ -15,6 +17,10 @@ function ProfilePage() {
     const [uploading, setUploading] = useState(false);
     const [showUsernameInput, setShowUsernameInput] = useState(false);
     const [showProfileIconInput, setShowProfileIconInput] = useState(false);
+    const [showPasswordInput, setShowPasswordInput] = useState(false);
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
     useEffect(() => {
         if (currentUser) {
@@ -72,28 +78,48 @@ function ProfilePage() {
         }
     };
 
+    const handleChangePassword = async (e) => {
+        e.preventDefault();
+        if (newPassword !== confirmNewPassword) {
+            console.error('Passwords do not match');
+            return;
+        }
+        setUploading(true);
+        try {
+            const credential = EmailAuthProvider.credential(currentUser.email, oldPassword);
+            await reauthenticateWithCredential(currentUser, credential);
+            await changePassword(newPassword);
+            console.log('Password updated successfully');
+            setShowPasswordInput(false);
+        } catch (error) {
+            console.error('Password Update Error:', error);
+        } finally {
+            setUploading(false);
+        }
+    };
+
     if (loading) {
         return (
-            <div className="loading-container">
+            <div className={styles.loadingContainer}>
                 <Oval color="#020818" height={80} width={80} />
             </div>
         );
     }
 
     return (
-        <div className='container'>
+        <div className={styles.container}>
             <h1>{profileInfo.username}</h1>
-            <img className='avatarImg' src={profileInfo.avatar} alt='profileImage'></img>
+            <img className={styles.avatarImg} src={profileInfo.avatar} alt='profileImage'></img>
             {uploading && (
-                <div className="loading-container">
+                <div className={styles.loadingContainer}>
                     <Oval color="#020818" height={80} width={80} />
                 </div>
             )}
 
-            <div className="section">
-                <h2 style={{ cursor: 'pointer', width: '200px', textAlign: 'center' }} onClick={() => setShowUsernameInput(!showUsernameInput)}>Change Username</h2>
+            <div className={styles.section}>
+                <h2 className={styles.pointer} onClick={() => setShowUsernameInput(!showUsernameInput)}>Change Username</h2>
                 {showUsernameInput && (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div className={styles.flexColumnCenter}>
                         <input
                             type="text"
                             value={newUsername}
@@ -104,16 +130,43 @@ function ProfilePage() {
                 )}
             </div>
 
-            <div className="section">
-                <h2 style={{ cursor: 'pointer', width: '200px', textAlign: 'center' }} onClick={() => setShowProfileIconInput(!showProfileIconInput)}>Change Profile Icon</h2>
+            <div className={styles.section}>
+                <h2 className={styles.pointer} onClick={() => setShowProfileIconInput(!showProfileIconInput)}>Change Profile Icon</h2>
                 {showProfileIconInput && (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div className={styles.flexColumnCenter}>
                         <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: 'none' }} />
-                        <label htmlFor="fileInput" style={{ textAlign: 'center', cursor: 'pointer', backgroundColor: '#ddae79', padding: '5px', paddingLeft: '10px', paddingRight: '10px', borderRadius: '10px' }}>Choose File</label>
+                        <label htmlFor="fileInput" className={styles.fileInputLabel}>Choose File</label>
                         <button className='btnPrimary' onClick={handleProfileIconChange} disabled={uploading} style={{ marginTop: '10px' }}>
                             {uploading ? 'Uploading...' : 'Update Icon'}
                         </button>
                     </div>
+                )}
+            </div>
+
+            <div className={styles.section}>
+                <h2 className={styles.pointer} onClick={() => setShowPasswordInput(!showPasswordInput)}>Change Password</h2>
+                {showPasswordInput && (
+                    <form onSubmit={handleChangePassword} className={styles.flexColumnCenter}>
+                        <input
+                            type="password"
+                            placeholder="Current Password"
+                            value={oldPassword}
+                            onChange={(e) => setOldPassword(e.target.value)}
+                        />
+                        <input
+                            type="password"
+                            placeholder="New Password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Confirm New Password"
+                            value={confirmNewPassword}
+                            onChange={(e) => setConfirmNewPassword(e.target.value)}
+                        />
+                        <button className='btnPrimary' type="submit" disabled={uploading} style={{ marginTop: '10px' }}>Update Password</button>
+                    </form>
                 )}
             </div>
 

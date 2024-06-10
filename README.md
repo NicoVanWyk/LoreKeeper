@@ -3,6 +3,7 @@ npm install list:
 2. npm install firebase
 3. npm install react-router-dom@6
 4. npm install react-loader-spinner
+5. npm install react-select
 
 commit changes:
 1. git add .

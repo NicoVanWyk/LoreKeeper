@@ -1,4 +1,6 @@
-.cards-container {
+/* src/pages/css/CharactersPage.module.css */
+
+.cardsContainer {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -14,37 +16,45 @@
     border-radius: 10px;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
 }
 
-.character-image_all {
+.characterImageAll {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     margin-bottom: 10px;
     object-fit: cover;
-
     border: 3px solid #020818;
 }
 
-.card-content {
+.cardContent {
     display: flex;
     flex-direction: column;
-
     align-self: flex-start;
 }
 
-.card-content h3 {
+.cardContent h3 {
     font-size: 26px;
     margin: 0;
 }
 
-.card-content h4 {
+.cardContent h4 {
     font-size: 20px;
     color: #555;
     margin: 5px 0;
 }
 
-.card-content p {
+.cardContent p {
     font-size: 18px;
     margin: 5px 0;
+}
+
+.searchInput {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 18px;
+    width: 300px;
 }

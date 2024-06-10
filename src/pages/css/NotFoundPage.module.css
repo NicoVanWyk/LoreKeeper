@@ -1,0 +1,41 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.title {
+    font-size: 6em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.message {
+    font-size: 1.5em;
+    margin-bottom: 40px;
+    color: #555;
+}
+
+.btnPrimary {
+    width: auto;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 28px;
+    background-color: #ddae79;
+    color: #020818;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.btnPrimary:hover {
+    background-color: #020818;
+    color: #ddae79;
+    cursor: pointer;
+}

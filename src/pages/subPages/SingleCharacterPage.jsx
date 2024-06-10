@@ -1,7 +1,6 @@
-// src/pages/SingleCharacterPage.js
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import '../css/SingleCharacterPage.css';
+import styles from '../css/SingleCharacterPage.module.css';
 import { useAuth } from '../../contexts/authContext';
 import { getUserProfile } from '../../services/userService';
 import { getCharacter, updateCharacter } from '../../services/charactersService';
@@ -20,7 +19,6 @@ function SingleCharacterPage() {
         const fetchCharacter = async () => {
             try {
                 const character = await getCharacter(characterId);
-                console.log('Fetched character:', character);
                 setCharacterData(character);
                 setLoading(false);
             } catch (error) {
@@ -80,153 +78,152 @@ function SingleCharacterPage() {
 
     return (
         <div className="container">
-
             {characterData.imageUrl && (
-                <img src={characterData.imageUrl} alt={characterData.fullName} className="character-image" />
+                <img src={characterData.imageUrl} alt={characterData.fullName} className={styles.characterImage} />
             )}
 
             {isEditing ? (
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Full Name</label>
                         <input type="text" name="fullName" value={characterData.fullName} onChange={handleChange} required />
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Nicknames</label>
                         <input type="text" name="nicknames" value={characterData.nicknames} onChange={handleChange} />
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Species</label>
                         <input type="text" name="species" value={characterData.species} onChange={handleChange} />
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Gender</label>
                         <input type="text" name="gender" value={characterData.gender} onChange={handleChange} />
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Age</label>
                         <input type="text" name="age" value={characterData.age} onChange={handleChange} />
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Occupation/Role</label>
                         <input type="text" name="occupation" value={characterData.occupation} onChange={handleChange} />
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Physical Description</label>
-                        <textarea name="physicalDescription" value={characterData.physicalDescription} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="physicalDescription" value={characterData.physicalDescription} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Typical Clothing/Armor</label>
-                        <textarea name="typicalClothing" value={characterData.typicalClothing} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="typicalClothing" value={characterData.typicalClothing} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Place of Birth</label>
-                        <textarea name="placeOfBirth" value={characterData.placeOfBirth} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="placeOfBirth" value={characterData.placeOfBirth} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Family</label>
-                        <textarea name="family" value={characterData.family} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="family" value={characterData.family} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Education/Training</label>
-                        <textarea name="educationTraining" value={characterData.educationTraining} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="educationTraining" value={characterData.educationTraining} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Significant Events</label>
-                        <textarea name="significantEvents" value={characterData.significantEvents} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="significantEvents" value={characterData.significantEvents} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Traits</label>
-                        <textarea name="traits" value={characterData.traits} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="traits" value={characterData.traits} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Strengths/Weaknesses</label>
-                        <textarea name="strengthsWeaknesses" value={characterData.strengthsWeaknesses} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="strengthsWeaknesses" value={characterData.strengthsWeaknesses} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Fears</label>
-                        <textarea name="fears" value={characterData.fears} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="fears" value={characterData.fears} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Goals</label>
-                        <textarea name="goals" value={characterData.goals} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="goals" value={characterData.goals} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Motivations</label>
-                        <textarea name="motivations" value={characterData.motivations} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="motivations" value={characterData.motivations} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Magic/Abilities</label>
-                        <textarea name="magicAbilities" value={characterData.magicAbilities} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="magicAbilities" value={characterData.magicAbilities} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Skills</label>
-                        <textarea name="skills" value={characterData.skills} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="skills" value={characterData.skills} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Allies</label>
-                        <textarea name="allies" value={characterData.allies} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="allies" value={characterData.allies} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Enemies</label>
-                        <textarea name="enemies" value={characterData.enemies} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="enemies" value={characterData.enemies} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Love Interests</label>
-                        <textarea name="loveInterests" value={characterData.loveInterests} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="loveInterests" value={characterData.loveInterests} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Current Role in the Story</label>
-                        <textarea name="plotInvolvement" value={characterData.plotInvolvement} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="plotInvolvement" value={characterData.plotInvolvement} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Key Actions</label>
-                        <textarea name="keyActions" value={characterData.keyActions} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="keyActions" value={characterData.keyActions} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Character Arc</label>
-                        <textarea name="characterArc" value={characterData.characterArc} onChange={handleChange} className="large-textarea"></textarea>
+                        <textarea name="characterArc" value={characterData.characterArc} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
 
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Upload New Image</label>
                         <input type="file" onChange={handleFileChange} />
                     </div>
 
-                    <button type="cancel" className="btnPrimary">Cancel</button>
+                    <button type="button" className="btnPrimary" onClick={() => setIsEditing(false)}>Cancel</button>
                     <button type="submit" className="btnPrimary">Save</button>
                 </form>
             ) : (
-                <div className="character-details">
-                    <div className="character-info">
+                <div className={styles.characterDetails}>
+                    <div className={styles.characterInfo}>
                         <h1>{characterData.fullName}</h1>
-                        <p className="font_22 preserve-whitespace"><strong>Nicknames:</strong> {characterData.nicknames}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Species:</strong> {characterData.species}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Gender:</strong> {characterData.gender}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Age:</strong> {characterData.age}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Occupation/Role:</strong> {characterData.occupation}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Physical Description:</strong> {characterData.physicalDescription}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Typical Clothing/Armor:</strong> {characterData.typicalClothing}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Place of Birth:</strong> {characterData.placeOfBirth}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Family:</strong> {characterData.family}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Education/Training:</strong> {characterData.educationTraining}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Significant Events:</strong> {characterData.significantEvents}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Traits:</strong> {characterData.traits}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Strengths/Weaknesses:</strong> {characterData.strengthsWeaknesses}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Fears:</strong> {characterData.fears}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Goals:</strong> {characterData.goals}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Motivations:</strong> {characterData.motivations}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Magic/Abilities:</strong> {characterData.magicAbilities}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Skills:</strong> {characterData.skills}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Allies:</strong> {characterData.allies}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Enemies:</strong> {characterData.enemies}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Love Interests:</strong> {characterData.loveInterests}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Current Role in the Story:</strong> {characterData.plotInvolvement}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Key Actions:</strong> {characterData.keyActions}</p>
-                        <p className="font_22 preserve-whitespace"><strong>Character Arc:</strong> {characterData.characterArc}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Nicknames:</strong> {characterData.nicknames}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Species:</strong> {characterData.species}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Gender:</strong> {characterData.gender}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Age:</strong> {characterData.age}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Occupation/Role:</strong> {characterData.occupation}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Physical Description:</strong> {characterData.physicalDescription}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Typical Clothing/Armor:</strong> {characterData.typicalClothing}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Place of Birth:</strong> {characterData.placeOfBirth}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Family:</strong> {characterData.family}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Education/Training:</strong> {characterData.educationTraining}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Significant Events:</strong> {characterData.significantEvents}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Traits:</strong> {characterData.traits}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Strengths/Weaknesses:</strong> {characterData.strengthsWeaknesses}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Fears:</strong> {characterData.fears}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Goals:</strong> {characterData.goals}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Motivations:</strong> {characterData.motivations}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Magic/Abilities:</strong> {characterData.magicAbilities}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Skills:</strong> {characterData.skills}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Allies:</strong> {characterData.allies}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Enemies:</strong> {characterData.enemies}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Love Interests:</strong> {characterData.loveInterests}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Current Role in the Story:</strong> {characterData.plotInvolvement}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Key Actions:</strong> {characterData.keyActions}</p>
+                        <p className={`${styles.font22} preserve-whitespace`}><strong>Character Arc:</strong> {characterData.characterArc}</p>
                     </div>
                     {isAdmin && (
-                        <div className="button-container">
+                        <div className={styles.buttonContainer}>
                             <button onClick={handleEditClick} className="btnPrimary">Edit Character</button>
                         </div>
                     )}

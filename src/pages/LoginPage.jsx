@@ -1,8 +1,7 @@
-// src/pages/LoginPage.js
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/authContext';
-import './css/RegisterPage.css';
+import styles from './css/LoginPage.module.css';
 
 function LoginPage() {
     const emailRef = useRef();
@@ -34,23 +33,22 @@ function LoginPage() {
         <div className='container'>
             <h2 className='TitleText'>Login</h2>
             {error && <p>{error}</p>}
-            <form style={{ display: 'flow' }} onSubmit={handleSubmit}>
-                <div className="form-group">
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <div className={styles.formGroup}>
                     <label>Email</label>
                     <input type="email" ref={emailRef} required />
                 </div>
-                <div className="form-group" style={{ paddingLeft: '0px' }}>
+                <div className={styles.formGroup}>
                     <label>Password</label>
                     <input type="password" ref={passwordRef} required />
                 </div>
-                <div className="form-group">
+                <div className={styles.formGroup}>
                     <button className='btnPrimary' disabled={loading} type="submit">Log In</button>
                 </div>
             </form>
 
-            <label style={{ marginBottom: '0px' }}>Don't Have An Account?</label>
-            <button style={{ textDecorationLine: 'underline', marginTop: '0px' }} className='btnSecondary' onClick={() => navigate('/register')}>Register</button>
-
+            <label className={styles.noAccountLabel}>Don't Have An Account?</label>
+            <button className='btnSecondary' onClick={() => navigate('/register')}>Register</button>
         </div>
     );
 }

@@ -108,6 +108,15 @@ textarea {
     cursor: pointer;
 }
 
+.select_dropdown {
+    max-width: 400px;
+}
+
+.story-image {
+    height: 150px;
+    width: auto;
+}
+
 /* Loading Screen */
 .loading-container {
     display: flex;

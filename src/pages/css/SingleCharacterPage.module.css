@@ -1,4 +1,5 @@
-.character-image {
+/* src/pages/css/SingleCharacterPage.module.css */
+.characterImage {
     width: 150px;
     height: 150px;
     border-radius: 50%;
@@ -6,20 +7,20 @@
     margin-bottom: 20px;
 }
 
-.form-group {
+.formGroup {
     margin-bottom: 15px;
     width: 100%;
     max-width: 500px;
 }
 
-.form-group label {
+.formGroup label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-.form-group input,
-.large-textarea {
+.formGroup input,
+.largeTextarea {
     width: 100%;
     padding: 8px;
     border-radius: 5px;
@@ -27,28 +28,28 @@
     box-sizing: border-box;
 }
 
-.large-textarea {
+.largeTextarea {
     height: 120px;
     resize: vertical;
 }
 
-.font_22 {
+.font22 {
     font-size: 22px;
     margin-bottom: 5px;
 }
 
-.character-details {
+.characterDetails {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.character-info {
+.characterInfo {
     margin-bottom: 20px;
     text-align: center;
 }
 
-.button-container {
+.buttonContainer {
     display: flex;
     justify-content: center;
     width: 100%;

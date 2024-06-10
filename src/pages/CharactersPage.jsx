@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getAllCharacters } from '../services/charactersService';
 import { getUserProfile } from '../services/userService';
 import { useAuth } from '../contexts/authContext';
-import './css/CharactersPage.css'
+import styles from './css/CharactersPage.module.css';
 
 function CharactersPage() {
     const { currentUser } = useAuth();
@@ -38,7 +38,7 @@ function CharactersPage() {
     }, [currentUser]);
 
     const handleCardClick = (characterId) => {
-        console.log('Navigating to character:', characterId); // Log characterId
+        console.log('Navigating to character:', characterId);
         navigate(`/characters/${characterId}`);
     };
 
@@ -63,6 +63,7 @@ function CharactersPage() {
                 placeholder='Search Characters...'
                 value={searchTerm}
                 onChange={handleSearchChange}
+                className={styles.searchInput}
             />
 
             {isAdmin && (
@@ -71,15 +72,15 @@ function CharactersPage() {
                 </button>
             )}
 
-            <div className="cards-container">
+            <div className={styles.cardsContainer}>
                 {filteredCharacters.map((character) => (
-                    <div key={character.id} className="card" onClick={() => handleCardClick(character.id)}>
+                    <div key={character.id} className={styles.card} onClick={() => handleCardClick(character.id)}>
 
                         {character.imageUrl && (
-                            <img src={character.imageUrl} alt={character.fullName} className="character-image_all" />
+                            <img src={character.imageUrl} alt={character.fullName} className={styles.characterImageAll} />
                         )}
 
-                        <div className="card-content">
+                        <div className={styles.cardContent}>
                             <h3>{character.fullName}</h3>
                             <h4>{character.nicknames}</h4>
                             <p><strong>Species:</strong> {character.species}</p>

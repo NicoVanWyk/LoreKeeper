@@ -53,7 +53,7 @@ function NavbarComponent() {
                     <li className="navbar-item"><Link to="/maps">Maps</Link></li>
                     <li className="navbar-item"><Link to="/magic">Magic</Link></li>
                     <li className="navbar-item"><Link to="/bestiary">Bestiary</Link></li>
-                    <li className="navbar-item"><Link to="/search">Search</Link></li>
+                    <li className="navbar-item"><Link to="/stories">Stories</Link></li>
                     <li className="navbar-item"><Link to="/profile">Profile</Link></li>
                 </ul>
             </div>

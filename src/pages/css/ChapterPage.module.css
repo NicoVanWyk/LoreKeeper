@@ -1,0 +1,20 @@
+/* src/pages/css/ChapterPage.module.css */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.content {
+    max-width: 800px;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 18px;
+    line-height: 1.6;
+    white-space: pre-wrap; /* Preserves the whitespace for new lines */
+}
+
+.content p {
+    margin: 10px 0;
+}

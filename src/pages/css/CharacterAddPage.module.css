@@ -1,0 +1,43 @@
+/* CharacterAddPage.module.css */
+
+.form {
+    display: grid;
+    gap: 20px;
+    justify-content: center;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+.largeTextarea {
+    height: 135px;
+}
+
+/* Responsive design */
+@media (min-width: 768px) {
+    .form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .formGroup:nth-child(odd) {
+        padding-right: 10px;
+    }
+
+    .formGroup:nth-child(even) {
+        padding-left: 10px;
+    }
+}
+
+@media (max-width: 767px) {
+    .formGroup {
+        width: 100%;
+        padding: 0;
+    }
+}

@@ -1,8 +1,7 @@
-// src/pages/RegisterPage.js
 import React, { useRef, useState } from 'react';
 import { useAuth } from '../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
-import './css/RegisterPage.css';
+import styles from './css/RegisterPage.module.css';
 
 function RegisterPage() {
     const emailRef = useRef();
@@ -40,36 +39,35 @@ function RegisterPage() {
     };
 
     return (
-        <div className='container'>
-            <h2 className='TitleText'>Register</h2>
+        <div className="container">
+            <h2 className="TitleText">Register</h2>
 
             {error && <p>{error}</p>}
 
-            <form style={{ display: 'flow' }} onSubmit={handleSubmit}>
-                <div className="form-group">
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <div className={styles.formGroup}>
                     <label>Email</label>
                     <input type="email" ref={emailRef} required />
                 </div>
-                <div className="form-group" style={{ paddingLeft: '0px' }}>
+                <div className={styles.formGroup}>
                     <label>Username</label>
                     <input type="text" ref={usernameRef} required />
                 </div>
-                <div className="form-group">
+                <div className={styles.formGroup}>
                     <label>Password</label>
                     <input type="password" ref={passwordRef} required />
                 </div>
-                <div className="form-group" style={{ paddingLeft: '0px' }}>
+                <div className={styles.formGroup}>
                     <label>Confirm Password</label>
                     <input type="password" ref={passwordConfirmRef} required />
                 </div>
-                <div className="form-group">
-                    <button className='btnPrimary' disabled={loading} type="submit">Sign Up</button>
+                <div className={styles.formGroup}>
+                    <button className="btnPrimary" disabled={loading} type="submit">Sign Up</button>
                 </div>
             </form>
 
             <label style={{ marginBottom: '0px' }}>Already Have An Account?</label>
-            <button style={{ textDecorationLine: 'underline', marginTop: '0px' }} className='btnSecondary' onClick={() => navigate('/login')}>Log In</button>
-
+            <button style={{ textDecorationLine: 'underline', marginTop: '0px' }} className="btnSecondary" onClick={() => navigate('/login')}>Log In</button>
         </div>
     );
 }

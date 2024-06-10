@@ -1,0 +1,49 @@
+/* src/pages/css/ProfilePage.module.css */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.avatarImg {
+    height: 200px;
+    width: auto;
+    border-radius: 100px;
+    border: 5px solid #ddae79;
+    margin-bottom: 20px;
+}
+
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pointer {
+    cursor: pointer;
+    width: 200px;
+    text-align: center;
+}
+
+.flexColumnCenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fileInputLabel {
+    text-align: center;
+    cursor: pointer;
+    background-color: #ddae79;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
