@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getChapter, getStory, updateChapter } from '../../services/storiesService';
 import styles from '../css/ChapterPage.module.css';
 import { useAuth } from '../../contexts/authContext';
@@ -9,10 +9,11 @@ function ChapterPage() {
     const { storyId, chapterId } = useParams();
     const { currentUser } = useAuth();
     const [chapterData, setChapterData] = useState({});
-    const [storyTitle, setStoryTitle] = useState('');
+    const [storyData, setStoryData] = useState({});
     const [isAdmin, setIsAdmin] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchChapterAndStory = async () => {
@@ -20,7 +21,7 @@ function ChapterPage() {
                 const chapter = await getChapter(storyId, chapterId);
                 const story = await getStory(storyId);
                 setChapterData(chapter);
-                setStoryTitle(story.title);
+                setStoryData(story);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching chapter or story: ', error);
@@ -66,13 +67,30 @@ function ChapterPage() {
         }
     };
 
+    const getNextChapter = () => {
+        if (!storyData.chapters) return null;
+        const currentIndex = storyData.chapters.findIndex(ch => ch.id === chapterId);
+        window.scrollTo(0, 0);
+        return currentIndex < storyData.chapters.length - 1 ? storyData.chapters[currentIndex + 1] : null;
+    };
+
+    const getPreviousChapter = () => {
+        if (!storyData.chapters) return null;
+        const currentIndex = storyData.chapters.findIndex(ch => ch.id === chapterId);
+        window.scrollTo(0, 0);
+        return currentIndex > 0 ? storyData.chapters[currentIndex - 1] : null;
+    };
+
+    const nextChapter = getNextChapter();
+    const previousChapter = getPreviousChapter();
+
     if (loading) {
         return <div>Loading...</div>;
     }
 
     return (
         <div className={styles.container}>
-            <h1>{storyTitle}</h1>
+            <h1>{storyData.title}</h1>
 
             {isEditing ? (
                 <form className={styles.form} onSubmit={handleSubmit}>
@@ -105,6 +123,19 @@ function ChapterPage() {
                     Edit Chapter
                 </button>
             )}
+
+            <div className={styles.navigationButtons}>
+                {previousChapter && (
+                    <button className="btnPrimary" onClick={() => navigate(`/stories/${storyId}/chapters/${previousChapter.id}`)}>
+                        Previous Chapter
+                    </button>
+                )}
+                {nextChapter && (
+                    <button className="btnPrimary" onClick={() => navigate(`/stories/${storyId}/chapters/${nextChapter.id}`)}>
+                        Next Chapter
+                    </button>
+                )}
+            </div>
         </div>
     );
 }

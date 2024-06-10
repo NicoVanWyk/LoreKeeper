@@ -129,7 +129,7 @@ function SingleStoryPage() {
             ) : (
                 <>
                     <h1 style={{ marginBottom: '0px' }}>{storyData.title}</h1>
-                    <p style={{ fontSize: '20px' }}>{storyData.description}</p>
+                    <p style={{ fontSize: '20px', maxWidth: '800px' }}>{storyData.description}</p>
                     <h2 style={{ marginBottom: '0px' }}>Characters Involved</h2>
                     {storyData.charactersInvolved?.length > 0 ? (
                         <ul style={{ fontSize: '18px' }}>

@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, getDocs, doc, getDoc, updateDoc, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const storiesCollection = collection(db, 'Stories');
@@ -25,7 +25,8 @@ export const addStory = async (storyData) => {
 
 export const getAllStories = async () => {
     try {
-        const querySnapshot = await getDocs(storiesCollection);
+        const q = query(storiesCollection, orderBy('publicationDate', 'desc'));
+        const querySnapshot = await getDocs(q);
         const stories = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         return stories;
     } catch (error) {
@@ -42,7 +43,8 @@ export const getStory = async (id) => {
             const storyData = { id: storySnapshot.id, ...storySnapshot.data() };
 
             const chaptersCollection = collection(db, `Stories/${id}/Chapters`);
-            const chaptersSnapshot = await getDocs(chaptersCollection);
+            const q = query(chaptersCollection, orderBy('order', 'asc'));
+            const chaptersSnapshot = await getDocs(q);
             const chapters = chaptersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             storyData.chapters = chapters;
 
@@ -59,7 +61,13 @@ export const getStory = async (id) => {
 export const addChapterToStory = async (storyId, chapterData) => {
     try {
         const chaptersCollection = collection(db, `Stories/${storyId}/Chapters`);
-        await addDoc(chaptersCollection, chapterData);
+        const q = query(chaptersCollection, orderBy('order', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const lastChapter = querySnapshot.docs[0];
+        const nextOrder = lastChapter ? lastChapter.data().order + 1 : 1;
+        
+        const newChapter = { ...chapterData, order: nextOrder };
+        await addDoc(chaptersCollection, newChapter);
         console.log('Chapter added to story ID: ', storyId);
     } catch (error) {
         console.error('Error adding chapter: ', error);
