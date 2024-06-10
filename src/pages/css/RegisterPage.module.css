@@ -11,3 +11,7 @@
     align-items: center;
     margin-bottom: 15px;
 }
+
+.formGroup input {
+    width: 300px;
+}

@@ -16,3 +16,7 @@
     margin-bottom: 0px;
     text-align: center;
 }
+
+.formGroup input {
+    width: 300px;
+}
