@@ -39,7 +39,7 @@ function LoginPage() {
                     <label>Email</label>
                     <input type="email" ref={emailRef} required />
                 </div>
-                <div className="form-group">
+                <div className="form-group" style={{ paddingLeft: '0px' }}>
                     <label>Password</label>
                     <input type="password" ref={passwordRef} required />
                 </div>

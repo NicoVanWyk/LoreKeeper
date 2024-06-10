@@ -9,6 +9,7 @@ function CharactersPage() {
     const { currentUser } = useAuth();
     const [characters, setCharacters] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -41,20 +42,43 @@ function CharactersPage() {
         navigate(`/characters/${characterId}`);
     };
 
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const filteredCharacters = characters.filter((character) =>
+        character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.gender.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.occupation.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="container">
-            <h2>Characters</h2>
+            <h1>Characters</h1>
+
+            <input
+                type='search'
+                placeholder='Search Characters...'
+                value={searchTerm}
+                onChange={handleSearchChange}
+            />
+
             {isAdmin && (
-                <button className='btnPrimary' onClick={() => navigate('/characters/add')}>
+                <button className='btnPrimary' style={{marginTop: '20px', marginBottom: '20px'}} onClick={() => navigate('/characters/add')}>
                     Add Character
                 </button>
             )}
+
             <div className="cards-container">
-                {characters.map((character) => (
+                {filteredCharacters.map((character) => (
                     <div key={character.id} className="card" onClick={() => handleCardClick(character.id)}>
+
                         {character.imageUrl && (
-                            <img src={character.imageUrl} alt={character.fullName} className="character-image" />
+                            <img src={character.imageUrl} alt={character.fullName} className="character-image_all" />
                         )}
+
                         <div className="card-content">
                             <h3>{character.fullName}</h3>
                             <h4>{character.nicknames}</h4>

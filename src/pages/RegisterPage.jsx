@@ -50,7 +50,7 @@ function RegisterPage() {
                     <label>Email</label>
                     <input type="email" ref={emailRef} required />
                 </div>
-                <div className="form-group">
+                <div className="form-group" style={{ paddingLeft: '0px' }}>
                     <label>Username</label>
                     <input type="text" ref={usernameRef} required />
                 </div>
@@ -58,7 +58,7 @@ function RegisterPage() {
                     <label>Password</label>
                     <input type="password" ref={passwordRef} required />
                 </div>
-                <div className="form-group">
+                <div className="form-group" style={{ paddingLeft: '0px' }}>
                     <label>Confirm Password</label>
                     <input type="password" ref={passwordConfirmRef} required />
                 </div>

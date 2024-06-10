@@ -38,7 +38,7 @@ function NavbarComponent() {
                     <img src={logo} alt="Logo" className="navbar-logo" />
 
                     <li className="navbar-item"><Link to="/bestiary">Bestiary</Link></li>
-                    <li className="navbar-item"><Link to="/search">Search</Link></li>
+                    <li className="navbar-item"><Link to="/stories">Stories</Link></li>
                     <li className="navbar-item"><Link to="/profile">Profile</Link></li>
                 </ul>
 

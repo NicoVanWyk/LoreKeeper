@@ -5,11 +5,13 @@ import '../css/SingleCharacterPage.css';
 import { useAuth } from '../../contexts/authContext';
 import { getUserProfile } from '../../services/userService';
 import { getCharacter, updateCharacter } from '../../services/charactersService';
+import { handleImageUpload } from '../../services/bucketService';
 
 function SingleCharacterPage() {
     const { characterId } = useParams();
     const { currentUser } = useAuth();
     const [characterData, setCharacterData] = useState({});
+    const [selectedFile, setSelectedFile] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -53,12 +55,23 @@ function SingleCharacterPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
-            await updateCharacter(characterId, characterData);
+            let imageUrl = characterData.imageUrl;
+            if (selectedFile) {
+                imageUrl = await handleImageUpload(selectedFile, `characters/${characterData.fullName}`);
+            }
+            await updateCharacter(characterId, { ...characterData, imageUrl });
             setIsEditing(false);
         } catch (error) {
             console.error('Error updating character: ', error);
+        } finally {
+            setLoading(false);
         }
+    };
+
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
     };
 
     if (loading) {
@@ -67,9 +80,11 @@ function SingleCharacterPage() {
 
     return (
         <div className="container">
+
             {characterData.imageUrl && (
                 <img src={characterData.imageUrl} alt={characterData.fullName} className="character-image" />
             )}
+
             {isEditing ? (
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -173,6 +188,11 @@ function SingleCharacterPage() {
                         <textarea name="characterArc" value={characterData.characterArc} onChange={handleChange} className="large-textarea"></textarea>
                     </div>
 
+                    <div className="form-group">
+                        <label>Upload New Image</label>
+                        <input type="file" onChange={handleFileChange} />
+                    </div>
+
                     <button type="cancel" className="btnPrimary">Cancel</button>
                     <button type="submit" className="btnPrimary">Save</button>
                 </form>
@@ -180,30 +200,30 @@ function SingleCharacterPage() {
                 <div className="character-details">
                     <div className="character-info">
                         <h1>{characterData.fullName}</h1>
-                        <p className='font_22'><strong>Nicknames:</strong> {characterData.nicknames}</p>
-                        <p className='font_22'><strong>Species:</strong> {characterData.species}</p>
-                        <p className='font_22'><strong>Gender:</strong> {characterData.gender}</p>
-                        <p className='font_22'><strong>Age:</strong> {characterData.age}</p>
-                        <p className='font_22'><strong>Occupation/Role:</strong> {characterData.occupation}</p>
-                        <p className='font_22'><strong>Physical Description:</strong> {characterData.physicalDescription}</p>
-                        <p className='font_22'><strong>Typical Clothing/Armor:</strong> {characterData.typicalClothing}</p>
-                        <p className='font_22'><strong>Place of Birth:</strong> {characterData.placeOfBirth}</p>
-                        <p className='font_22'><strong>Family:</strong> {characterData.family}</p>
-                        <p className='font_22'><strong>Education/Training:</strong> {characterData.educationTraining}</p>
-                        <p className='font_22'><strong>Significant Events:</strong> {characterData.significantEvents}</p>
-                        <p className='font_22'><strong>Traits:</strong> {characterData.traits}</p>
-                        <p className='font_22'><strong>Strengths/Weaknesses:</strong> {characterData.strengthsWeaknesses}</p>
-                        <p className='font_22'><strong>Fears:</strong> {characterData.fears}</p>
-                        <p className='font_22'><strong>Goals:</strong> {characterData.goals}</p>
-                        <p className='font_22'><strong>Motivations:</strong> {characterData.motivations}</p>
-                        <p className='font_22'><strong>Magic/Abilities:</strong> {characterData.magicAbilities}</p>
-                        <p className='font_22'><strong>Skills:</strong> {characterData.skills}</p>
-                        <p className='font_22'><strong>Allies:</strong> {characterData.allies}</p>
-                        <p className='font_22'><strong>Enemies:</strong> {characterData.enemies}</p>
-                        <p className='font_22'><strong>Love Interests:</strong> {characterData.loveInterests}</p>
-                        <p className='font_22'><strong>Current Role in the Story:</strong> {characterData.plotInvolvement}</p>
-                        <p className='font_22'><strong>Key Actions:</strong> {characterData.keyActions}</p>
-                        <p className='font_22'><strong>Character Arc:</strong> {characterData.characterArc}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Nicknames:</strong> {characterData.nicknames}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Species:</strong> {characterData.species}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Gender:</strong> {characterData.gender}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Age:</strong> {characterData.age}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Occupation/Role:</strong> {characterData.occupation}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Physical Description:</strong> {characterData.physicalDescription}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Typical Clothing/Armor:</strong> {characterData.typicalClothing}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Place of Birth:</strong> {characterData.placeOfBirth}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Family:</strong> {characterData.family}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Education/Training:</strong> {characterData.educationTraining}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Significant Events:</strong> {characterData.significantEvents}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Traits:</strong> {characterData.traits}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Strengths/Weaknesses:</strong> {characterData.strengthsWeaknesses}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Fears:</strong> {characterData.fears}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Goals:</strong> {characterData.goals}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Motivations:</strong> {characterData.motivations}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Magic/Abilities:</strong> {characterData.magicAbilities}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Skills:</strong> {characterData.skills}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Allies:</strong> {characterData.allies}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Enemies:</strong> {characterData.enemies}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Love Interests:</strong> {characterData.loveInterests}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Current Role in the Story:</strong> {characterData.plotInvolvement}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Key Actions:</strong> {characterData.keyActions}</p>
+                        <p className="font_22 preserve-whitespace"><strong>Character Arc:</strong> {characterData.characterArc}</p>
                     </div>
                     {isAdmin && (
                         <div className="button-container">

@@ -26,7 +26,7 @@ textarea {
     border-radius: 10px;
     padding: 10px;
     box-sizing: border-box;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .container {
@@ -114,4 +114,9 @@ textarea {
     justify-content: center;
     align-items: center;
     height: 100vh;
+}
+
+/* Preserve enters */
+.preserve-whitespace {
+    white-space: pre-wrap;
 }
