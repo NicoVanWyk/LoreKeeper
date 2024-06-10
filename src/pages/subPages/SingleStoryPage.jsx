@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import Select from 'react-select';
 import { useAuth } from '../../contexts/authContext';
 import { getUserProfile } from '../../services/userService';
-import { getStory, updateStory } from '../../services/storiesService'; // Import updateStory function
+import { getStory, updateStory } from '../../services/storiesService';
+import { getAllCharacters } from '../../services/charactersService';
 import styles from '../css/SingleStoryPage.module.css';
 
 function SingleStoryPage() {
     const { storyId } = useParams();
     const { currentUser } = useAuth();
     const [storyData, setStoryData] = useState({});
+    const [charactersOptions, setCharactersOptions] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
-    const [isEditing, setIsEditing] = useState(false); // State for editing mode
+    const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -26,6 +29,19 @@ function SingleStoryPage() {
             }
         };
 
+        const fetchCharacters = async () => {
+            try {
+                const characters = await getAllCharacters();
+                const options = characters.map(character => ({
+                    value: character.id,
+                    label: character.fullName
+                }));
+                setCharactersOptions(options);
+            } catch (error) {
+                console.error('Error fetching characters: ', error);
+            }
+        };
+
         const checkUserRole = async () => {
             try {
                 const userDoc = await getUserProfile(currentUser.uid);
@@ -38,6 +54,7 @@ function SingleStoryPage() {
         };
 
         fetchStory();
+        fetchCharacters();
         checkUserRole();
     }, [storyId, currentUser]);
 
@@ -62,10 +79,14 @@ function SingleStoryPage() {
         setStoryData({ ...storyData, [name]: value });
     };
 
+    const handleCharactersChange = (selectedOptions) => {
+        setStoryData({ ...storyData, charactersInvolved: selectedOptions.map(option => option.value) });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await updateStory(storyId, storyData); // Update story details
+            await updateStory(storyId, storyData);
             setIsEditing(false);
         } catch (error) {
             console.error('Error updating story: ', error);
@@ -92,13 +113,38 @@ function SingleStoryPage() {
                         <label>Description</label>
                         <textarea name="description" value={storyData.description} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
+                    <div className={styles.formGroup}>
+                        <label>Characters Involved</label>
+                        <Select
+                            isMulti
+                            options={charactersOptions}
+                            value={charactersOptions.filter(option => storyData.charactersInvolved?.includes(option.value))}
+                            onChange={handleCharactersChange}
+                            className="selectDropdown"
+                        />
+                    </div>
                     <button className="btnPrimary" type="submit">Save</button>
                     <button className="btnSecondary" type="button" onClick={handleCancelClick}>Cancel</button>
                 </form>
             ) : (
                 <>
-                    <h1>{storyData.title}</h1>
-                    <p>{storyData.description}</p>
+                    <h1 style={{ marginBottom: '0px' }}>{storyData.title}</h1>
+                    <p style={{ fontSize: '20px' }}>{storyData.description}</p>
+                    <h2 style={{ marginBottom: '0px' }}>Characters Involved</h2>
+                    {storyData.charactersInvolved?.length > 0 ? (
+                        <ul style={{ fontSize: '18px' }}>
+                            {storyData.charactersInvolved.map(characterId => {
+                                const character = charactersOptions.find(option => option.value === characterId);
+                                return character ? (
+                                    <li key={characterId} style={{ marginBottom: '5px' }}>
+                                        <Link to={`/characters/${characterId}`} style={{ color: 'black' }}>{character.label}</Link>
+                                    </li>
+                                ) : null;
+                            })}
+                        </ul>
+                    ) : (
+                        <p>No characters involved.</p>
+                    )}
                 </>
             )}
 
