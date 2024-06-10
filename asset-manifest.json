@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/LoreKeeper/static/css/main.31eabdfd.css",
-    "main.js": "/LoreKeeper/static/js/main.90bcbe1d.js",
+    "main.css": "/LoreKeeper/static/css/main.24854b02.css",
+    "main.js": "/LoreKeeper/static/js/main.ebf3cca3.js",
     "static/js/453.ed0b1c71.chunk.js": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js",
     "static/media/Logo.jpg": "/LoreKeeper/static/media/Logo.5be397fed6557eb60aed.jpg",
     "index.html": "/LoreKeeper/index.html",
-    "main.31eabdfd.css.map": "/LoreKeeper/static/css/main.31eabdfd.css.map",
-    "main.90bcbe1d.js.map": "/LoreKeeper/static/js/main.90bcbe1d.js.map",
+    "main.24854b02.css.map": "/LoreKeeper/static/css/main.24854b02.css.map",
+    "main.ebf3cca3.js.map": "/LoreKeeper/static/js/main.ebf3cca3.js.map",
     "453.ed0b1c71.chunk.js.map": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.31eabdfd.css",
-    "static/js/main.90bcbe1d.js"
+    "static/css/main.24854b02.css",
+    "static/js/main.ebf3cca3.js"
   ]
 }
