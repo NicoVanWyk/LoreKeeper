@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { addDoc, collection, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const storiesCollection = collection(db, 'Stories');
@@ -33,7 +33,6 @@ export const getAllStories = async () => {
         throw error;
     }
 };
-
 
 export const getStory = async (id) => {
     try {
@@ -79,6 +78,28 @@ export const getChapter = async (storyId, chapterId) => {
         }
     } catch (error) {
         console.error('Error fetching chapter: ', error);
+        throw error;
+    }
+};
+
+export const updateStory = async (id, storyData) => {
+    try {
+        const storyDoc = doc(db, 'Stories', id);
+        await updateDoc(storyDoc, storyData);
+        console.log('Story updated with ID: ', id);
+    } catch (error) {
+        console.error('Error updating story: ', error);
+        throw error;
+    }
+};
+
+export const updateChapter = async (storyId, chapterId, chapterData) => {
+    try {
+        const chapterDoc = doc(db, `Stories/${storyId}/Chapters`, chapterId);
+        await updateDoc(chapterDoc, chapterData);
+        console.log('Chapter updated with ID: ', chapterId);
+    } catch (error) {
+        console.error('Error updating chapter: ', error);
         throw error;
     }
 };

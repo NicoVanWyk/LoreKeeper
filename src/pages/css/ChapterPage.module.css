@@ -12,9 +12,77 @@
     margin-top: 20px;
     font-size: 18px;
     line-height: 1.6;
-    white-space: pre-wrap; /* Preserves the whitespace for new lines */
+    white-space: pre-wrap;
+    /* Preserves the whitespace for new lines */
 }
 
 .content p {
     margin: 10px 0;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.formGroup {
+    margin-bottom: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.formGroup label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.largeTextarea {
+    height: 135px;
+}
+
+.fullWidth {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.btnPrimary,
+.btnSecondary {
+    width: auto;
+    height: 50px;
+    max-width: 300px;
+    border: none;
+    border-radius: 10px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 28px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.btnPrimary {
+    background-color: #ddae79;
+    color: #020818;
+}
+
+.btnPrimary:hover {
+    background-color: #020818;
+    color: #ddae79;
+    cursor: pointer;
+}
+
+.btnSecondary {
+    background-color: transparent;
+    color: #ddae79;
+}
+
+.btnSecondary:hover {
+    color: #020818;
+    cursor: pointer;
 }
