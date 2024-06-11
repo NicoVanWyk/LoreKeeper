@@ -9,6 +9,8 @@ import styles from './css/TimelinePage.module.css';
 import { getUserProfile } from '../services/userService';
 import { useAuth } from '../contexts/authContext';
 
+// TODO: Search function that goes through the title of each item, possibly the content as well.
+
 const colors = {
     primary: '#ddae79',
     background: '#020818'

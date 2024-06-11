@@ -1,4 +1,44 @@
 /* src/pages/css/SingleCharacterPage.module.css */
+
+.characterInfo {
+    margin-bottom: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.characterInfo>p {
+    text-align: center;
+    width: 100%;
+    align-self: center;
+}
+
+.characterInfo>div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 900px;
+}
+
+.subDiv_1_p {
+    max-width: 150px;
+    width: 100%;
+}
+
+.subDiv_2_p {
+    max-width: 250px;
+    width: 100%;
+}
+
+.subDiv_3_p {
+    max-width: 400px;
+    width: 100%;
+}
+
 .characterImage {
     width: 150px;
     height: 150px;
@@ -35,7 +75,7 @@
 
 .font22 {
     font-size: 22px;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .characterDetails {
@@ -44,13 +84,29 @@
     align-items: center;
 }
 
-.characterInfo {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
 .buttonContainer {
     display: flex;
     justify-content: center;
     width: 100%;
+}
+
+.separator {
+    border: none;
+    border-top: 2px solid #ddae79;
+    width: 100%;
+}
+
+.separator_smaller {
+    border: none;
+    border-top: 2px solid #ddae79;
+    width: 80%;
+}
+
+h1 {
+    margin-bottom: 0px;
+}
+
+h2 {
+    margin-bottom: 0px;
+    text-decoration: underline;
 }

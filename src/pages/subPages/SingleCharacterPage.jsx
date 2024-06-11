@@ -79,7 +79,7 @@ function SingleCharacterPage() {
     return (
         <div className="container">
             {characterData.imageUrl && (
-                <img src={characterData.imageUrl} alt={characterData.fullName} className={styles.characterImage} />
+                <img src={characterData.imageUrl} alt={characterData.fullName} className={styles.characterImage} style={{ marginTop: '15px' }} />
             )}
 
             {isEditing ? (
@@ -137,16 +137,16 @@ function SingleCharacterPage() {
                         <textarea name="traits" value={characterData.traits} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
                     <div className={styles.formGroup}>
-                        <label>Strengths/Weaknesses</label>
-                        <textarea name="strengthsWeaknesses" value={characterData.strengthsWeaknesses} onChange={handleChange} className={styles.largeTextarea}></textarea>
-                    </div>
-                    <div className={styles.formGroup}>
                         <label>Fears</label>
                         <textarea name="fears" value={characterData.fears} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
                     <div className={styles.formGroup}>
                         <label>Goals</label>
                         <textarea name="goals" value={characterData.goals} onChange={handleChange} className={styles.largeTextarea}></textarea>
+                    </div>
+                    <div className={styles.formGroup}>
+                        <label>Strengths/Weaknesses</label>
+                        <textarea name="strengthsWeaknesses" value={characterData.strengthsWeaknesses} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
                     <div className={styles.formGroup}>
                         <label>Motivations</label>
@@ -190,40 +190,78 @@ function SingleCharacterPage() {
                         <input type="file" onChange={handleFileChange} />
                     </div>
 
-                    <button type="button" className="btnPrimary" onClick={() => setIsEditing(false)}>Cancel</button>
+                    <button style={{ marginRight: '50px' }} type="button" className="btnPrimary" onClick={() => setIsEditing(false)}>Cancel</button>
                     <button type="submit" className="btnPrimary">Save</button>
                 </form>
             ) : (
                 <div className={styles.characterDetails}>
-                    <div className={styles.characterInfo}>
+                    <div className={styles.characterInfo} style={{ maxWidth: '900px', margin: '0 auto' }}>
                         <h1>{characterData.fullName}</h1>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Nicknames:</strong> {characterData.nicknames}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Species:</strong> {characterData.species}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Gender:</strong> {characterData.gender}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Age:</strong> {characterData.age}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Occupation/Role:</strong> {characterData.occupation}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Physical Description:</strong> {characterData.physicalDescription}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Typical Clothing/Armor:</strong> {characterData.typicalClothing}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Place of Birth:</strong> {characterData.placeOfBirth}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Family:</strong> {characterData.family}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Education/Training:</strong> {characterData.educationTraining}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Significant Events:</strong> {characterData.significantEvents}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Traits:</strong> {characterData.traits}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Strengths/Weaknesses:</strong> {characterData.strengthsWeaknesses}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Fears:</strong> {characterData.fears}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Goals:</strong> {characterData.goals}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Motivations:</strong> {characterData.motivations}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Magic/Abilities:</strong> {characterData.magicAbilities}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Skills:</strong> {characterData.skills}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Allies:</strong> {characterData.allies}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Enemies:</strong> {characterData.enemies}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Love Interests:</strong> {characterData.loveInterests}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Current Role in the Story:</strong> {characterData.plotInvolvement}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Key Actions:</strong> {characterData.keyActions}</p>
-                        <p className={`${styles.font22} preserve-whitespace`}><strong>Character Arc:</strong> {characterData.characterArc}</p>
+
+                        <div>
+                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Nicknames:</strong><br /> {characterData.nicknames}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Species:</strong><br /> {characterData.species}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Gender:</strong><br /> {characterData.gender}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Age:</strong><br /> {characterData.age}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Occupation/Role:</strong><br /> {characterData.occupation}</p>
+                        </div>
+
+                        <hr className={styles.separator} />
+
+                        <h2>Physical Characteristics</h2>
+                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Physical Description:</strong><br /> {characterData.physicalDescription}</p>
+                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Typical Clothing/Armor:</strong><br /> {characterData.typicalClothing}</p>
+
+                        <hr className={styles.separator} />
+
+                        <h2>Background</h2>
+                        <div>
+                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Place of Birth:</strong><br /> {characterData.placeOfBirth}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Family:</strong><br /> {characterData.family}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Education/Training:</strong><br /> {characterData.educationTraining}</p>
+                        </div>
+
+                        <hr className={styles.separator} />
+
+                        <h2>Personality</h2>
+                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Significant Events:</strong><br /> {characterData.significantEvents}</p>
+                        <div>
+                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Traits:</strong><br /> {characterData.traits}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Fears:</strong><br /> {characterData.fears}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Goals:</strong><br /> {characterData.goals}</p>
+                        </div>
+
+                        <hr className={styles.separator} />
+
+                        <h2>Abilities</h2>
+                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Strengths/Weaknesses:</strong><br /> {characterData.strengthsWeaknesses}</p>
+                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Motivations:</strong><br /> {characterData.motivations}</p>
+                        <div>
+                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Magic/Abilities:</strong><br /> {characterData.magicAbilities}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Skills:</strong><br /> {characterData.skills}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Allies:</strong><br /> {characterData.allies}</p>
+                        </div>
+
+                        <hr className={styles.separator} />
+
+                        <h2>Relationships</h2>
+                        <div>
+                            <p className={`${styles.font22} ${styles.subDiv_3_p} preserve-whitespace`}><strong>Enemies:</strong><br /> {characterData.enemies}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_3_p} preserve-whitespace`}><strong>Love Interests:</strong><br /> {characterData.loveInterests}</p>
+                        </div>
+
+                        <hr className={styles.separator} />
+
+                        <h2>Role in the Story</h2>
+                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Current Role in the Story:</strong><br /> {characterData.plotInvolvement}</p>
+                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Key Actions:</strong><br /> {characterData.keyActions}</p>
+                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Character Arc:</strong><br /> {characterData.characterArc}</p>
+
+                        <hr className={styles.separator} />
                     </div>
+
                     {isAdmin && (
-                        <div className={styles.buttonContainer}>
+                        <div className={styles.buttonContainer} style={{ marginTop: '30px' }}>
                             <button onClick={handleEditClick} className="btnPrimary">Edit Character</button>
                         </div>
                     )}
