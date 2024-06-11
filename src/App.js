@@ -18,6 +18,7 @@ import StoriesPage from './pages/StoriesPage';
 import ChapterPage from './pages/subPages/ChapterPage';
 import SingleStoryPage from './pages/subPages/SingleStoryPage';
 import AddChapterPage from './pages/subPages/AddChapterPage'
+import TimelinePage from './pages/TimelinePage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -51,6 +52,9 @@ const AppWrapper = () => {
 
         {/* About */}
         <Route path="/about" element={<PrivateRoute element={<AboutPage />} />} />
+
+        {/* Timeline */}
+        <Route path="/timeline" element={<PrivateRoute element={<TimelinePage />} />} />
 
         {/* Not Found */}
         <Route path="*" element={<NotFoundPage />} />

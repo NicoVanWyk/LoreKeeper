@@ -4,6 +4,8 @@ npm install list:
 3. npm install react-router-dom@6
 4. npm install react-loader-spinner
 5. npm install react-select
+6. npm install react-vertical-timeline-component 
+7. npm install styled-components
 
 commit changes:
 1. git add .

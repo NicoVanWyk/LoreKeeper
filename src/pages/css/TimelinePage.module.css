@@ -1,0 +1,20 @@
+@media (min-width: 768px) {
+    textarea {
+        max-width: 600px;
+        width: 600px;
+    }
+}
+
+@media (max-width: 767px) {
+    textarea {
+        max-width: 335px;
+        width: 335px;
+    }
+}
+
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}

@@ -25,7 +25,7 @@ export const addStory = async (storyData) => {
 
 export const getAllStories = async () => {
     try {
-        const q = query(storiesCollection, orderBy('publicationDate', 'desc'));
+        const q = query(storiesCollection, orderBy('publicationDate', 'asc'));
         const querySnapshot = await getDocs(q);
         const stories = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         return stories;
