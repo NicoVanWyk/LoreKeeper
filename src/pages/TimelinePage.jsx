@@ -17,7 +17,7 @@ const colors = {
 const StyledVerticalTimelineElement = styled(VerticalTimelineElement)`
   .vertical-timeline-element-content {
     background-color: white !important;
-    border: 2.5px solid ${colors.background} !important;
+    border: 2.5px solid #ddae79 !important;
     color: black !important;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23) !important;
   }
@@ -134,7 +134,7 @@ const Timeline = () => {
     }
 
     return (
-        <div className="container">
+        <div className="container" style={{backgroundColor: 'rgb(233, 233, 233)'}}>
             {submitting && (
                 <div className={styles.loadingContainer}>
                     <Oval color={colors.background} height={80} width={80} />
@@ -226,13 +226,13 @@ const Timeline = () => {
                 </form>
             )}
 
-            <VerticalTimeline>
+            <VerticalTimeline className={`${styles.verticalTimeline} vertical-timeline vertical-timeline--animate`}>
                 {events.map(event => (
                     <StyledVerticalTimelineElement
                         key={event.id}
                         date={`${formatEra(event.era)}, Year ${event.year}`}
                         iconStyle={{ background: colors.primary, color: colors.background }}
-                        contentArrowStyle={{ borderRight: `7px solid ${colors.background}` }}
+                        contentArrowStyle={{ borderRight: `7px solid #ddae79` }}
                     >
                         <h1>{event.title}</h1>
                         <p style={{ fontSize: '18px' }}>{event.content}</p>
@@ -245,6 +245,7 @@ const Timeline = () => {
                     </StyledVerticalTimelineElement>
                 ))}
             </VerticalTimeline>
+
         </div>
     );
 };
