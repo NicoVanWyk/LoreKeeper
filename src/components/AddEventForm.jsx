@@ -18,7 +18,6 @@ const AddEventForm = () => {
         charactersInvolved: [],
         significance: '',
         visuals: '',
-        tags: '',
         source: '',
         relatedEvents: [],
         status: '',
@@ -79,10 +78,7 @@ const AddEventForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Convert tags string to array of strings
-        const tagsArray = eventData.tags.split(' ').filter(tag => tag.trim() !== '');
-        const newEventData = { ...eventData, tags: tagsArray };
-        await addEvent(newEventData);
+        await addEvent(eventData);
         setEventData({
             era: '',
             year: '',
@@ -94,7 +90,6 @@ const AddEventForm = () => {
             charactersInvolved: [],
             significance: '',
             visuals: '',
-            tags: '',
             source: '',
             relatedEvents: [],
             status: '',
@@ -155,11 +150,6 @@ const AddEventForm = () => {
             <div className={styles.formGroup}>
                 <label>Visuals</label>
                 <input type="text" name="visuals" placeholder="Visuals" value={eventData.visuals} onChange={handleChange} />
-            </div>
-            <div className={styles.formGroup}>
-                <label>Tags/Keywords</label>
-                <h4 style={{ alignSelf: 'start', marginTop: '0px', color: 'gray' }}>Type only the words, do not separate them with a comma - only a space</h4>
-                <input type="text" name="tags" placeholder="Tags/Keywords (separate by space)" value={eventData.tags} onChange={handleChange} />
             </div>
             <div className={styles.formGroup}>
                 <label>Source</label>

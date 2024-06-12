@@ -62,7 +62,7 @@ const ImportantEventsPage = () => {
     };
 
     return (
-        <div className="container">
+        <div className={styles.container}>
             <h1>Important Events</h1>
 
             {isAdmin && (
@@ -89,7 +89,6 @@ const ImportantEventsPage = () => {
                     >
                         <h3>{event.title}</h3>
                         <p><strong>Description:</strong> {event.description}</p>
-                        <p><strong>Tags:</strong> {event.tags.join(', ')}</p>
                     </div>
                 ))}
             </div>

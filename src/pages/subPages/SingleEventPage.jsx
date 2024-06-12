@@ -186,10 +186,6 @@ function SingleEventPage() {
                         <input type="text" name="visuals" value={eventData.visuals} onChange={handleInputChange} />
                     </div>
                     <div className={styles.formGroup}>
-                        <label>Tags</label>
-                        <input type="text" name="tags" value={eventData.tags} onChange={handleInputChange} />
-                    </div>
-                    <div className={styles.formGroup}>
                         <label>Source</label>
                         <input type="text" name="source" value={eventData.source} onChange={handleInputChange} />
                     </div>
@@ -218,7 +214,6 @@ function SingleEventPage() {
                         <p><strong>Content:</strong> {eventData.content}</p>
                         <p><strong>Significance:</strong> {eventData.significance}</p>
                         <p><strong>Visuals:</strong> {eventData.visuals}</p>
-                        <p><strong>Tags:</strong> {eventData.tags.join(', ')}</p>
                         <p><strong>Source:</strong> {eventData.source}</p>
                         <p><strong>Status:</strong> {eventData.status}</p>
                         <p><strong>Notes:</strong> {eventData.notes}</p>
