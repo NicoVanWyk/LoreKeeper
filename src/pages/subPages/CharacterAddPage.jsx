@@ -36,7 +36,7 @@ function CharacterAddPage() {
         plotInvolvement: '',
         keyActions: '',
         characterArc: '',
-        imageUrl: '',
+        imageUrl: 'https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/Logo.jpg?alt=media&token=b3c66f08-5659-49a0-877c-1a03841ce2bd',
     });
 
     const handleChange = (e) => {
@@ -55,7 +55,10 @@ function CharacterAddPage() {
             let imageUrl = '';
             if (selectedFile) {
                 imageUrl = await handleImageUpload(selectedFile, `characters/${characterData.fullName}`);
+            } else {
+                imageUrl = "https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/Logo.jpg?alt=media&token=b3c66f08-5659-49a0-877c-1a03841ce2bd";
             }
+
             await addCharacter({ ...characterData, imageUrl });
             navigate('/characters');
         } catch (error) {
