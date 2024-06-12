@@ -23,6 +23,12 @@ import ImportantEventsPage from './pages/ImportantEventsPage';
 import LocationsPage from './pages/LocationsPage';
 import SingleLocationPage from './pages/subPages/SingleLocationsPage';
 import SingleEventPage from './pages/subPages/SingleEventPage';
+import MagicPage from './pages/MagicPage';
+import MapsPage from './pages/MapsPage';
+import BestiaryPage from './pages/BestiaryPage';
+import SchoolsPage from './pages/subPages/SchoolsPage';
+import ClassesPage from './pages/subPages/ClassesPage';
+import SubSchoolPage from './pages/subPages/SubSchoolPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -64,6 +70,18 @@ const AppWrapper = () => {
 
         {/* About */}
         <Route path="/about" element={<PrivateRoute element={<AboutPage />} />} />
+
+        {/* Magic Page */}
+        <Route path="/magic" element={<PrivateRoute element={<MagicPage />} />} />
+        <Route path="/magic/schools" element={<PrivateRoute element={<SchoolsPage />} />} />
+        <Route path="/subschools/:name" element={<PrivateRoute element={<SubSchoolPage />} />} />
+        <Route path="/magic/classes" element={<PrivateRoute element={<ClassesPage />} />} />
+
+        {/* Bestiary Page */}
+        <Route path="/bestiary" element={<PrivateRoute element={<BestiaryPage />} />} />
+
+        {/* Maps Page */}
+        <Route path="/maps" element={<PrivateRoute element={<MapsPage />} />} />
 
         {/* Timeline */}
         <Route path="/timeline" element={<PrivateRoute element={<TimelinePage />} />} />

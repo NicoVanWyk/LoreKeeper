@@ -24,21 +24,33 @@ function NavbarComponent() {
                             <Link to="/about">About</Link>
                         </div>
                     </li>
-                    <li className="navbar-item"><Link to="/characters">Characters</Link></li>
+
                     <li className="navbar-item dropdown">
-                        <Link to="/world" className="dropbtn">World</Link>
+                        <Link to="/characters" className="dropbtn">Characters</Link>
+                        <div className="dropdown-content">
+                            <Link to="/bestiary">Bestiary</Link>
+                        </div>
+                    </li>
+
+                    <li className="navbar-item dropdown">
+                        <Link to="/timeline" className="dropbtn">Timeline</Link>
                         <div className="dropdown-content">
                             <Link to="/important-events">Important Events</Link>
-                            <Link to="/timeline">Timeline</Link>
                             <Link to="/locations">Locations</Link>
                             <Link to="/maps">Maps</Link>
-                            <Link to="/magic">Magic</Link>
                         </div>
                     </li>
 
                     <img src={logo} alt="Logo" className="navbar-logo" />
 
-                    <li className="navbar-item"><Link to="/bestiary">Bestiary</Link></li>
+                    <li className="navbar-item dropdown">
+                        <Link to="/magic" className="dropbtn">Magic</Link>
+                        <div className="dropdown-content">
+                            <Link to="/magic/schools">Schools</Link>
+                            <Link to="/magic/classes">Classes</Link>
+                        </div>
+                    </li>
+
                     <li className="navbar-item"><Link to="/stories">Stories</Link></li>
                     <li className="navbar-item"><Link to="/profile">Profile</Link></li>
                 </ul>
@@ -48,7 +60,6 @@ function NavbarComponent() {
                     <li className="navbar-item"><Link to="/">Home</Link></li>
                     <li className="navbar-item"><Link to="/about">About</Link></li>
                     <li className="navbar-item"><Link to="/characters">Characters</Link></li>
-                    <li className="navbar-item"><Link to="/world">World</Link></li>
                     <li className="navbar-item"><Link to="/important-events">Important Events</Link></li>
                     <li className="navbar-item"><Link to="/timeline">Timeline</Link></li>
                     <li className="navbar-item"><Link to="/locations">Locations</Link></li>
