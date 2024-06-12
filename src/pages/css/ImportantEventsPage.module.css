@@ -1,0 +1,58 @@
+/* src/pages/css/ImportantEventsPage.module.css */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.eventsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.eventCard {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.eventCard h3 {
+    margin-top: 0;
+}
+
+.eventCard p {
+    margin-bottom: 5px;
+}
+
+.btnPrimary, .btnSecondary {
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    .eventsContainer {
+        width: 100%;
+    }
+
+    .eventCard {
+        padding: 15px;
+    }
+
+    .btnPrimary, .btnSecondary {
+        width: 100%;
+        margin: 5px 0;
+    }
+}

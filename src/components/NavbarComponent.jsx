@@ -30,6 +30,7 @@ function NavbarComponent() {
                         <div className="dropdown-content">
                             <Link to="/important-events">Important Events</Link>
                             <Link to="/timeline">Timeline</Link>
+                            <Link to="/locations">Locations</Link>
                             <Link to="/maps">Maps</Link>
                             <Link to="/magic">Magic</Link>
                         </div>
@@ -50,6 +51,7 @@ function NavbarComponent() {
                     <li className="navbar-item"><Link to="/world">World</Link></li>
                     <li className="navbar-item"><Link to="/important-events">Important Events</Link></li>
                     <li className="navbar-item"><Link to="/timeline">Timeline</Link></li>
+                    <li className="navbar-item"><Link to="/locations">Locations</Link></li>
                     <li className="navbar-item"><Link to="/maps">Maps</Link></li>
                     <li className="navbar-item"><Link to="/magic">Magic</Link></li>
                     <li className="navbar-item"><Link to="/bestiary">Bestiary</Link></li>

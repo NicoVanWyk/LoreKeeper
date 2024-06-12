@@ -19,6 +19,10 @@ import ChapterPage from './pages/subPages/ChapterPage';
 import SingleStoryPage from './pages/subPages/SingleStoryPage';
 import AddChapterPage from './pages/subPages/AddChapterPage'
 import TimelinePage from './pages/TimelinePage';
+import ImportantEventsPage from './pages/ImportantEventsPage';
+import LocationsPage from './pages/LocationsPage';
+import SingleLocationPage from './pages/subPages/SingleLocationsPage';
+import SingleEventPage from './pages/subPages/SingleEventPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -49,6 +53,14 @@ const AppWrapper = () => {
         <Route path="/stories/add" element={<PrivateRoute element={<AddStoryPage />} />} />
         <Route path="/stories/:storyId/chapters/:chapterId" element={<PrivateRoute element={<ChapterPage />} />} />
         <Route path="/stories/:storyId/add-chapter" element={<PrivateRoute element={<AddChapterPage />} />} />
+
+        {/* Important Events */}
+        <Route path="/important-events" element={<PrivateRoute element={<ImportantEventsPage />} />} />
+        <Route path="/important-events/:eventId" element={<PrivateRoute element={<SingleEventPage />} />} />
+
+        {/* Locations */}
+        <Route path="/locations" element={<PrivateRoute element={<LocationsPage />} />} />
+        <Route path="/locations/:locationId" element={<PrivateRoute element={<SingleLocationPage />} />} />
 
         {/* About */}
         <Route path="/about" element={<PrivateRoute element={<AboutPage />} />} />
