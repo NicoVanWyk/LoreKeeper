@@ -38,16 +38,13 @@ function SubSchoolPage() {
 
     const handleSave = async () => {
         try {
-            // Get the updated school with edited subschool
             const fetchedSchool = await getSchool(schoolId);
             const updatedSubschools = fetchedSchool.subschools.map(sub => 
                 sub.name === subschool.name ? subschoolValues : sub
             );
 
-            // Update the school with new subschool details
             await updateSchool(schoolId, { ...fetchedSchool, subschools: updatedSubschools });
-
-            navigate('/schools');
+            navigate('/magic/schools');
         } catch (error) {
             console.error('Error updating subschool:', error);
         }

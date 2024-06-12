@@ -116,8 +116,8 @@ function SchoolsPage() {
         setIsAdding(true);
     };
 
-    const handleSubschoolClick = (subschool) => {
-        navigate(`/subschools/${subschool.name}`, { state: { subschool, schoolId: selectedSchoolId } });
+    const handleSubschoolClick = (subschool, schoolId) => {
+        navigate(`/subschools/${subschool.name}`, { state: { subschool, schoolId } });
     };
 
     return (
@@ -136,7 +136,7 @@ function SchoolsPage() {
                                     onChange={handleInputChange}
                                     className={styles.subschoolInput}
                                 />
-                                <textarea
+                                <input
                                     type="text"
                                     name="description"
                                     placeholder="Description"
@@ -152,7 +152,7 @@ function SchoolsPage() {
                                     onChange={handleInputChange}
                                     className={styles.subschoolInput}
                                 />
-                                <textarea
+                                <input
                                     type="text"
                                     name="notes"
                                     placeholder="Notes"
@@ -173,7 +173,7 @@ function SchoolsPage() {
                                         value={subschoolValues.name}
                                         onChange={handleSubschoolInputChange}
                                     />
-                                    <textarea
+                                    <input
                                         type="text"
                                         name="description"
                                         placeholder="Subschool Description"
@@ -187,7 +187,7 @@ function SchoolsPage() {
                                         value={subschoolValues.practitionerTitle}
                                         onChange={handleSubschoolInputChange}
                                     />
-                                    <textarea
+                                    <input
                                         type="text"
                                         name="notes"
                                         placeholder="Subschool Notes"
@@ -217,19 +217,19 @@ function SchoolsPage() {
             {schools.map(school => (
                 <div key={school.id} className={styles.section}>
                     <h2>{school.name}</h2>
-                    <p className='preserve-whitespace'>{school.description}</p>
+                    <p>{school.description}</p>
                     <p><strong>Practitioner:</strong> {school.practitionerTitle}</p>
-                    <p className='preserve-whitespace'><strong>Notes:</strong> {school.notes}</p>
+                    <p><strong>Notes:</strong> {school.notes}</p>
                     <h2>SubSchools:</h2>
                     <div className={styles.subschoolsContainer}>
                         {school.subschools.map((subschool, index) => (
                             <div key={index} className={styles.subschoolCard}>
-                                <h3 onClick={() => handleSubschoolClick(subschool)} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
+                                <h3 onClick={() => handleSubschoolClick(subschool, school.id)} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
                                     {index + 1}. {subschool.name}
                                 </h3>
-                                <p className='preserve-whitespace'>{subschool.description}</p>
+                                <p>{subschool.description}</p>
                                 <p><strong>Practitioner:</strong> {subschool.practitionerTitle}</p>
-                                <p className='preserve-whitespace'><strong >Notes:</strong> {subschool.notes}</p>
+                                <p><strong>Notes:</strong> {subschool.notes}</p>
                             </div>
                         ))}
                     </div>

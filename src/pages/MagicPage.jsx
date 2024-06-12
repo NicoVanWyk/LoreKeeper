@@ -3,6 +3,8 @@ import React from 'react';
 import styles from './css/MagicPage.module.css';
 import { useNavigate } from 'react-router-dom';
 
+// TODO: Write actual content for each item
+
 function MagicPage() {
     const navigate = useNavigate();
 

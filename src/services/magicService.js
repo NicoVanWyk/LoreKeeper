@@ -1,4 +1,3 @@
-// src/services/magicService.js
 import { addDoc, collection, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -31,6 +30,21 @@ export const getSchools = async () => {
     }
 };
 
+export const getSchool = async (schoolId) => {
+    try {
+        const schoolDocRef = doc(schoolsCollection, schoolId);
+        const schoolDoc = await getDoc(schoolDocRef);
+        if (schoolDoc.exists()) {
+            return schoolDoc.data();
+        } else {
+            throw new Error('No such document!');
+        }
+    } catch (error) {
+        console.error('Error getting document:', error);
+        throw error;
+    }
+};
+
 export const updateSchool = async (schoolId, schoolData) => {
     try {
         const schoolDocRef = doc(schoolsCollection, schoolId);
@@ -38,21 +52,6 @@ export const updateSchool = async (schoolId, schoolData) => {
         console.log('Document updated with ID: ', schoolDocRef.id);
     } catch (error) {
         console.error('Error updating document: ', error);
-        throw error;
-    }
-};
-
-export const getSchool = async (schoolId) => {
-    try {
-        const schoolDocRef = doc(schoolsCollection, schoolId);
-        const schoolDoc = await getDoc(schoolDocRef);
-        if (schoolDoc.exists()) {
-            return { id: schoolDoc.id, ...schoolDoc.data() };
-        } else {
-            throw new Error('No such document!');
-        }
-    } catch (error) {
-        console.error('Error getting document:', error);
         throw error;
     }
 };
