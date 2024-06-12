@@ -237,7 +237,7 @@ const Timeline = () => {
                         contentArrowStyle={{ borderRight: `7px solid #ddae79` }}
                     >
                         <h1>{event.title}</h1>
-                        <p style={{ fontSize: '18px' }}>{event.content}</p>
+                        <p style={{ fontSize: '18px' }} className='preserve-whitespace'>{event.content}</p>
                         {isAdmin && (
                             <>
                                 <button className="btnPrimary" onClick={() => { setEditEvent(event); window.scrollTo({ top: 0, behavior: 'smooth' }); }} disabled={submitting}>Edit</button>
