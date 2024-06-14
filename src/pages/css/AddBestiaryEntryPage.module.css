@@ -1,0 +1,47 @@
+.centeredForm {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+.largeTextarea {
+    width: 100%;
+    height: 100px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.buttonGroup {
+    display: flex;
+    flex-direction: row;
+    gap: 100px;
+    margin-bottom: 20px;
+}

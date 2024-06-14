@@ -29,6 +29,9 @@ import BestiaryPage from './pages/BestiaryPage';
 import SchoolsPage from './pages/subPages/SchoolsPage';
 import ClassesPage from './pages/subPages/ClassesPage';
 import SubSchoolPage from './pages/subPages/SubSchoolPage';
+import SingleCreaturePage from './pages/subPages/SingleCreaturePage';
+import SingleRacePage from './pages/subPages/SingleRacePage';
+import AddBestiaryEntryPage from './pages/subPages/AddBestiaryEntryPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -79,6 +82,9 @@ const AppWrapper = () => {
 
         {/* Bestiary Page */}
         <Route path="/bestiary" element={<PrivateRoute element={<BestiaryPage />} />} />
+        <Route path="/bestiary/creature/:creatureId" element={<PrivateRoute element={<SingleCreaturePage />} />} />
+        <Route path="/bestiary/race/:raceId" element={<PrivateRoute element={<SingleRacePage />} />} />
+        <Route path="/bestiary/add" element={<PrivateRoute element={<AddBestiaryEntryPage />} />} />
 
         {/* Maps Page */}
         <Route path="/maps" element={<PrivateRoute element={<MapsPage />} />} />
