@@ -137,13 +137,13 @@ function SingleStoryPage() {
                                 const character = charactersOptions.find(option => option.value === characterId);
                                 return character ? (
                                     <li key={characterId} style={{ marginBottom: '5px' }}>
-                                        <Link to={`/characters/${characterId}`} style={{ color: 'black' }}>{character.label}</Link>
+                                        <Link to={`/characters/${characterId}`} style={{ color: 'black', fontSize: '22px' }}>{character.label}</Link>
                                     </li>
                                 ) : null;
                             })}
                         </ul>
                     ) : (
-                        <p>No characters involved.</p>
+                        <p style={{ fontSize: '22px' }}>No characters involved.</p>
                     )}
                 </>
             )}
@@ -153,8 +153,8 @@ function SingleStoryPage() {
                 <div className={styles.cardsContainer}>
                     {storyData.chapters.map((chapter) => (
                         <div key={chapter.id} className={styles.card} onClick={() => handleChapterClick(chapter.id)}>
-                            <h3>{chapter.title}</h3>
-                            <p>{chapter.content.substring(0, 100)}...</p>
+                            <h3 style={{ fontSize: '24px' }}>{chapter.title}</h3>
+                            <p style={{ fontSize: '20px' }}>{chapter.content.substring(0, 100)}...</p>
                         </div>
                     ))}
                 </div>
