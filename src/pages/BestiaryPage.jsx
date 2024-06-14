@@ -4,6 +4,7 @@ import { getAllCreatures, getAllRaces } from '../services/bestiaryService';
 import { getUserProfile } from '../services/userService';
 import { useAuth } from '../contexts/authContext';
 import styles from './css/BestiaryPage.module.css';
+import { useRef } from 'react';
 
 function BestiaryPage() {
     const { currentUser } = useAuth();
@@ -12,6 +13,9 @@ function BestiaryPage() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
+
+    const creaturesRef = useRef(null);
+    const racesRef = useRef(null);
 
     useEffect(() => {
         const fetchBestiaryData = async () => {
@@ -60,6 +64,11 @@ function BestiaryPage() {
         <div className="container">
             <h1>Bestiary</h1>
 
+            <div className={styles.buttonGroup}>
+                <button className='btnSecondary' onClick={() => creaturesRef.current.scrollIntoView({ behavior: 'smooth' })}>Go to Creatures</button>
+                <button className='btnSecondary' onClick={() => racesRef.current.scrollIntoView({ behavior: 'smooth' })}>Go to Races</button>
+            </div>
+
             <input
                 type='search'
                 placeholder='Search Bestiary...'
@@ -74,7 +83,7 @@ function BestiaryPage() {
                 </button>
             )}
 
-            <div className={styles.heading}>
+            <div className={styles.heading} ref={creaturesRef}>
                 <h2>Creatures</h2>
             </div>
             <div className={styles.cardsContainer}>
@@ -92,7 +101,7 @@ function BestiaryPage() {
                 ))}
             </div>
 
-            <div className={styles.heading}>
+            <div className={styles.heading} ref={racesRef}>
                 <h2>Races</h2>
             </div>
             <div className={styles.cardsContainer}>
