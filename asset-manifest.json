@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/LoreKeeper/static/css/main.8fe04a08.css",
-    "main.js": "/LoreKeeper/static/js/main.f50706ca.js",
+    "main.js": "/LoreKeeper/static/js/main.bede9df0.js",
     "static/js/453.ed0b1c71.chunk.js": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js",
     "static/media/Logo.jpg": "/LoreKeeper/static/media/Logo.5be397fed6557eb60aed.jpg",
     "index.html": "/LoreKeeper/index.html",
     "main.8fe04a08.css.map": "/LoreKeeper/static/css/main.8fe04a08.css.map",
-    "main.f50706ca.js.map": "/LoreKeeper/static/js/main.f50706ca.js.map",
+    "main.bede9df0.js.map": "/LoreKeeper/static/js/main.bede9df0.js.map",
     "453.ed0b1c71.chunk.js.map": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.8fe04a08.css",
-    "static/js/main.f50706ca.js"
+    "static/js/main.bede9df0.js"
   ]
 }
