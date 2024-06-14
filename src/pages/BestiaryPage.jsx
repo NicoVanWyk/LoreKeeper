@@ -94,8 +94,6 @@ function BestiaryPage() {
                         )}
                         <div className={styles.cardContent}>
                             <h3>{creature.name}</h3>
-                            <p><strong>Appearance:</strong> {creature.appearance}</p>
-                            <p><strong>Habitat:</strong> {creature.habitat}</p>
                         </div>
                     </div>
                 ))}
@@ -112,8 +110,6 @@ function BestiaryPage() {
                         )}
                         <div className={styles.cardContent}>
                             <h3>{race.name}</h3>
-                            <p><strong>Culture:</strong> {race.culture}</p>
-                            <p><strong>Habitat:</strong> {race.habitat}</p>
                         </div>
                     </div>
                 ))}
