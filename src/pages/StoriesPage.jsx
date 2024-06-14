@@ -15,7 +15,7 @@ function StoriesPage() {
         const fetchStories = async () => {
             try {
                 const storiesData = await getAllStories();
-                setStories(storiesData);
+                setStories(truncateDescriptions(storiesData));
             } catch (error) {
                 console.error('Error fetching stories: ', error);
             }
@@ -38,6 +38,16 @@ function StoriesPage() {
 
     const handleCardClick = (storyId) => {
         navigate(`/stories/${storyId}`);
+    };
+
+    const truncateDescriptions = (stories) => {
+        return stories.map(story => {
+            if (story.description.length > 150) {
+                const truncatedText = story.description.substring(0, 150);
+                story.description = truncatedText.substring(0, truncatedText.lastIndexOf(' ')) + '...';
+            }
+            return story;
+        });
     };
 
     return (
