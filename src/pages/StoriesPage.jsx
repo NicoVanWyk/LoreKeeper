@@ -67,7 +67,7 @@ function StoriesPage() {
                             <img src={story.coverImageUrl} alt={story.title} className={styles.storyImage} />
                         )}
                         <div className={styles.cardContent}>
-                            <h3>{story.title}</h3>
+                            <h2>{story.title}</h2>
                             <p>{story.description}</p>
                         </div>
                     </div>
