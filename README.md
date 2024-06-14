@@ -6,6 +6,7 @@ npm install list:
 5. npm install react-select
 6. npm install react-vertical-timeline-component 
 7. npm install styled-components
+8. npm install leaflet react-leaflet
 
 commit changes:
 1. git add .

@@ -1,10 +1,13 @@
-import React from 'react'
-// TODO: Maps Page
+import React from 'react';
+import MapComponent from '../components/MapComponent';
 
-function MapsPage() {
+const MapsPage = () => {
     return (
-        <div>MapsPage</div>
-    )
-}
+        <div className="container">
+            <h1>Interactive Map</h1>
+            <MapComponent />
+        </div>
+    );
+};
 
-export default MapsPage
+export default MapsPage;
