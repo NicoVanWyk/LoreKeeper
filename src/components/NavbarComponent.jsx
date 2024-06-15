@@ -11,7 +11,7 @@ function NavbarComponent() {
     };
 
     return (
-        <nav className="navbar">
+        <nav className="navbar" style={{zIndex: '9'}}>
             <div className="navbar-content">
                 <img src={logo} alt="Logo" className="navbar-logo-mobile" />
                 <button className="navbar-toggle" onClick={toggleMenu}>

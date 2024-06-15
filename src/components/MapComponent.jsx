@@ -12,7 +12,7 @@ const MapComponent = () => {
             zoom={0}
             minZoom={-5}
             maxZoom={2}
-            style={{ height: '100vh', width: '80%', alignSelf: 'center' }}
+            style={{ height: '100vh', width: '80%', alignSelf: 'center', marginTop: '20px', zIndex: '0' }}
             crs={L.CRS.Simple}
         >
             <ImageOverlay
