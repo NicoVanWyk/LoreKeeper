@@ -123,8 +123,8 @@ function SingleCreaturePage() {
                         <input type="file" onChange={handleFileChange} />
                     </div>
 
-                    <button style={{ marginRight: '50px' }} type="button" className="btnPrimary" onClick={() => setIsEditing(false)}>Cancel</button>
                     <button type="submit" className="btnPrimary">Save</button>
+                    <button style={{ marginRight: '50px' }} type="button" className="btnSecondary" onClick={() => setIsEditing(false)}>Cancel</button>
                 </form>
             ) : (
                 <div className={styles.creatureDetails}>
