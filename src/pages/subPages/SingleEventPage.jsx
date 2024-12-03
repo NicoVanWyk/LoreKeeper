@@ -1,5 +1,6 @@
 // src/pages/SingleEventPage.js
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext';
 import { getUserProfile } from '../../services/userService';
@@ -8,6 +9,7 @@ import { getAllLocations, getLocation } from '../../services/locationService';
 import { getAllCharacters } from '../../services/charactersService';
 import Select from 'react-select';
 import styles from '../css/SingleEventPage.module.css';
+import { getAllPoliticalEntities, getPoliticalEntity } from '../../services/politicalEntitiesService';
 
 function SingleEventPage() {
     const { currentUser } = useAuth();
@@ -15,11 +17,17 @@ function SingleEventPage() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [eventData, setEventData] = useState({});
     const [locationsData, setLocationsData] = useState([]);
+    const [allEventsData, setAllEventsData] = useState([]);
+    const [politicalEntitiesData, setPoliticalEntitiesData] = useState([]);
+    const [polEntitiesOptions, setPolEntitiesOptions] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
     const [charactersOptions, setCharactersOptions] = useState([]);
     const [locationsOptions, setLocationsOptions] = useState([]);
     const [eventsOptions, setEventsOptions] = useState([]);
+
+    // Navigation
+    const navigate = useNavigate();
 
     useEffect(() => {
         const checkUserRole = async () => {
@@ -48,6 +56,18 @@ function SingleEventPage() {
                     event.locations.map(locationId => getLocation(locationId))
                 );
                 setLocationsData(locations);
+
+                // Fetch political entity names
+                const polEntities = await Promise.all(
+                    event.polEntities.map(polEntityId => getPoliticalEntity(polEntityId))
+                );
+                setPoliticalEntitiesData(polEntities);
+
+                // Fetch all events
+                const allEvents = await Promise.all(
+                    event.relatedEvents.map(eventId => getEvent(eventId))
+                );
+                setAllEventsData(allEvents);
             } catch (error) {
                 console.error('Error fetching event: ', error);
                 setLoading(false);
@@ -61,6 +81,7 @@ function SingleEventPage() {
             try {
                 const characters = await getAllCharacters();
                 const locations = await getAllLocations();
+                const polEntities = await getAllPoliticalEntities();
                 const events = await getAllEvents();
 
                 const characterOptions = characters.map(character => ({
@@ -71,6 +92,10 @@ function SingleEventPage() {
                     value: location.id,
                     label: location.name
                 }));
+                const polEntityOptions = polEntities.map(polEntity => ({
+                    value: polEntity.id,
+                    label: polEntity.name
+                }));
                 const eventOptions = events
                     .filter(event => event.id !== eventId) // Exclude the current event
                     .map(event => ({
@@ -80,6 +105,7 @@ function SingleEventPage() {
 
                 setCharactersOptions(characterOptions);
                 setLocationsOptions(locationOptions);
+                setPolEntitiesOptions(polEntityOptions);
                 setEventsOptions(eventOptions);
             } catch (error) {
                 console.error('Error fetching options: ', error);
@@ -100,6 +126,10 @@ function SingleEventPage() {
 
     const handleLocationChange = (selectedOptions) => {
         setEventData({ ...eventData, locations: selectedOptions ? selectedOptions.map(option => option.value) : [] });
+    };
+
+    const handlePolEntitiesChange = (selectedOption) => {
+        setEventData({ ...eventData, polEntities: selectedOption.map(option => option.value) });
     };
 
     const handleEventsChange = (selectedOptions) => {
@@ -138,6 +168,16 @@ function SingleEventPage() {
                     <div className={styles.formGroup}>
                         <label>Description</label>
                         <textarea name="description" value={eventData.description} onChange={handleInputChange}></textarea>
+                    </div>
+                    <div className={styles.formGroup}>
+                        <label>Political Entities</label>
+                        <Select
+                            isMulti
+                            options={polEntitiesOptions}
+                            value={polEntitiesOptions.filter(option => eventData.polEntities?.includes(option.value))}
+                            onChange={handlePolEntitiesChange}
+                            className={styles.selectDropdown}
+                        />
                     </div>
                     <div className={styles.formGroup}>
                         <label>Location</label>
@@ -209,7 +249,47 @@ function SingleEventPage() {
                         <p><strong>Era:</strong> {eventData.era}</p>
                         <p><strong>Year:</strong> {eventData.year}</p>
                         <p><strong>Description:</strong> {eventData.description}</p>
-                        <p><strong>Locations:</strong> {locationsData.map(location => location.name).join(', ')}</p>
+
+                        <p>
+                            <strong>Political Entities:</strong>{' '}
+                            {politicalEntitiesData.map((politicalEntity, index) => (
+                                <span
+                                    key={politicalEntity.id}
+                                    onClick={() => navigate(`/politicalEntities/${politicalEntity.id}`)}
+                                    style={{ cursor: 'pointer', textDecoration: 'underline', color: 'blue' }}
+                                >
+                                    {politicalEntity.name}
+                                    {index < politicalEntitiesData.length - 1 && ', '}
+                                </span>
+                            ))}
+                        </p>
+                        <p>
+                            <strong>Locations:</strong>{' '}
+                            {locationsData.map((location, index) => (
+                                <span
+                                    key={location.id}
+                                    onClick={() => navigate(`/locations/${location.id}`)}
+                                    style={{ cursor: 'pointer', textDecoration: 'underline', color: 'blue' }}
+                                >
+                                    {location.name}
+                                    {index < locationsData.length - 1 && ', '}
+                                </span>
+                            ))}
+                        </p>
+                        <p>
+                            <strong>Related Events:</strong>{' '}
+                            {allEventsData.map((event, index) => (
+                                <span
+                                    key={event.id}
+                                    onClick={() => navigate(`/important-events/${event.id}`)}
+                                    style={{ cursor: 'pointer', textDecoration: 'underline', color: 'blue' }}
+                                >
+                                    {event.title}
+                                    {index < allEventsData.length - 1 && ', '}
+                                </span>
+                            ))}
+                        </p>
+
                         <p><strong>Event Type:</strong> {eventData.eventType}</p>
                         <p><strong>Content:</strong> {eventData.content}</p>
                         <p><strong>Significance:</strong> {eventData.significance}</p>

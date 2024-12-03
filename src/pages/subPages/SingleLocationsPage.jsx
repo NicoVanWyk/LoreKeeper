@@ -16,6 +16,7 @@ function SingleLocationPage() {
         type: '',
         coordinates: '',
         region: '',
+        politicalEntity: '',
         climate: '',
         population: '',
         significance: '',
@@ -84,7 +85,7 @@ function SingleLocationPage() {
     };
 
     const fieldsOrder = [
-        'name', 'description', 'type', 'coordinates', 'region', 'climate', 'population', 'significance',
+        'name', 'description', 'type', 'coordinates', 'region', 'politicalEntity', 'climate', 'population', 'significance',
         'pointsOfInterest', 'economy', 'language', 'government', 'history', 'mapImageUrl', 'resources',
         'floraAndFauna', 'events', 'accessibility', 'threats', 'allies', 'enemies', 'notableResidents',
         'culturalPractices', 'religion'
@@ -98,6 +99,7 @@ function SingleLocationPage() {
         <div className="container">
             {isEditing ? (
                 <div className={styles.formContainer}>
+                    {/* TODO: Show political entity and its input to change */}
                     {fieldsOrder.filter(key => key !== 'id').map((key) => (
                         key === 'description' || key === 'history' || key === 'pointsOfInterest' || key === 'floraAndFauna' || key === 'culturalPractices' ? (
                             <div key={key} className={styles.formGroup}>

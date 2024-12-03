@@ -102,7 +102,6 @@ const AddLocationForm = () => {
                 <input type="text" name="region" placeholder="Region" value={locationData.region} onChange={handleChange} />
             </div>
             
-            {/* TODO: Style as input in important events */}
             <div className={styles.formGroup}>
                 <label>Political Entity</label>
                 <select
@@ -110,8 +109,9 @@ const AddLocationForm = () => {
                     value={locationData.politicalEntity}
                     onChange={handleChange}
                     required
+                    style={{width: '600px', fontSize: '20px', borderRadius: '15px', padding: '15px 10px 15px 10px'}}
                 >
-                    <option value="">Select a Political Entity</option>
+                    <option value="N/A">Select a Political Entity</option>
                     {politicalEntities.map((entity) => (
                         <option key={entity.id} value={entity.id}>
                             {entity.name}
