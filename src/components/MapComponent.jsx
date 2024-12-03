@@ -24,3 +24,5 @@ const MapComponent = () => {
 };
 
 export default MapComponent;
+
+// TODO: Map editor
