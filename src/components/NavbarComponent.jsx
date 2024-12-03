@@ -36,7 +36,7 @@ function NavbarComponent() {
                         <Link to="/timeline" className="dropbtn">Timeline</Link>
                         <div className="dropdown-content">
                             <Link to="/important-events">Important Events</Link>
-                            <Link to="/PoliticalEntities">Political Entities</Link>
+                            <Link to="/locations">Locations</Link>
                             <Link to="/maps">Maps</Link>
                         </div>
                     </li>

@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext';
 import { getUserProfile } from '../../services/userService';
-import { getPoliticalEntity, updatePoliticalEntity } from '../../services/politicalEntityService';
+import { getLocation, updateLocation } from '../../services/locationService';
 import styles from '../css/SingleLocationPage.module.css';
 
-function SinglePoliticalEntityPage() {
+function SingleLocationPage() {
     const { currentUser } = useAuth();
     const { locationId } = useParams();
     const [isAdmin, setIsAdmin] = useState(false);
@@ -131,4 +131,4 @@ function SinglePoliticalEntityPage() {
     );
 }
 
-export default SinglePoliticalEntityPage;
+export default SingleLocationPage;

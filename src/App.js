@@ -20,8 +20,8 @@ import SingleStoryPage from './pages/subPages/SingleStoryPage';
 import AddChapterPage from './pages/subPages/AddChapterPage'
 import TimelinePage from './pages/TimelinePage';
 import ImportantEventsPage from './pages/ImportantEventsPage';
-import PoliticalEntityPage from './pages/PoliticalEntityPage';
-import SinglePoliticalEntityPage from './pages/subPages/SinglePoliticalEntityPage';
+import LocationsPage from './pages/LocationsPage';
+import SingleLocationPage from './pages/subPages/SingleLocationsPage';
 import SingleEventPage from './pages/subPages/SingleEventPage';
 import MagicPage from './pages/MagicPage';
 import MapsPage from './pages/MapsPage';
@@ -67,11 +67,9 @@ const AppWrapper = () => {
         <Route path="/important-events" element={<PrivateRoute element={<ImportantEventsPage />} />} />
         <Route path="/important-events/:eventId" element={<PrivateRoute element={<SingleEventPage />} />} />
 
-        {/* Political Entities */}
-        <Route path="/PoliticalEntities" element={<PrivateRoute element={<PoliticalEntityPage />} />} />
-        <Route path="/PoliticalEntities/:politicalEntityId" element={<PrivateRoute element={<SinglePoliticalEntityPage />} />} />
-        
-        {/* TODO: Locations/Cities/Landmarks */}
+        {/* Locations */}
+        <Route path="/locations" element={<PrivateRoute element={<LocationsPage />} />} />
+        <Route path="/locations/:locationId" element={<PrivateRoute element={<SingleLocationPage />} />} />
 
         {/* About */}
         <Route path="/about" element={<PrivateRoute element={<AboutPage />} />} />

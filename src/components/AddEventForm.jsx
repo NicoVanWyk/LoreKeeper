@@ -3,7 +3,7 @@ import Select from 'react-select';
 import styles from './css/AddEventForm.module.css';
 import { addEvent } from '../services/eventService';
 import { getAllCharacters } from '../services/charactersService';
-import { getAllLocations } from '../services/politicalEntityService';
+import { getAllLocations } from '../services/locationService';
 import { getAllEvents } from '../services/eventService';
 
 const AddEventForm = () => {
