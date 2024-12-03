@@ -135,3 +135,13 @@ textarea {
 .preserve-whitespace {
     white-space: pre-wrap;
 }
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
