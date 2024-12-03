@@ -1,10 +1,10 @@
 // src/components/AddLocationForm.js
 import React, { useState } from 'react';
-import { addLocation } from '../services/locationService';
+import { addPoliticalEntity } from '../services/politicalEntityService';
 import styles from './css/AddEventForm.module.css';
 
-const AddLocationForm = () => {
-    const [locationData, setLocationData] = useState({
+const AddPoliticalEntityForm = () => {
+    const [politicalEntityData, setPoliticalEntityData] = useState({
         name: '',
         description: '',
         type: '',
@@ -171,4 +171,4 @@ const AddLocationForm = () => {
     );
 };
 
-export default AddLocationForm;
+export default AddPoliticalEntityForm;

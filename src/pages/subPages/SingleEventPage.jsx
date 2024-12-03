@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext';
 import { getUserProfile } from '../../services/userService';
 import { getEvent, updateEvent, getAllEvents } from '../../services/eventService';
-import { getAllLocations, getLocation } from '../../services/locationService';
+import { getAllLocations, getLocation } from '../../services/politicalEntityService';
 import { getAllCharacters } from '../../services/charactersService';
 import Select from 'react-select';
 import styles from '../css/SingleEventPage.module.css';

@@ -1,17 +1,17 @@
 // src/pages/LocationsPage.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AddLocationForm from '../components/AddLocationForm';
+import AddLocationForm from '../components/AddPoliticalEntityForm';
 import { useAuth } from '../contexts/authContext';
 import { getUserProfile } from '../services/userService';
-import { getAllLocations } from '../services/locationService';
+import { getAllPoliticalEntities } from '../services/politicalEntityService';
 import styles from './css/LocationsPage.module.css';
 
-function LocationsPage() {
+function PoliticalEntityPage() {
     const { currentUser } = useAuth();
     const [isAdmin, setIsAdmin] = useState(false);
     const [showForm, setShowForm] = useState(false);
-    const [locations, setLocations] = useState([]);
+    const [politicalEntities, setPoliticalEntities] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,19 +31,19 @@ function LocationsPage() {
     }, [currentUser]);
 
     useEffect(() => {
-        const fetchLocations = async () => {
+        const fetchPoliticalEntities = async () => {
             try {
-                const locations = await getAllLocations();
-                setLocations(locations);
+                const polEntities = await getAllPoliticalEntities();
+                setPoliticalEntities(polEntities);
             } catch (error) {
                 console.error('Error fetching locations: ', error);
             }
         };
-        fetchLocations();
+        fetchPoliticalEntities();
     }, []);
 
-    const handleCardClick = (locationId) => {
-        navigate(`/locations/${locationId}`);
+    const handleCardClick = (politicalEntityId) => {
+        navigate(`/PoliticalEntities/${politicalEntityId}`);
     };
 
     return (
@@ -69,4 +69,4 @@ function LocationsPage() {
     );
 }
 
-export default LocationsPage;
+export default PoliticalEntityPage;
