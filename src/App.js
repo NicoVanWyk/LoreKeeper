@@ -32,6 +32,8 @@ import SubSchoolPage from './pages/subPages/SubSchoolPage';
 import SingleCreaturePage from './pages/subPages/SingleCreaturePage';
 import SingleRacePage from './pages/subPages/SingleRacePage';
 import AddBestiaryEntryPage from './pages/subPages/AddBestiaryEntryPage';
+import PoliticalEntitiesPage from './pages/PoliticalEntitiesPage';
+import SinglePoliticalEntityPage from './pages/subPages/SinglePoliticalEntityPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -66,6 +68,10 @@ const AppWrapper = () => {
         {/* Important Events */}
         <Route path="/important-events" element={<PrivateRoute element={<ImportantEventsPage />} />} />
         <Route path="/important-events/:eventId" element={<PrivateRoute element={<SingleEventPage />} />} />
+
+        {/* Political Entities */}
+        <Route path="/politicalEntities" element={<PrivateRoute element={<PoliticalEntitiesPage />} />} />
+        <Route path="/politicalEntities/:politicalEntityId" element={<PrivateRoute element={<SinglePoliticalEntityPage />} />} />
 
         {/* Locations */}
         <Route path="/locations" element={<PrivateRoute element={<LocationsPage />} />} />

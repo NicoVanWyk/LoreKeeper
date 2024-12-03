@@ -1,22 +1,26 @@
 // src/components/AddLocationForm.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { addLocation } from '../services/locationService';
 import styles from './css/AddEventForm.module.css';
+import { getAllPoliticalEntities } from '../services/politicalEntitiesService';
 
 const AddLocationForm = () => {
+    // Store the list of political entities
+    const [politicalEntities, setPoliticalEntities] = useState([]);
+
+    // Store the location's data
     const [locationData, setLocationData] = useState({
         name: '',
         description: '',
         type: '',
         coordinates: '',
         region: '',
-        climate: '',
+        politicalEntity: '',
         population: '',
         significance: '',
         pointsOfInterest: '',
         economy: '',
         language: '',
-        government: '',
         history: '',
         mapImageUrl: '',
         resources: '',
@@ -30,6 +34,15 @@ const AddLocationForm = () => {
         culturalPractices: '',
         religion: ''
     });
+
+    useEffect(() => {
+        const fetchPoliticalEntities = async () => {
+            const entities = await getAllPoliticalEntities();
+            setPoliticalEntities(entities);
+        };
+        fetchPoliticalEntities();
+    }, []);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -45,13 +58,12 @@ const AddLocationForm = () => {
             type: '',
             coordinates: '',
             region: '',
-            climate: '',
+            politicalEntity: '',
             population: '',
             significance: '',
             pointsOfInterest: '',
             economy: '',
             language: '',
-            government: '',
             history: '',
             mapImageUrl: '',
             resources: '',
@@ -82,17 +94,32 @@ const AddLocationForm = () => {
                 <input type="text" name="type" placeholder="Location Type" value={locationData.type} onChange={handleChange} required />
             </div>
             <div className={styles.formGroup}>
-                <label>Coordinates (If a country, add N/A)</label>
+                <label>Coordinates</label>
                 <input type="text" name="coordinates" placeholder="Coordinates" value={locationData.coordinates} onChange={handleChange} />
             </div>
             <div className={styles.formGroup}>
                 <label>Region</label>
                 <input type="text" name="region" placeholder="Region" value={locationData.region} onChange={handleChange} />
             </div>
+            
+            {/* TODO: Style as input in important events */}
             <div className={styles.formGroup}>
-                <label>Climate</label>
-                <input type="text" name="climate" placeholder="Climate" value={locationData.climate} onChange={handleChange} />
+                <label>Political Entity</label>
+                <select
+                    name="politicalEntity"
+                    value={locationData.politicalEntity}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select a Political Entity</option>
+                    {politicalEntities.map((entity) => (
+                        <option key={entity.id} value={entity.id}>
+                            {entity.name}
+                        </option>
+                    ))}
+                </select>
             </div>
+
             <div className={styles.formGroup}>
                 <label>Population</label>
                 <input type="text" name="population" placeholder="Population" value={locationData.population} onChange={handleChange} />

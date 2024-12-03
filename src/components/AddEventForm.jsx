@@ -5,6 +5,7 @@ import { addEvent } from '../services/eventService';
 import { getAllCharacters } from '../services/charactersService';
 import { getAllLocations } from '../services/locationService';
 import { getAllEvents } from '../services/eventService';
+import { getAllPoliticalEntities } from '../services/politicalEntitiesService';
 
 const AddEventForm = () => {
     const [eventData, setEventData] = useState({
@@ -13,6 +14,7 @@ const AddEventForm = () => {
         title: '',
         description: '',
         content: '',
+        politicalEntities: [],
         locations: [],
         eventType: '',
         charactersInvolved: [],
@@ -26,6 +28,7 @@ const AddEventForm = () => {
 
     const [charactersOptions, setCharactersOptions] = useState([]);
     const [locationsOptions, setLocationsOptions] = useState([]);
+    const [polEntitiesOptions, setPolEntitiesOptions] = useState([]);
     const [eventsOptions, setEventsOptions] = useState([]);
 
     useEffect(() => {
@@ -33,6 +36,7 @@ const AddEventForm = () => {
             try {
                 const characters = await getAllCharacters();
                 const locations = await getAllLocations();
+                const polEntities = await getAllPoliticalEntities();
                 const events = await getAllEvents();
 
                 const characterOptions = characters.map(character => ({
@@ -43,6 +47,10 @@ const AddEventForm = () => {
                     value: location.id,
                     label: location.name
                 }));
+                const polEntityOptions = polEntities.map(polEntity => ({
+                    value: polEntity.id,
+                    label: polEntity.name
+                }));
                 const eventOptions = events.map(event => ({
                     value: event.id,
                     label: event.title
@@ -50,6 +58,7 @@ const AddEventForm = () => {
 
                 setCharactersOptions(characterOptions);
                 setLocationsOptions(locationOptions);
+                setPolEntitiesOptions(polEntityOptions);
                 setEventsOptions(eventOptions);
             } catch (error) {
                 console.error('Error fetching options: ', error);
@@ -72,6 +81,10 @@ const AddEventForm = () => {
         setEventData({ ...eventData, locations: selectedOption.map(option => option.value) });
     };
 
+    const handlePolEntitiesChange = (selectedOption) => {
+        setEventData({ ...eventData, polEntities: selectedOption.map(option => option.value) });
+    };
+
     const handleEventsChange = (selectedOptions) => {
         setEventData({ ...eventData, relatedEvents: selectedOptions.map(option => option.value) });
     };
@@ -85,6 +98,7 @@ const AddEventForm = () => {
             title: '',
             description: '',
             content: '',
+            politicalEntities: [],
             locations: [],
             eventType: '',
             charactersInvolved: [],
@@ -118,6 +132,16 @@ const AddEventForm = () => {
             <div className={styles.formGroup}>
                 <label>Content</label>
                 <textarea name="content" placeholder="Content" value={eventData.content} onChange={handleChange} required />
+            </div>
+            <div className={styles.formGroup}>
+                <label>Political Entities</label>
+                <Select
+                    isMulti
+                    options={polEntitiesOptions}
+                    value={polEntitiesOptions.filter(option => eventData.polEntities?.includes(option.value))}
+                    onChange={handlePolEntitiesChange}
+                    className={styles.selectDropdown}
+                />
             </div>
             <div className={styles.formGroup}>
                 <label>Locations</label>
