@@ -34,6 +34,7 @@ import SingleRacePage from './pages/subPages/SingleRacePage';
 import AddBestiaryEntryPage from './pages/subPages/AddBestiaryEntryPage';
 import PoliticalEntitiesPage from './pages/PoliticalEntitiesPage';
 import SinglePoliticalEntityPage from './pages/subPages/SinglePoliticalEntityPage';
+import GlossaryPage from './pages/GlossaryPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -76,6 +77,9 @@ const AppWrapper = () => {
         {/* Locations */}
         <Route path="/locations" element={<PrivateRoute element={<LocationsPage />} />} />
         <Route path="/locations/:locationId" element={<PrivateRoute element={<SingleLocationPage />} />} />
+
+        {/* Glossary */}
+        <Route path="/glossary" element={<PrivateRoute element={<GlossaryPage />} />} />
 
         {/* About */}
         <Route path="/about" element={<PrivateRoute element={<AboutPage />} />} />

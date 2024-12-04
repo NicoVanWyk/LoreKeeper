@@ -11,7 +11,7 @@ function NavbarComponent() {
     };
 
     return (
-        <nav className="navbar" style={{zIndex: '9'}}>
+        <nav className="navbar" style={{ zIndex: '9' }}>
             <div className="navbar-content">
                 <img src={logo} alt="Logo" className="navbar-logo-mobile" />
                 <button className="navbar-toggle" onClick={toggleMenu}>
@@ -21,6 +21,7 @@ function NavbarComponent() {
                     <li className="navbar-item dropdown">
                         <Link to="/" className="dropbtn">Home</Link>
                         <div className="dropdown-content">
+                            <Link to="/glossary">Glossary</Link>
                             <Link to="/about">About</Link>
                         </div>
                     </li>
@@ -59,11 +60,13 @@ function NavbarComponent() {
                 {/* Mobile Navbar: */}
                 <ul className={`navbar-menu mobile-menu ${menuOpen ? 'open' : ''}`}>
                     <li className="navbar-item"><Link to="/">Home</Link></li>
+                    <li className="navbar-item"><Link to="/glossary">Glossary</Link></li>
                     <li className="navbar-item"><Link to="/about">About</Link></li>
                     <li className="navbar-item"><Link to="/characters">Characters</Link></li>
                     <li className="navbar-item"><Link to="/important-events">Important Events</Link></li>
                     <li className="navbar-item"><Link to="/timeline">Timeline</Link></li>
                     <li className="navbar-item"><Link to="/locations">Locations</Link></li>
+                    <li className="navbar-item"><Link to="/politicalEntities">Political Entities</Link></li>
                     <li className="navbar-item"><Link to="/maps">Maps</Link></li>
                     <li className="navbar-item"><Link to="/magic">Magic</Link></li>
                     <li className="navbar-item"><Link to="/bestiary">Bestiary</Link></li>
