@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/authContext';
 import { getUserProfile } from '../../services/userService';
 import { getLocation, updateLocation } from '../../services/locationService';
 import styles from '../css/SingleLocationPage.module.css';
+import { getAllPoliticalEntities, getPoliticalEntity } from '../../services/politicalEntitiesService';
 
 function SingleLocationPage() {
     const { currentUser } = useAuth();
@@ -33,10 +34,13 @@ function SingleLocationPage() {
         threats: '',
         allies: '',
         enemies: '',
-        notableResidents: '',
         culturalPractices: '',
         religion: ''
     });
+    // State for political entities and selected entity name
+    const [politicalEntities, setPoliticalEntities] = useState([]);
+    const [politicalEntityName, setPoliticalEntityName] = useState('');
+
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -55,6 +59,24 @@ function SingleLocationPage() {
         };
         checkUserRole();
     }, [currentUser]);
+
+    useEffect(() => {
+        const fetchPoliticalEntities = async () => {
+            try {
+                const entities = await getAllPoliticalEntities();
+                setPoliticalEntities(entities);
+
+                if (locationData.politicalEntity) {
+                    const entity = await getPoliticalEntity(locationData.politicalEntity);
+                    setPoliticalEntityName(entity.name);
+                }
+            } catch (error) {
+                console.error('Error fetching political entities:', error);
+            }
+        };
+
+        fetchPoliticalEntities();
+    }, [locationData.politicalEntity]);
 
     useEffect(() => {
         const fetchLocation = async () => {
@@ -77,7 +99,9 @@ function SingleLocationPage() {
 
     const handleSaveClick = async () => {
         try {
-            await updateLocation(locationId, locationData);
+            await updateLocation(locationId, locationData); // Save updated data
+            const entity = await getPoliticalEntity(locationData.politicalEntity); // Fetch and set the new political entity name
+            setPoliticalEntityName(entity.name);
             setIsEditing(false);
         } catch (error) {
             console.error('Error updating location:', error);
@@ -99,9 +123,28 @@ function SingleLocationPage() {
         <div className="container">
             {isEditing ? (
                 <div className={styles.formContainer}>
-                    {/* TODO: Show political entity and its input to change */}
                     {fieldsOrder.filter(key => key !== 'id').map((key) => (
-                        key === 'description' || key === 'history' || key === 'pointsOfInterest' || key === 'floraAndFauna' || key === 'culturalPractices' ? (
+                        key === 'politicalEntity' ? (
+                            // Special handling for politicalEntity field
+                            <div key={key} className={styles.formGroup}>
+                                <label htmlFor={key}>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
+                                <br></br>
+                                <select
+                                    name={key}
+                                    value={locationData[key]}
+                                    onChange={handleInputChange}
+                                    className={styles.selectDropdown}
+                                    style={{ width: '600px', fontSize: '20px', borderRadius: '15px', padding: '15px 10px 15px 10px' }}
+                                >
+                                    <option value="" disabled hidden>Select a Political Entity</option>
+                                    {politicalEntities.map((entity) => (
+                                        <option key={entity.id} value={entity.id}>
+                                            {entity.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        ) : key === 'description' || key === 'history' || key === 'pointsOfInterest' || key === 'floraAndFauna' || key === 'culturalPractices' ? (
                             <div key={key} className={styles.formGroup}>
                                 <label htmlFor={key}>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
                                 <textarea name={key} value={locationData[key]} onChange={handleInputChange} placeholder={key.charAt(0).toUpperCase() + key.slice(1)}></textarea>
@@ -120,7 +163,26 @@ function SingleLocationPage() {
                 <div className={styles.detailsContainer}>
                     <h3>{locationData.name}</h3>
                     {fieldsOrder.filter(key => key !== 'id').map((key) => (
-                        <p key={key}><strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {locationData[key]}</p>
+                        key === 'politicalEntity' ? (
+                            // Special handling for displaying the politicalEntity name
+                            <p key={key}>
+                                <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong>{' '}
+                                {politicalEntityName ? (
+                                    <a
+                                        href={`/LoreKeeper/politicalEntities/${locationData[key]}`}
+                                        style={{ textDecoration: 'underline', color: 'blue' }}
+                                    >
+                                        {politicalEntityName}
+                                    </a>
+                                ) : (
+                                    'N/A'
+                                )}
+                            </p>
+                        ) : (
+                            <p key={key}>
+                                <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {locationData[key]}
+                            </p>
+                        )
                     ))}
                     {isAdmin && (
                         <button className="btnPrimary" onClick={() => { setIsEditing(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>

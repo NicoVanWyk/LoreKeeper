@@ -30,7 +30,6 @@ const AddLocationForm = () => {
         threats: '',
         allies: '',
         enemies: '',
-        notableResidents: '',
         culturalPractices: '',
         religion: ''
     });
@@ -73,7 +72,6 @@ const AddLocationForm = () => {
             threats: '',
             allies: '',
             enemies: '',
-            notableResidents: '',
             culturalPractices: '',
             religion: ''
         });
@@ -108,10 +106,9 @@ const AddLocationForm = () => {
                     name="politicalEntity"
                     value={locationData.politicalEntity}
                     onChange={handleChange}
-                    required
                     style={{width: '600px', fontSize: '20px', borderRadius: '15px', padding: '15px 10px 15px 10px'}}
                 >
-                    <option value="N/A">Select a Political Entity</option>
+                    <option value="" disabled hidden>Select a Political Entity</option>
                     {politicalEntities.map((entity) => (
                         <option key={entity.id} value={entity.id}>
                             {entity.name}
@@ -179,10 +176,6 @@ const AddLocationForm = () => {
             <div className={styles.formGroup}>
                 <label>Enemies</label>
                 <input type="text" name="enemies" placeholder="Enemies" value={locationData.enemies} onChange={handleChange} />
-            </div>
-            <div className={styles.formGroup}>
-                <label>Notable Residents</label>
-                <textarea name="notableResidents" placeholder="Notable Residents" value={locationData.notableResidents} onChange={handleChange} />
             </div>
             <div className={styles.formGroup}>
                 <label>Cultural Practices</label>
