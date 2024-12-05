@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/authContext';
 import { getUserProfile } from '../services/userService';
-import { addEvent, getAllEvents } from '../services/eventService';
+import { getAllReligions, addReligion } from '../services/religionsService';
 import styles from './css/ImportantEventsPage.module.css';
-import AddEventForm from '../components/AddEventForm';
+import AddReligionForm from '../components/AddReligionForm';
 
-const ImportantEventsPage = () => {
+const ReligionsPage = () => {
     const { currentUser } = useAuth();
     const [isAdmin, setIsAdmin] = useState(false);
-    const [events, setEvents] = useState([]);
+    const [religions, setReligions] = useState([]);
     const navigate = useNavigate();
-
     const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
@@ -32,60 +31,61 @@ const ImportantEventsPage = () => {
     }, [currentUser]);
 
     useEffect(() => {
-        const fetchEvents = async () => {
+        const fetchReligions = async () => {
             try {
-                const events = await getAllEvents();
-                setEvents(events);
+                const religionsData = await getAllReligions();
+                setReligions(religionsData);
             } catch (error) {
-                console.error('Error fetching events: ', error);
+                console.error('Error fetching religions: ', error);
             }
         };
 
-        fetchEvents();
+        fetchReligions();
     }, []);
 
-    const handleCardClick = (eventId) => {
-        navigate(`/important-events/${eventId}`);
+    const handleCardClick = (religionId) => {
+        navigate(`/religions/${religionId}`);
     };
 
-    const handleAddEvent = async (newEvent) => {
+    const handleAddReligion = async (newReligion) => {
         try {
-            const addedEvent = await addEvent(newEvent);
-            setEvents([...events, addedEvent]);
+            const addedReligion = await addReligion(newReligion);
+            setReligions([...religions, addedReligion]);
             setShowForm(false);
         } catch (error) {
-            console.error('Error adding event:', error);
+            console.error('Error adding religion:', error);
         }
     };
 
     return (
         <div className={styles.container}>
-            <h1>Important Events</h1>
+            <h1>Religions</h1>
+            <p>Explore the various religions and beliefs that shape the world and its inhabitants.</p>
 
             {isAdmin && (
                 !showForm ? (
                     <button className="btnPrimary" onClick={() => setShowForm(true)}>
-                        Add Event
+                        Add Religion
                     </button>
                 ) : (
                     <>
                         <button className="btnPrimary" onClick={() => setShowForm(false)}>
                             Cancel
                         </button>
-                        <AddEventForm onSubmit={handleAddEvent} />
+                        <AddReligionForm onSubmit={handleAddReligion} />
                     </>
                 )
             )}
 
             <div className={styles.eventsContainer}>
-                {events.map(event => (
+                {religions.map(religion => (
                     <div
-                        key={event.id}
+                        key={religion.id}
                         className={styles.eventCard}
-                        onClick={() => handleCardClick(event.id)}
+                        onClick={() => handleCardClick(religion.id)}
                     >
-                        <h2>{event.title}</h2>
-                        <p><strong>Description:</strong> {event.description}</p>
+                        <h2>{religion.name}</h2>
+                        <p><strong>Description:</strong> {religion.description}</p>
                     </div>
                 ))}
             </div>
@@ -93,4 +93,4 @@ const ImportantEventsPage = () => {
     );
 };
 
-export default ImportantEventsPage;
+export default ReligionsPage;

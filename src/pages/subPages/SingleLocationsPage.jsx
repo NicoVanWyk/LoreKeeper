@@ -161,7 +161,7 @@ function SingleLocationPage() {
                 </div>
             ) : (
                 <div className={styles.detailsContainer}>
-                    <h3>{locationData.name}</h3>
+                    <h1>{locationData.name}</h1>
                     {fieldsOrder.filter(key => key !== 'id').map((key) => (
                         key === 'politicalEntity' ? (
                             // Special handling for displaying the politicalEntity name

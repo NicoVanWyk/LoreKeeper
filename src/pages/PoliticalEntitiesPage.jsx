@@ -59,7 +59,7 @@ function PoliticalEntitiesPage() {
             <div className={styles.cardsContainer}>
                 {politicalEntities.map(politicalEntity => (
                     <div style={{ cursor: 'pointer' }} key={politicalEntity.id} className={styles.card} onClick={() => handleCardClick(politicalEntity.id)}>
-                        <h3>{politicalEntity.name}</h3>
+                        <h2>{politicalEntity.name}</h2>
                         <p>{politicalEntity.description}</p>
                     </div>
                 ))}

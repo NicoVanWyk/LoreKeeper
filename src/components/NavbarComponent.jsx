@@ -40,6 +40,7 @@ function NavbarComponent() {
                             <Link to="/important-events">Important Events</Link>
                             <Link to="/locations">Locations</Link>
                             <Link to="/politicalEntities">Political Entities</Link>
+                            <Link to="/alliances">Alliances</Link>
                             <Link to="/maps">Maps</Link>
                         </div>
                     </li>
@@ -51,6 +52,7 @@ function NavbarComponent() {
                         <div className="dropdown-content">
                             <Link to="/magic/schools">Schools</Link>
                             <Link to="/magic/classes">Classes</Link>
+                            <Link to="/religions">Religions</Link>
                         </div>
                     </li>
 
@@ -68,8 +70,10 @@ function NavbarComponent() {
                     <li className="navbar-item"><Link to="/timeline">Timeline</Link></li>
                     <li className="navbar-item"><Link to="/locations">Locations</Link></li>
                     <li className="navbar-item"><Link to="/politicalEntities">Political Entities</Link></li>
+                    <li className="navbar-item"><Link to="/alliances">Alliances</Link></li>
                     <li className="navbar-item"><Link to="/maps">Maps</Link></li>
                     <li className="navbar-item"><Link to="/magic">Magic</Link></li>
+                    <li className="navbar-item"><Link to="/religions">Religions</Link></li>
                     <li className="navbar-item"><Link to="/bestiary">Bestiary</Link></li>
                     <li className="navbar-item"><Link to="/factions">Factions</Link></li>
                     <li className="navbar-item"><Link to="/stories">Stories</Link></li>

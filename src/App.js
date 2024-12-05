@@ -37,6 +37,10 @@ import SinglePoliticalEntityPage from './pages/subPages/SinglePoliticalEntityPag
 import GlossaryPage from './pages/GlossaryPage';
 import FactionsPage from './pages/FactionsPage';
 import SingleFactionPage from './pages/subPages/SingleFactionPage';
+import AlliancesPage from './pages/AlliancesPage';
+import SingleAlliancePage from './pages/subPages/SingleAlliancePage';
+import ReligionsPage from './pages/ReligionsPage';
+import SingleReligionPage from './pages/subPages/SingleReligionPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -84,6 +88,10 @@ const AppWrapper = () => {
         <Route path="/locations" element={<PrivateRoute element={<LocationsPage />} />} />
         <Route path="/locations/:locationId" element={<PrivateRoute element={<SingleLocationPage />} />} />
 
+        {/* Alliances */}
+        <Route path="/alliances" element={<PrivateRoute element={<AlliancesPage />} />} />
+        <Route path="/alliances/:allianceId" element={<PrivateRoute element={<SingleAlliancePage />} />} />
+
         {/* Glossary */}
         <Route path="/glossary" element={<PrivateRoute element={<GlossaryPage />} />} />
 
@@ -95,6 +103,10 @@ const AppWrapper = () => {
         <Route path="/magic/schools" element={<PrivateRoute element={<SchoolsPage />} />} />
         <Route path="/subschools/:name" element={<PrivateRoute element={<SubSchoolPage />} />} />
         <Route path="/magic/classes" element={<PrivateRoute element={<ClassesPage />} />} />
+
+        {/* Religions Page */}
+        <Route path="/religions" element={<PrivateRoute element={<ReligionsPage />} />} />
+        <Route path="/religions/:religionId" element={<PrivateRoute element={<SingleReligionPage />} />} />
 
         {/* Bestiary Page */}
         <Route path="/bestiary" element={<PrivateRoute element={<BestiaryPage />} />} />

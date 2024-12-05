@@ -84,7 +84,7 @@ const FactionsPage = () => {
                         className={styles.eventCard}
                         onClick={() => handleCardClick(faction.id)}
                     >
-                        <h3>{faction.name}</h3>
+                        <h2>{faction.name}</h2>
                         <p><strong>Location:</strong> {faction.location}</p>
                         <p><strong>Status:</strong> {faction.status}</p>
                     </div>
