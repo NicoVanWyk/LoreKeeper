@@ -8,6 +8,9 @@ import styles from './css/CharactersPage.module.css';
 function CharactersPage() {
     const { currentUser } = useAuth();
     const [characters, setCharacters] = useState([]);
+    const [godCharacters, setGodCharacters] = useState([]);
+    const [mageGodCharacters, setMageGodCharacters] = useState([]);
+    const [otherCharacters, setOtherCharacters] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
@@ -17,6 +20,17 @@ function CharactersPage() {
             try {
                 const charactersData = await getAllCharacters();
                 setCharacters(charactersData);
+
+                // Separate certain characters from others
+                const gods = charactersData.filter(character => character.species?.startsWith('God'));
+                const mageGods = charactersData.filter(character => character.species?.startsWith('Mage-God'));
+                const others = charactersData.filter(
+                    (character) => !(character.species?.startsWith('God') || character.species?.startsWith('Mage-God'))
+                );
+
+                setGodCharacters(gods);
+                setMageGodCharacters(mageGods);
+                setOtherCharacters(others);
             } catch (error) {
                 console.error('Error fetching characters: ', error);
             }
@@ -46,7 +60,23 @@ function CharactersPage() {
         setSearchTerm(e.target.value);
     };
 
-    const filteredCharacters = characters.filter((character) =>
+    const filteredGodCharacters = godCharacters.filter((character) =>
+        character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.gender.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.occupation.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const filteredMageGodCharacters = mageGodCharacters.filter((character) =>
+        character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.gender.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        character.occupation.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const filteredOtherCharacters = otherCharacters.filter((character) =>
         character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
         character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -67,29 +97,84 @@ function CharactersPage() {
             />
 
             {isAdmin && (
-                <button className='btnPrimary' style={{marginTop: '20px', marginBottom: '20px'}} onClick={() => navigate('/characters/add')}>
+                <button className='btnPrimary' style={{ marginTop: '20px', marginBottom: '20px' }} onClick={() => navigate('/characters/add')}>
                     Add Character
                 </button>
             )}
 
+            <h2>Beings</h2>
             <div className={styles.cardsContainer}>
-                {filteredCharacters.map((character) => (
-                    <div key={character.id} className={styles.card} onClick={() => handleCardClick(character.id)}>
-
-                        {character.imageUrl && (
-                            <img src={character.imageUrl} alt={character.fullName} className={styles.characterImageAll} />
-                        )}
-
-                        <div className={styles.cardContent}>
-                            <h3>{character.fullName}</h3>
-                            <h4>{character.nicknames}</h4>
-                            <p><strong>Species:</strong> {character.species}</p>
-                            <p><strong>Gender:</strong> {character.gender}</p>
-                            <p><strong>Age by 5E 1690:</strong> {character.age}</p>
-                            <p><strong>Occupation/Role:</strong> {character.occupation}</p>
+                {filteredOtherCharacters.length > 0 ? (
+                    filteredOtherCharacters.map((character) => (
+                        <div key={character.id} className={styles.card} onClick={() => handleCardClick(character.id)}>
+                            {character.imageUrl && (
+                                <img src={character.imageUrl} alt={character.fullName} className={styles.characterImageAll} />
+                            )}
+                            <div className={styles.cardContent}>
+                                <h3>{character.fullName}</h3>
+                                <h4>{character.nicknames}</h4>
+                                <p><strong>Species:</strong> {character.species}</p>
+                                <p><strong>Gender:</strong> {character.gender}</p>
+                                <p><strong>Age by 5E 1690 (Or Date of Death):</strong> {character.age}</p>
+                                <p><strong>Occupation/Role:</strong> {character.occupation}</p>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    <p>No characters found.</p>
+                )}
+            </div>
+
+            {/* Separator Line */}
+            <div style={{ margin: '30px 0', border: '5px solid #020818', borderRadius: '15px', width: '100%' }}></div>
+
+            <h2>Mage-Gods</h2>
+            <div className={styles.cardsContainer}>
+                {filteredMageGodCharacters.length > 0 ? (
+                    filteredMageGodCharacters.map((character) => (
+                        <div key={character.id} className={styles.card} onClick={() => handleCardClick(character.id)}>
+                            {character.imageUrl && (
+                                <img src={character.imageUrl} alt={character.fullName} className={styles.characterImageAll} />
+                            )}
+                            <div className={styles.cardContent}>
+                                <h3>{character.fullName}</h3>
+                                <h4>{character.nicknames}</h4>
+                                <p><strong>Species:</strong> {character.species}</p>
+                                <p><strong>Gender:</strong> {character.gender}</p>
+                                <p><strong>Age by 5E 1690 (Or Date of Death):</strong> {character.age}</p>
+                                <p><strong>Occupation/Role:</strong> {character.occupation}</p>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p>No characters found.</p>
+                )}
+            </div>
+
+            {/* Separator Line */}
+            <div style={{ margin: '30px 0', border: '5px solid #020818', borderRadius: '15px', width: '100%' }}></div>
+
+            <h2>Gods</h2>
+            <div className={styles.cardsContainer}>
+                {filteredGodCharacters.length > 0 ? (
+                    filteredGodCharacters.map((character) => (
+                        <div key={character.id} className={styles.card} onClick={() => handleCardClick(character.id)}>
+                            {character.imageUrl && (
+                                <img src={character.imageUrl} alt={character.fullName} className={styles.characterImageAll} />
+                            )}
+                            <div className={styles.cardContent}>
+                                <h3>{character.fullName}</h3>
+                                <h4>{character.nicknames}</h4>
+                                <p><strong>Species:</strong> {character.species}</p>
+                                <p><strong>Gender:</strong> {character.gender}</p>
+                                <p><strong>Age by 5E 1690 (Or Date of Death):</strong> {character.age}</p>
+                                <p><strong>Occupation/Role:</strong> {character.occupation}</p>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p>No God characters found.</p>
+                )}
             </div>
         </div>
     );

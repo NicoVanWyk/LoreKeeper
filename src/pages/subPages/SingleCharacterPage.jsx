@@ -5,8 +5,11 @@ import { useAuth } from '../../contexts/authContext';
 import { getUserProfile } from '../../services/userService';
 import { getCharacter, updateCharacter } from '../../services/charactersService';
 import { handleImageUpload } from '../../services/bucketService';
+import { useNavigate } from 'react-router-dom';
 
 function SingleCharacterPage() {
+    const navigate = useNavigate();
+
     const { characterId } = useParams();
     const { currentUser } = useAuth();
     const [characterData, setCharacterData] = useState({});
@@ -78,6 +81,7 @@ function SingleCharacterPage() {
 
     return (
         <div className="container">
+            <button className='btnSecondary' onClick={() => navigate(-1)} style={{ alignSelf: 'flex-start' }}>&larr; Back</button>
             {characterData.imageUrl && (
                 <img src={characterData.imageUrl} alt={characterData.fullName} className={styles.characterImage} style={{ marginTop: '15px' }} />
             )}
@@ -86,7 +90,7 @@ function SingleCharacterPage() {
                 <form onSubmit={handleSubmit}>
                     <div className={styles.formGroup}>
                         <label>Full Name</label>
-                        <input type="text" name="fullName" value={characterData.fullName} onChange={handleChange} require style={{width: '500px'}} />
+                        <input type="text" name="fullName" value={characterData.fullName} onChange={handleChange} require style={{ width: '500px' }} />
                     </div>
                     <div className={styles.formGroup}>
                         <label>Nicknames</label>
@@ -199,63 +203,177 @@ function SingleCharacterPage() {
                         <h1>{characterData.fullName}</h1>
 
                         <div>
-                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Nicknames:</strong><br /> {characterData.nicknames}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Species:</strong><br /> {characterData.species}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Gender:</strong><br /> {characterData.gender}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Age By 5E 1690:</strong><br /> {characterData.age}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Occupation/Role:</strong><br /> {characterData.occupation}</p>
+                            {characterData.nicknames && (
+                                <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}>
+                                    <strong>Nicknames:</strong><br /> {characterData.nicknames}
+                                </p>
+                            )}
+                            {characterData.species && (
+                                <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}>
+                                    <strong>Species:</strong><br /> {characterData.species}
+                                </p>
+                            )}
+                            {characterData.gender && (
+                                <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}>
+                                    <strong>Gender:</strong><br /> {characterData.gender}
+                                </p>
+                            )}
+                            {characterData.age && (
+                                <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}>
+                                    <strong>Age by 5E 1690 (Or Date of Death):</strong><br /> {characterData.age}
+                                </p>
+                            )}
+                            {characterData.occupation && (
+                                <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}>
+                                    <strong>Occupation/Role:</strong><br /> {characterData.occupation}
+                                </p>
+                            )}
                         </div>
 
-                        <hr className={styles.separator} />
+                        {characterData.physicalDescription || characterData.typicalClothing ? (
+                            <>
+                                <hr className={styles.separator} />
+                                <h2>Physical Characteristics</h2>
+                                {characterData.physicalDescription && (
+                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
+                                        <strong>Physical Description:</strong><br /> {characterData.physicalDescription}
+                                    </p>
+                                )}
+                                {characterData.typicalClothing && (
+                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
+                                        <strong>Typical Clothing/Armor:</strong><br /> {characterData.typicalClothing}
+                                    </p>
+                                )}
+                            </>
+                        ) : null}
 
-                        <h2>Physical Characteristics</h2>
-                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Physical Description:</strong><br /> {characterData.physicalDescription}</p>
-                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Typical Clothing/Armor:</strong><br /> {characterData.typicalClothing}</p>
+                        {characterData.placeOfBirth || characterData.family || characterData.educationTraining ? (
+                            <>
+                                <hr className={styles.separator} />
+                                <h2>Background</h2>
+                                <div>
+                                    {characterData.placeOfBirth && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Place of Birth:</strong><br /> {characterData.placeOfBirth}
+                                        </p>
+                                    )}
+                                    {characterData.family && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Family:</strong><br /> {characterData.family}
+                                        </p>
+                                    )}
+                                    {characterData.educationTraining && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Education/Training:</strong><br /> {characterData.educationTraining}
+                                        </p>
+                                    )}
+                                </div>
+                            </>
+                        ) : null}
 
-                        <hr className={styles.separator} />
+                        {characterData.significantEvents || characterData.traits || characterData.fears || characterData.goals ? (
+                            <>
+                                <hr className={styles.separator} />
+                                <h2>Personality</h2>
+                                {characterData.significantEvents && (
+                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
+                                        <strong>Significant Events:</strong><br /> {characterData.significantEvents}
+                                    </p>
+                                )}
+                                <div>
+                                    {characterData.traits && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Traits:</strong><br /> {characterData.traits}
+                                        </p>
+                                    )}
+                                    {characterData.fears && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Fears:</strong><br /> {characterData.fears}
+                                        </p>
+                                    )}
+                                    {characterData.goals && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Goals:</strong><br /> {characterData.goals}
+                                        </p>
+                                    )}
+                                </div>
+                            </>
+                        ) : null}
 
-                        <h2>Background</h2>
-                        <div>
-                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Place of Birth:</strong><br /> {characterData.placeOfBirth}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Family:</strong><br /> {characterData.family}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Education/Training:</strong><br /> {characterData.educationTraining}</p>
-                        </div>
+                        {characterData.strengthsWeaknesses || characterData.motivations || characterData.magicAbilities || characterData.skills || characterData.allies ? (
+                            <>
+                                <hr className={styles.separator} />
+                                <h2>Abilities</h2>
+                                {characterData.strengthsWeaknesses && (
+                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
+                                        <strong>Strengths/Weaknesses:</strong><br /> {characterData.strengthsWeaknesses}
+                                    </p>
+                                )}
+                                {characterData.motivations && (
+                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
+                                        <strong>Motivations:</strong><br /> {characterData.motivations}
+                                    </p>
+                                )}
+                                <div>
+                                    {characterData.magicAbilities && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Magic/Abilities:</strong><br /> {characterData.magicAbilities}
+                                        </p>
+                                    )}
+                                    {characterData.skills && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Skills:</strong><br /> {characterData.skills}
+                                        </p>
+                                    )}
+                                    {characterData.allies && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Allies:</strong><br /> {characterData.allies}
+                                        </p>
+                                    )}
+                                </div>
+                            </>
+                        ) : null}
 
-                        <hr className={styles.separator} />
+                        {characterData.enemies || characterData.loveInterests ? (
+                            <>
+                                <hr className={styles.separator} />
+                                <h2>Relationships</h2>
+                                <div>
+                                    {characterData.enemies && (
+                                        <p className={`${styles.font22} ${styles.subDiv_3_p} preserve-whitespace`}>
+                                            <strong>Enemies:</strong><br /> {characterData.enemies}
+                                        </p>
+                                    )}
+                                    {characterData.loveInterests && (
+                                        <p className={`${styles.font22} ${styles.subDiv_3_p} preserve-whitespace`}>
+                                            <strong>Love Interests:</strong><br /> {characterData.loveInterests}
+                                        </p>
+                                    )}
+                                </div>
+                            </>
+                        ) : null}
 
-                        <h2>Personality</h2>
-                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Significant Events:</strong><br /> {characterData.significantEvents}</p>
-                        <div>
-                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Traits:</strong><br /> {characterData.traits}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Fears:</strong><br /> {characterData.fears}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Goals:</strong><br /> {characterData.goals}</p>
-                        </div>
-
-                        <hr className={styles.separator} />
-
-                        <h2>Abilities</h2>
-                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Strengths/Weaknesses:</strong><br /> {characterData.strengthsWeaknesses}</p>
-                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Motivations:</strong><br /> {characterData.motivations}</p>
-                        <div>
-                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Magic/Abilities:</strong><br /> {characterData.magicAbilities}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Skills:</strong><br /> {characterData.skills}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}><strong>Allies:</strong><br /> {characterData.allies}</p>
-                        </div>
-
-                        <hr className={styles.separator} />
-
-                        <h2>Relationships</h2>
-                        <div>
-                            <p className={`${styles.font22} ${styles.subDiv_3_p} preserve-whitespace`}><strong>Enemies:</strong><br /> {characterData.enemies}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_3_p} preserve-whitespace`}><strong>Love Interests:</strong><br /> {characterData.loveInterests}</p>
-                        </div>
-
-                        <hr className={styles.separator} />
-
-                        <h2>Role in the Story</h2>
-                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Current Role in the Story:</strong><br /> {characterData.plotInvolvement}</p>
-                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Key Actions:</strong><br /> {characterData.keyActions}</p>
-                        <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}><strong>Character Arc:</strong><br /> {characterData.characterArc}</p>
+                        {characterData.plotInvolvement || characterData.keyActions || characterData.characterArc ? (
+                            <>
+                                <hr className={styles.separator} />
+                                <h2>Role in the Story</h2>
+                                {characterData.plotInvolvement && (
+                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
+                                        <strong>Current Role in the Story:</strong><br /> {characterData.plotInvolvement}
+                                    </p>
+                                )}
+                                {characterData.keyActions && (
+                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
+                                        <strong>Key Actions:</strong><br /> {characterData.keyActions}
+                                    </p>
+                                )}
+                                {characterData.characterArc && (
+                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
+                                        <strong>Character Arc:</strong><br /> {characterData.characterArc}
+                                    </p>
+                                )}
+                            </>
+                        ) : null}
 
                         <hr className={styles.separator} />
                     </div>
