@@ -1,10 +1,17 @@
+// Base Imports
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+// CSS Import
 import styles from './css/AddEventForm.module.css';
+// Service Imports
 import { addReligion } from '../services/religionsService';
 import { getAllCharacters } from '../services/charactersService';
 
 const AddReligionForm = () => {
+    // UseStates
+    // --Select options
+    const [charactersOptions, setCharactersOptions] = useState([]);
+    // --Input data
     const [religionData, setReligionData] = useState({
         name: '',
         description: '',
@@ -12,16 +19,20 @@ const AddReligionForm = () => {
         status: '' // Current status of the religion (e.g., active, extinct, etc.)
     });
 
-    const [charactersOptions, setCharactersOptions] = useState([]);
-
+    // Populate the selects with all the options available.
     useEffect(() => {
         const fetchCharacters = async () => {
             try {
+                // --Get all information form the DB
                 const characters = await getAllCharacters();
+
+                // --Collect the name of the option to make it easier for the user to know what they are adding
                 const options = characters.map(character => ({
                     value: character.id,
                     label: character.fullName
                 }));
+
+                // --Set the options available
                 setCharactersOptions(options);
             } catch (error) {
                 console.error('Error fetching characters:', error);
@@ -31,28 +42,33 @@ const AddReligionForm = () => {
         fetchCharacters();
     }, []);
 
+    // Update the UseState when a user changes something
     const handleChange = (e) => {
         const { name, value } = e.target;
         setReligionData({ ...religionData, [name]: value });
     };
 
+    // Handle changes to the Select
     const handleGodsChange = (selectedOptions) => {
         setReligionData({ ...religionData, gods: selectedOptions.map(option => option.value) });
     };
 
+    // Submit the data
     const handleSubmit = async (e) => {
+        // --Prevent the form from reloading the page
         e.preventDefault();
-        try {
-            await addReligion(religionData);
-            setReligionData({
-                name: '',
-                description: '',
-                gods: [],
-                status: ''
-            });
-        } catch (error) {
-            console.error('Error adding religion:', error);
-        }
+
+        // --Add the new entry
+        await addReligion(religionData);
+
+        // --Reset the UseState
+        setReligionData({
+            name: '',
+            description: '',
+            gods: [],
+            status: ''
+        });
+
     };
 
     return (

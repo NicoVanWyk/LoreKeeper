@@ -1,12 +1,21 @@
+// Base Imports
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+// CSS Import
+import styles from './css/AddEventForm.module.css';
+// Service Imports
 import { addPoliticalEntity } from '../services/politicalEntitiesService';
 import { getAllAlliances } from '../services/alliancesService';
 import { getAllPoliticalEntities } from '../services/politicalEntitiesService';
 import { getAllReligions } from '../services/religionsService';
-import styles from './css/AddEventForm.module.css';
 
 function AddPoliticalEntityForm() {
+    // UseStates
+    // --Select options
+    const [alliancesOptions, setAlliancesOptions] = useState([]);
+    const [politicalEntitiesOptions, setPoliticalEntitiesOptions] = useState([]);
+    const [religionsOptions, setReligionsOptions] = useState([]);
+    // --Input data
     const [politicalEntityData, setPoliticalEntityData] = useState({
         name: '',
         description: '',
@@ -28,32 +37,32 @@ function AddPoliticalEntityForm() {
         religions: [] // Links to Religions
     });
 
-    const [alliancesOptions, setAlliancesOptions] = useState([]);
-    const [politicalEntitiesOptions, setPoliticalEntitiesOptions] = useState([]);
-    const [religionsOptions, setReligionsOptions] = useState([]);
-
+    // Populate the selects with all the options available.
     useEffect(() => {
         const fetchOptions = async () => {
             try {
+                // --Get all information form the DB
                 const alliances = await getAllAlliances();
+                const politicalEntities = await getAllPoliticalEntities();
+                const religions = await getAllReligions();
+
+                // --Collect the name of the option to make it easier for the user to know what they are adding
                 const alliancesOptions = alliances.map(alliance => ({
                     value: alliance.id,
                     label: alliance.name
                 }));
-                setAlliancesOptions(alliancesOptions);
-
-                const politicalEntities = await getAllPoliticalEntities();
                 const politicalEntitiesOptions = politicalEntities.map(entity => ({
                     value: entity.id,
                     label: entity.name
                 }));
-                setPoliticalEntitiesOptions(politicalEntitiesOptions);
-
-                const religions = await getAllReligions();
                 const religionsOptions = religions.map(religion => ({
                     value: religion.id,
                     label: religion.name
                 }));
+
+                // --Set the options available
+                setAlliancesOptions(alliancesOptions);
+                setPoliticalEntitiesOptions(politicalEntitiesOptions);
                 setReligionsOptions(religionsOptions);
             } catch (error) {
                 console.error('Error fetching options:', error);
@@ -63,11 +72,13 @@ function AddPoliticalEntityForm() {
         fetchOptions();
     }, []);
 
+    // Update the UseState when a user changes something
     const handleChange = (e) => {
         const { name, value } = e.target;
         setPoliticalEntityData({ ...politicalEntityData, [name]: value });
     };
 
+    // Handle changes to the Selects
     const handleSelectChange = (field, selectedOptions) => {
         setPoliticalEntityData({
             ...politicalEntityData,
@@ -75,33 +86,35 @@ function AddPoliticalEntityForm() {
         });
     };
 
+    // Submit the data
     const handleSubmit = async (e) => {
+        // --Prevent the form from reloading the page
         e.preventDefault();
-        try {
-            await addPoliticalEntity(politicalEntityData);
-            setPoliticalEntityData({
-                name: '',
-                description: '',
-                status: '',
-                region: '',
-                climate: '',
-                population: '',
-                politicalInfluence: '',
-                economyStrength: '',
-                language: '',
-                governmentType: '',
-                history: '',
-                resources: '',
-                alliances: [],
-                friendships: [],
-                rivals: [],
-                vassals: [],
-                culturalPractices: '',
-                religions: []
-            });
-        } catch (error) {
-            console.error('Error adding political entity:', error);
-        }
+
+        // --Add the new entry
+        await addPoliticalEntity(politicalEntityData);
+
+        // --Reset the UseState
+        setPoliticalEntityData({
+            name: '',
+            description: '',
+            status: '',
+            region: '',
+            climate: '',
+            population: '',
+            politicalInfluence: '',
+            economyStrength: '',
+            language: '',
+            governmentType: '',
+            history: '',
+            resources: '',
+            alliances: [],
+            friendships: [],
+            rivals: [],
+            vassals: [],
+            culturalPractices: '',
+            religions: []
+        });
     };
 
     return (

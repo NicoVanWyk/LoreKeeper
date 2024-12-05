@@ -1,11 +1,18 @@
+// Base Imports
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+// CSS Import
 import './css/NavbarComponent.css';
+// Navigation Import
+import { Link } from 'react-router-dom';
+// Image Imports
 import logo from '../assets/Logo.jpg';
 
 function NavbarComponent() {
+    // UseStates
+    // --Menu toggle
     const [menuOpen, setMenuOpen] = useState(false);
 
+    // Changes wether or not the menu is open
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
@@ -23,6 +30,7 @@ function NavbarComponent() {
                         <div className="dropdown-content">
                             <Link to="/glossary">Glossary</Link>
                             <Link to="/about">About</Link>
+                            <Link to="/maps">Maps</Link>
                         </div>
                     </li>
 
@@ -41,7 +49,6 @@ function NavbarComponent() {
                             <Link to="/locations">Locations</Link>
                             <Link to="/politicalEntities">Political Entities</Link>
                             <Link to="/alliances">Alliances</Link>
-                            <Link to="/maps">Maps</Link>
                         </div>
                     </li>
 

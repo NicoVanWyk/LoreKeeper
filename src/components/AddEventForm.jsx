@@ -1,6 +1,9 @@
+// Base Imports
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+// CSS Import
 import styles from './css/AddEventForm.module.css';
+// Service Imports
 import { addEvent } from '../services/eventService';
 import { getAllCharacters } from '../services/charactersService';
 import { getAllLocations } from '../services/locationService';
@@ -8,6 +11,13 @@ import { getAllEvents } from '../services/eventService';
 import { getAllPoliticalEntities } from '../services/politicalEntitiesService';
 
 const AddEventForm = () => {
+    // UseStates
+    // --Select options
+    const [charactersOptions, setCharactersOptions] = useState([]);
+    const [locationsOptions, setLocationsOptions] = useState([]);
+    const [polEntitiesOptions, setPolEntitiesOptions] = useState([]);
+    const [eventsOptions, setEventsOptions] = useState([]);
+    // --Input data
     const [eventData, setEventData] = useState({
         era: '',
         year: '',
@@ -26,19 +36,17 @@ const AddEventForm = () => {
         notes: ''
     });
 
-    const [charactersOptions, setCharactersOptions] = useState([]);
-    const [locationsOptions, setLocationsOptions] = useState([]);
-    const [polEntitiesOptions, setPolEntitiesOptions] = useState([]);
-    const [eventsOptions, setEventsOptions] = useState([]);
-
+    // Populate the selects with all the options available.
     useEffect(() => {
         const fetchOptions = async () => {
             try {
+                // --Get all information form the DB
                 const characters = await getAllCharacters();
                 const locations = await getAllLocations();
                 const polEntities = await getAllPoliticalEntities();
                 const events = await getAllEvents();
 
+                // --Collect the name of the option to make it easier for the user to know what they are adding
                 const characterOptions = characters.map(character => ({
                     value: character.id,
                     label: character.fullName
@@ -56,6 +64,7 @@ const AddEventForm = () => {
                     label: event.title
                 }));
 
+                // --Set the options available
                 setCharactersOptions(characterOptions);
                 setLocationsOptions(locationOptions);
                 setPolEntitiesOptions(polEntityOptions);
@@ -68,11 +77,13 @@ const AddEventForm = () => {
         fetchOptions();
     }, []);
 
+    // Update the UseState when a user changes something
     const handleChange = (e) => {
         const { name, value } = e.target;
         setEventData({ ...eventData, [name]: value });
     };
 
+    // Handle changes to the Selects
     const handleCharactersChange = (selectedOptions) => {
         setEventData({ ...eventData, charactersInvolved: selectedOptions.map(option => option.value) });
     };
@@ -89,9 +100,15 @@ const AddEventForm = () => {
         setEventData({ ...eventData, relatedEvents: selectedOptions.map(option => option.value) });
     };
 
+    // Submit the data
     const handleSubmit = async (e) => {
+        // --Prevent the form from reloading the page
         e.preventDefault();
+
+        // --Add the new entry
         await addEvent(eventData);
+
+        // --Reset the UseState
         setEventData({
             era: '',
             year: '',

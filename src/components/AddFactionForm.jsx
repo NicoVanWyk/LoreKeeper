@@ -1,10 +1,17 @@
+// Base Imports
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+// CSS Import
 import styles from './css/AddEventForm.module.css';
+// Service Imports
 import { addFaction } from '../services/factionsService';
 import { getAllCharacters } from '../services/charactersService';
 
 const AddFactionForm = () => {
+    // UseStates
+    // --Select options
+    const [charactersOptions, setCharactersOptions] = useState([]);
+    // --Input data
     const [factionData, setFactionData] = useState({
         name: '',
         description: '',
@@ -16,18 +23,20 @@ const AddFactionForm = () => {
         notes: '',
     });
 
-    const [charactersOptions, setCharactersOptions] = useState([]);
-
+    // Populate the selects with all the options available.
     useEffect(() => {
         const fetchOptions = async () => {
             try {
+                // --Get all information form the DB
                 const characters = await getAllCharacters();
 
+                // --Collect the name of the option to make it easier for the user to know what they are adding
                 const characterOptions = characters.map((character) => ({
                     value: character.id,
                     label: character.fullName,
                 }));
 
+                // --Set the options available
                 setCharactersOptions(characterOptions);
             } catch (error) {
                 console.error('Error fetching character options: ', error);
@@ -37,18 +46,26 @@ const AddFactionForm = () => {
         fetchOptions();
     }, []);
 
+    // Update the UseState when a user changes something
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFactionData({ ...factionData, [name]: value });
     };
 
+    // Handle changes to the Select
     const handleMembersChange = (selectedOptions) => {
         setFactionData({ ...factionData, members: selectedOptions.map((option) => option.value) });
     };
 
+    // Submit the data
     const handleSubmit = async (e) => {
+        // --Prevent the form from reloading the page
         e.preventDefault();
+
+        // --Add the new entry
         await addFaction(factionData);
+
+        // --Reset the UseState
         setFactionData({
             name: '',
             description: '',

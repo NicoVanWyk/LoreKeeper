@@ -1,15 +1,20 @@
+// Base Imports
 import React, { useState } from 'react';
+// Import Leaflet
 import { MapContainer, ImageOverlay, LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
+// Set the bounds of the map for plotting
 const bounds = [[0, 0], [5111, 6809]];
 
 const MapComponent = () => {
-    // State for managing overlays and base maps
+    // Usestates
+    // --Base Map
+    const [baseMap, setBaseMap] = useState("countryNames"); // ---Default Map
+    // --Map Overlay
     const [regionOverlayVisible, setRegionOverlayVisible] = useState(true);
     const [regionOpacity, setRegionOpacity] = useState(0.5);
-    const [baseMap, setBaseMap] = useState("countryNames"); // Default base map
 
     // URLs for base maps
     const baseMapUrls = {
@@ -27,7 +32,7 @@ const MapComponent = () => {
             <div style={{ padding: '10px', background: '#f5f5f5', borderBottom: '1px solid #ddd' }}>
                 <h2>Map Controls</h2>
 
-                {/* Base Map Selection */}
+                {/* --Base Map Selection */}
                 <label>
                     Base Map:
                     <select
@@ -41,7 +46,7 @@ const MapComponent = () => {
                     </select>
                 </label>
 
-                {/* Toggle Region Overlay */}
+                {/* --Toggle Region Overlay */}
                 <label style={{ marginLeft: '20px' }}>
                     Show Region Overlay
                     <input
@@ -51,7 +56,7 @@ const MapComponent = () => {
                     />
                 </label>
 
-                {/* Slider for Region Overlay Opacity */}
+                {/* --Slider for Region Overlay Opacity */}
                 {regionOverlayVisible && (
                     <div style={{ marginTop: '10px' }}>
                         <label>Region Overlay Opacity:</label>
@@ -78,18 +83,18 @@ const MapComponent = () => {
                 style={{ height: 'calc(100vh - 100px)', width: '100%' }}
                 crs={L.CRS.Simple}
             >
-                {/* Base Map */}
+                {/* --Base Map */}
                 <ImageOverlay
                     url={baseMapUrls[baseMap]}
                     bounds={bounds}
                 />
 
-                {/* Region Overlay */}
+                {/* --Region Overlay */}
                 {regionOverlayVisible && (
                     <ImageOverlay
                         url={regionOverlayUrl}
                         bounds={bounds}
-                        opacity={regionOpacity} // Set opacity dynamically
+                        opacity={regionOpacity} // ---Set opacity dynamically
                     />
                 )}
             </MapContainer>

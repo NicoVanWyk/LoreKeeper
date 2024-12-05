@@ -1,14 +1,16 @@
-// src/components/AddLocationForm.js
+// Base Imports
 import React, { useEffect, useState } from 'react';
-import { addLocation } from '../services/locationService';
+// CSS Import
 import styles from './css/AddEventForm.module.css';
+// Service Imports
+import { addLocation } from '../services/locationService';
 import { getAllPoliticalEntities } from '../services/politicalEntitiesService';
 
 const AddLocationForm = () => {
-    // Store the list of political entities
+    // UseStates
+    // --Select options
     const [politicalEntities, setPoliticalEntities] = useState([]);
-
-    // Store the location's data
+    // --Input data
     const [locationData, setLocationData] = useState({
         name: '',
         description: '',
@@ -34,23 +36,34 @@ const AddLocationForm = () => {
         religion: ''
     });
 
+    // Populate the selects with all the options available.
     useEffect(() => {
         const fetchPoliticalEntities = async () => {
+            // --Gather the data from the DB
             const entities = await getAllPoliticalEntities();
+            // --Don't map yet as this does not use the React Select - it uses a normal select & options because only one option can be selected at a time
             setPoliticalEntities(entities);
         };
+
         fetchPoliticalEntities();
     }, []);
 
 
+    // Update the UseState when a user changes something
     const handleChange = (e) => {
         const { name, value } = e.target;
         setLocationData({ ...locationData, [name]: value });
     };
 
+    // Submit the data
     const handleSubmit = async (e) => {
+        // --Prevent the form from reloading the page
         e.preventDefault();
+
+        // --Add the new entry
         await addLocation(locationData);
+
+        // --Reset the UseState
         setLocationData({
             name: '',
             description: '',
@@ -99,14 +112,15 @@ const AddLocationForm = () => {
                 <label>Region</label>
                 <input type="text" name="region" placeholder="Region" value={locationData.region} onChange={handleChange} />
             </div>
-            
+
+            {/* Map the data here as a React Select is unneeded. Only one option can be selected at a time, so an isMulti React Select is not needed */}
             <div className={styles.formGroup}>
                 <label>Political Entity</label>
                 <select
                     name="politicalEntity"
                     value={locationData.politicalEntity}
                     onChange={handleChange}
-                    style={{width: '600px', fontSize: '20px', borderRadius: '15px', padding: '15px 10px 15px 10px'}}
+                    style={{ width: '600px', fontSize: '18px', borderRadius: '15px', padding: '15px 10px 15px 10px' }}
                 >
                     <option value="" disabled hidden>Select a Political Entity</option>
                     {politicalEntities.map((entity) => (
