@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/LoreKeeper/static/css/main.2a74cc39.css",
-    "main.js": "/LoreKeeper/static/js/main.667ad72e.js",
+    "main.js": "/LoreKeeper/static/js/main.eea0beaf.js",
     "static/js/453.ed0b1c71.chunk.js": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js",
     "static/media/Logo.jpg": "/LoreKeeper/static/media/Logo.5be397fed6557eb60aed.jpg",
     "static/media/EasternFenHisanEmpire.png": "/LoreKeeper/static/media/EasternFenHisanEmpire.bf9509a6517beee2fa15.png",
@@ -17,11 +17,11 @@
     "static/media/Fort.png": "/LoreKeeper/static/media/Fort.f9279d02dcd1431052b7.png",
     "index.html": "/LoreKeeper/index.html",
     "main.2a74cc39.css.map": "/LoreKeeper/static/css/main.2a74cc39.css.map",
-    "main.667ad72e.js.map": "/LoreKeeper/static/js/main.667ad72e.js.map",
+    "main.eea0beaf.js.map": "/LoreKeeper/static/js/main.eea0beaf.js.map",
     "453.ed0b1c71.chunk.js.map": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2a74cc39.css",
-    "static/js/main.667ad72e.js"
+    "static/js/main.eea0beaf.js"
   ]
 }
