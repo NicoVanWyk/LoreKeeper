@@ -86,7 +86,7 @@ function SingleCharacterPage() {
                 <form onSubmit={handleSubmit}>
                     <div className={styles.formGroup}>
                         <label>Full Name</label>
-                        <input type="text" name="fullName" value={characterData.fullName} onChange={handleChange} required />
+                        <input type="text" name="fullName" value={characterData.fullName} onChange={handleChange} require style={{width: '500px'}} />
                     </div>
                     <div className={styles.formGroup}>
                         <label>Nicknames</label>
@@ -101,7 +101,7 @@ function SingleCharacterPage() {
                         <input type="text" name="gender" value={characterData.gender} onChange={handleChange} />
                     </div>
                     <div className={styles.formGroup}>
-                        <label>Age</label>
+                        <label>Age By 5E 1690</label>
                         <input type="text" name="age" value={characterData.age} onChange={handleChange} />
                     </div>
                     <div className={styles.formGroup}>
@@ -202,7 +202,7 @@ function SingleCharacterPage() {
                             <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Nicknames:</strong><br /> {characterData.nicknames}</p>
                             <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Species:</strong><br /> {characterData.species}</p>
                             <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Gender:</strong><br /> {characterData.gender}</p>
-                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Age:</strong><br /> {characterData.age}</p>
+                            <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Age By 5E 1690:</strong><br /> {characterData.age}</p>
                             <p className={`${styles.font22} ${styles.subDiv_1_p} preserve-whitespace`}><strong>Occupation/Role:</strong><br /> {characterData.occupation}</p>
                         </div>
 

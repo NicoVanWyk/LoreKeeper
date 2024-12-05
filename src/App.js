@@ -35,6 +35,8 @@ import AddBestiaryEntryPage from './pages/subPages/AddBestiaryEntryPage';
 import PoliticalEntitiesPage from './pages/PoliticalEntitiesPage';
 import SinglePoliticalEntityPage from './pages/subPages/SinglePoliticalEntityPage';
 import GlossaryPage from './pages/GlossaryPage';
+import FactionsPage from './pages/FactionsPage';
+import SingleFactionPage from './pages/subPages/SingleFactionPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -58,6 +60,10 @@ const AppWrapper = () => {
         <Route path="/characters" element={<PrivateRoute element={<CharactersPage />} />} />
         <Route path="/characters/add" element={<PrivateRoute element={<CharacterAddPage />} />} />
         <Route path="/characters/:characterId" element={<PrivateRoute element={<SingleCharacterPage />} />} />
+
+        {/* Factions Page */}
+        <Route path="/factions" element={<PrivateRoute element={<FactionsPage />} />} />
+        <Route path="/factions/:factionId" element={<PrivateRoute element={<SingleFactionPage />} />} />
 
         {/* Stories */}
         <Route path="/stories" element={<PrivateRoute element={<StoriesPage />} />} />

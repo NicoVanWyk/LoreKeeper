@@ -61,7 +61,7 @@ function LocationsPage() {
                 {locations.map(location => (
                     <div style={{ cursor: 'pointer' }} key={location.id} className={styles.card} onClick={() => handleCardClick(location.id)}>
                         <h3>{location.name}</h3>
-                        <p>{location.description}</p>
+                        <p>{location.type}</p>
                     </div>
                 ))}
             </div>

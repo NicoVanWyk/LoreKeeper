@@ -68,6 +68,14 @@ function SingleEventPage() {
                     event.relatedEvents.map(eventId => getEvent(eventId))
                 );
                 setAllEventsData(allEvents);
+
+                // Fetch characters involved
+                const charactersInvolved = await Promise.all(
+                    event.charactersInvolved.map(characterId =>
+                        getAllCharacters().then(characters => characters.find(char => char.id === characterId))
+                    )
+                );
+                setCharactersOptions(charactersInvolved);
             } catch (error) {
                 console.error('Error fetching event: ', error);
                 setLoading(false);
@@ -288,6 +296,22 @@ function SingleEventPage() {
                                     {index < allEventsData.length - 1 && ', '}
                                 </span>
                             ))}
+                        </p>
+
+                        <p>
+                            <strong>Characters Involved:</strong>{' '}
+                            {charactersOptions
+                                .filter(character => character) // Ensure the character exists
+                                .map((character, index) => (
+                                    <span
+                                        key={character.id}
+                                        onClick={() => navigate(`/characters/${character.id}`)}
+                                        style={{ cursor: 'pointer', textDecoration: 'underline', color: 'blue' }}
+                                    >
+                                        {character.fullName}
+                                        {index < charactersOptions.length - 1 && ', '}
+                                    </span>
+                                ))}
                         </p>
 
                         <p><strong>Event Type:</strong> {eventData.eventType}</p>

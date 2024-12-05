@@ -30,6 +30,7 @@ function NavbarComponent() {
                         <Link to="/characters" className="dropbtn">Characters</Link>
                         <div className="dropdown-content">
                             <Link to="/bestiary">Bestiary</Link>
+                            <Link to="/factions">Factions</Link>
                         </div>
                     </li>
 
@@ -70,6 +71,7 @@ function NavbarComponent() {
                     <li className="navbar-item"><Link to="/maps">Maps</Link></li>
                     <li className="navbar-item"><Link to="/magic">Magic</Link></li>
                     <li className="navbar-item"><Link to="/bestiary">Bestiary</Link></li>
+                    <li className="navbar-item"><Link to="/factions">Factions</Link></li>
                     <li className="navbar-item"><Link to="/stories">Stories</Link></li>
                     <li className="navbar-item"><Link to="/profile">Profile</Link></li>
                 </ul>

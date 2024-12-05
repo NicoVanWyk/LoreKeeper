@@ -87,7 +87,7 @@ function CharacterAddPage() {
                     <input type="text" name="nicknames" value={characterData.nicknames} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
-                    <label>Age</label>
+                    <label>Age by 5E 1690</label>
                     <input type="text" name="age" value={characterData.age} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>

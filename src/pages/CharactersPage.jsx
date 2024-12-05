@@ -85,7 +85,7 @@ function CharactersPage() {
                             <h4>{character.nicknames}</h4>
                             <p><strong>Species:</strong> {character.species}</p>
                             <p><strong>Gender:</strong> {character.gender}</p>
-                            <p><strong>Age:</strong> {character.age}</p>
+                            <p><strong>Age by 5E 1690:</strong> {character.age}</p>
                             <p><strong>Occupation/Role:</strong> {character.occupation}</p>
                         </div>
                     </div>
