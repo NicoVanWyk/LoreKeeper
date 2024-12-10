@@ -41,6 +41,7 @@ import AlliancesPage from './pages/AlliancesPage';
 import SingleAlliancePage from './pages/subPages/SingleAlliancePage';
 import ReligionsPage from './pages/ReligionsPage';
 import SingleReligionPage from './pages/subPages/SingleReligionPage';
+import GlyphcastingPage from './pages/subPages/GlyphcastingPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -103,6 +104,7 @@ const AppWrapper = () => {
         <Route path="/magic/schools" element={<PrivateRoute element={<SchoolsPage />} />} />
         <Route path="/subschools/:name" element={<PrivateRoute element={<SubSchoolPage />} />} />
         <Route path="/magic/classes" element={<PrivateRoute element={<ClassesPage />} />} />
+        <Route path="/magic/glyphcasting" element={<PrivateRoute element={<GlyphcastingPage />} />} />
 
         {/* Religions Page */}
         <Route path="/religions" element={<PrivateRoute element={<ReligionsPage />} />} />

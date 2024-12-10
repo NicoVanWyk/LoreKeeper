@@ -57,6 +57,7 @@ function NavbarComponent() {
                     <li className="navbar-item dropdown">
                         <Link to="/magic" className="dropbtn">Magic</Link>
                         <div className="dropdown-content">
+                            <Link to="/magic/glyphcasting">Glyphcasting</Link>
                             <Link to="/magic/schools">Schools</Link>
                             <Link to="/magic/classes">Classes</Link>
                             <Link to="/religions">Religions</Link>

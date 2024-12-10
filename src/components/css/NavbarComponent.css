@@ -91,23 +91,26 @@
     z-index: 1;
     border-radius: 4px;
     margin-top: 10px;
-    min-width: 160px;
+    width: 200px;
+    justify-content: center;
+}
+
+.dropdown:hover .dropdown-content {
+    display: flex;
+    flex-direction: column;
 }
 
 .dropdown-content a {
     color: #333;
-    padding: 12px 16px;
     text-decoration: none;
     display: block;
+    justify-content: center;
+    max-width: 200px;
 }
 
 .dropdown-content a:hover {
     background-color: #020818;
     color: #fff;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
 }
 
 /* Media query for mobile devices */

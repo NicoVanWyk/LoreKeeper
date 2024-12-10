@@ -3,8 +3,6 @@ import React from 'react';
 import styles from './css/MagicPage.module.css';
 import { useNavigate } from 'react-router-dom';
 
-// TODO: Write actual content for each item
-
 function MagicPage() {
     const navigate = useNavigate();
 
@@ -17,20 +15,26 @@ function MagicPage() {
             <div className={styles.section}>
                 <h1>What Is Magic?</h1>
                 <p>
-                    Magic is the study of utilising non-physical forces to create physical phenomena. Though it can also be used to create non-physical
-                    phenomena, but these spells usually require greater skill than most mages can muster.
+                    Magic is the practice of altering the world around you using ambient magical energy. The Power of a mage's Soul dictates the power and
+                    scale of the magic they can use. While magical energy is present in all things, it is much more concentrated in living things. The very
+                    life of a mortal is sustained through the magic infused in their blood and body - the magic granted by their Soul's Power.
                 </p>
             </div>
 
             <div className={styles.section}>
                 <h2>The History Of Magic</h2>
                 <p>
-                    Magic has a rich and complex history, dating back to ancient times. It has evolved through different cultures and civilizations, each
-                    adding their unique practices and beliefs to the collective understanding of magic. As of the early 1400's of the 5th Era, the study
-                    of magic has been formalized across the continent, though many universities existed before that date.
+                    Magic has always been a part of society, sometimes shunned and sometimes embraced. It was often only studied by a small group of mages
+                    commonly referred to as Mage Councils or Circles. This led to a vast number of practices and fragmented schools. Two mages could speak
+                    to one another about the same school, but not realise because their techniques were so different.
                     <br></br> <br></br>
-                    The turn of the 17th Century, 5E was regarded as a revolution in the study of how magic can be used to affect everyday things,
-                    particularly in the field of artifice.
+                    During the 4th Era, the Fen'Hisan Empire established a standardised form of magic, ensuring all mages were taught the same theory and
+                    practices. They also established Universities across Irea dedicated to teaching and studying magic, ushering in a golden age for mages.
+                    This revolution in magic led to the expansion of several schools, and the standardisation of magic led to unprecedented cooperation between
+                    mages.
+                    <br></br> <br></br>
+                    The 5th Era was also regarded as a revolution in the study of how magic, particularly how it can be used to affect everyday things,
+                    establishing the School of Artifice as an official school instead of a module in different schools.
                 </p>
             </div>
 
@@ -40,19 +44,32 @@ function MagicPage() {
             </div>
 
             <div className={styles.section}>
-                <h1>Magic Users</h1>
+                <h1>Magic Classes</h1>
                 <button onClick={() => handleNavigate('/magic/classes')} className='btnPrimary'>View Classes</button>
             </div>
 
-            {/* <div className={styles.section}>
-                <h2>Famous Magic Users</h2> */}
-            {/* TODO: Write content for famous magic users */}
-            {/* </div> */}
+            <div className={styles.section}>
+                <h1>Organisations</h1>
+                <h2>Universities</h2>
+                <p>
+                    Universities are the most common places where mages are made. They are also where the most research into magic is done. They
+                    can be found across Irea, with some countries funding them more than others.
+                </p>
 
-            {/* <div className={styles.section}>
-                <h2>Organizations</h2> */}
-            {/* TODO: Write content for guilds, schools, societies, etc of magic users */}
-            {/* </div> */}
+                <h2>Guilds</h2>
+                <p>
+                    Mage Guilds can be independent or associated with a University. Their structure varies greatly, however all of them have a specific
+                    goal they wish to achieve - their reason for forming. Some could be to find illegal mages, others could be to research potentially
+                    illegal magic. Mages can also choose wether or not to join guilds, however joining a guild often comes with many benefits.
+                </p>
+
+                <h2>Councils/Circles</h2>
+                <p>
+                    Mage Councils are commonly formed in countries where Universities are scarce. Before Universities, they were the most common form of
+                    organisation a mage could be a part of. It typically consists of a handful of Archmages and their apprentices, and most commonly serve
+                    a specific country's leader.
+                </p>
+            </div>
 
             <div className={styles.section}>
                 <h1>Learning Or Casting Magic</h1>
@@ -74,7 +91,14 @@ function MagicPage() {
 
                 <h2>Casting</h2>
                 <p>
-                    Spells are cast through a mage altering the flow of magic around them, as magic permeates every being - living or not.
+                    Spells are cast through a mage using Glyphcasting or Forcecasting to influence the world around them. Glyphcasting is the practice of
+                    building a glyph to mitigate the impact of casting magic on a mage's body. It also eases the casting process, making mages able to cast
+                    more spells with less effort. Many mages use enchantments to imprint a dangerous glyph into their memory so they can call the exact same
+                    spell on command. Inscribing a glyph is not needed for most spells as minor mistakes do not impact the spell too much. For schools such as
+                    Void Magic, this technique is enforced as even minor mistakes could lead to catastrophic results.
+                    <br></br> <br></br>
+                    Forcecasting is when a being casts a spell not from a glyph but through the sheer Power of their Soul and their Willpower. This is commonly
+                    used by Gods and only the most powerful - or stubborn - of mages.
                 </p>
 
                 <h2>Spellcasting Aids</h2>
@@ -139,33 +163,6 @@ function MagicPage() {
                     maintain balance in the balance of Hell (The Teach, The Infernal and The Abyss).
                 </p>
             </div>
-
-            {/* <div className={styles.section}>
-                <h1>Artifacts and Enchantments</h1>
-                <h2>Artifacts</h2>
-                <p>Legendary items of great power and historical significance, artifacts are often sought after for their extraordinary capabilities.</p>
-
-                <h2>Enchantments</h2>
-                <p>Common and powerful enchantments are used to imbue objects with magical properties, enhancing their functionality and value.</p>
-            </div> */}
-
-            {/* <div className={styles.section}>
-                <h1>Magic and Technology</h1>
-                <h2>Magitech</h2>
-                <p>Magitech represents the integration of magic with technology, leading to advanced innovations that blend the best of both worlds.</p>
-
-                <h2>Innovations</h2>
-                <p>Magical advancements have far-reaching impacts on society, from everyday conveniences to groundbreaking discoveries.</p>
-            </div> */}
-
-            {/* <div className={styles.section}>
-                <h1>Mysteries and Unexplained Phenomena</h1>
-                <h2>Ancient Ruins</h2>
-                <p>Ancient ruins are places of forgotten magic and lost civilizations, holding secrets waiting to be uncovered.</p>
-
-                <h2>Unsolved Mysteries</h2>
-                <p>Events or phenomena that defy magical understanding continue to intrigue and challenge scholars and adventurers alike.</p>
-            </div> */}
 
             <div className={styles.section}>
                 <h1>Dangers and Risks of Magic</h1>

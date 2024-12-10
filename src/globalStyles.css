@@ -145,3 +145,19 @@ textarea {
     display: flex;
     flex-direction: row;
 }
+
+.justifyCenter {
+    justify-content: center;
+}
+
+.textCenter {
+    text-align: center;
+}
+
+.font_24 {
+    font-size: 24px;
+}
+
+.font_28 {
+    font-size: 28px;
+}
