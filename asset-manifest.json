@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/LoreKeeper/static/css/main.2a74cc39.css",
-    "main.js": "/LoreKeeper/static/js/main.eea0beaf.js",
+    "main.css": "/LoreKeeper/static/css/main.8ac7f9e8.css",
+    "main.js": "/LoreKeeper/static/js/main.a7efe17a.js",
     "static/js/453.ed0b1c71.chunk.js": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js",
     "static/media/Logo.jpg": "/LoreKeeper/static/media/Logo.5be397fed6557eb60aed.jpg",
     "static/media/EasternFenHisanEmpire.png": "/LoreKeeper/static/media/EasternFenHisanEmpire.bf9509a6517beee2fa15.png",
@@ -13,15 +13,23 @@
     "static/media/HavarianEmpire.png": "/LoreKeeper/static/media/HavarianEmpire.c13206024373fd2ab5c5.png",
     "static/media/Ardor.png": "/LoreKeeper/static/media/Ardor.66652e79b39f217242f8.png",
     "static/media/Landmark.png": "/LoreKeeper/static/media/Landmark.2f5f64d355044996cd7e.png",
+    "static/media/FullGlyph.png": "/LoreKeeper/static/media/FullGlyph.56978e6a178f376051ce.png",
+    "static/media/GlyphExample.png": "/LoreKeeper/static/media/GlyphExample.a61bfaca9c64ea248d20.png",
     "static/media/TheTwins.png": "/LoreKeeper/static/media/TheTwins.2a79d78911b9641998b5.png",
+    "static/media/CompactGlyph.png": "/LoreKeeper/static/media/CompactGlyph.cedd5083662946393052.png",
+    "static/media/GlyphDuration.png": "/LoreKeeper/static/media/GlyphDuration.6f06edcc0a372b8e795e.png",
+    "static/media/GlyphCount.png": "/LoreKeeper/static/media/GlyphCount.067268dd8757ff1c40ff.png",
+    "static/media/GlyphSize.png": "/LoreKeeper/static/media/GlyphSize.69e98769511e07c5b164.png",
+    "static/media/GlyphTriggerAndSymbol.png": "/LoreKeeper/static/media/GlyphTriggerAndSymbol.17bc870878490246dba0.png",
+    "static/media/GlyphShape.png": "/LoreKeeper/static/media/GlyphShape.eeb70f5fe87dc5178501.png",
     "static/media/Fort.png": "/LoreKeeper/static/media/Fort.f9279d02dcd1431052b7.png",
     "index.html": "/LoreKeeper/index.html",
-    "main.2a74cc39.css.map": "/LoreKeeper/static/css/main.2a74cc39.css.map",
-    "main.eea0beaf.js.map": "/LoreKeeper/static/js/main.eea0beaf.js.map",
+    "main.8ac7f9e8.css.map": "/LoreKeeper/static/css/main.8ac7f9e8.css.map",
+    "main.a7efe17a.js.map": "/LoreKeeper/static/js/main.a7efe17a.js.map",
     "453.ed0b1c71.chunk.js.map": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.2a74cc39.css",
-    "static/js/main.eea0beaf.js"
+    "static/css/main.8ac7f9e8.css",
+    "static/js/main.a7efe17a.js"
   ]
 }
