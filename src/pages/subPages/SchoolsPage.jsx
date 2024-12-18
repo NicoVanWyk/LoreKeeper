@@ -7,6 +7,8 @@ import { addSchool, getSchools, updateSchool } from '../../services/magicService
 
 function SchoolsPage() {
     const { currentUser } = useAuth();
+    const [filteredSchools, setFilteredSchools] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [selectedSchoolId, setSelectedSchoolId] = useState(null);
@@ -44,6 +46,7 @@ function SchoolsPage() {
             try {
                 const fetchedSchools = await getSchools();
                 setSchools(fetchedSchools);
+                setFilteredSchools(fetchedSchools);
             } catch (error) {
                 console.error('Error fetching schools: ', error);
             }
@@ -120,9 +123,33 @@ function SchoolsPage() {
         navigate(`/subschools/${subschool.name}`, { state: { subschool, schoolId } });
     };
 
+    const handleSearchChange = (e) => {
+        const query = e.target.value.toLowerCase();
+        setSearchQuery(query);
+
+        const filtered = schools.filter(school =>
+            school.name.toLowerCase().includes(query) ||
+            school.description.toLowerCase().includes(query) ||
+            school.practitionerTitle.toLowerCase().includes(query)
+        );
+
+        setFilteredSchools(filtered);
+    };
+
     return (
         <div className={styles.container}>
             <h1>Schools Of Magic</h1>
+
+            <div className={styles.searchContainer}>
+                <input
+                    type="text"
+                    placeholder="Search Schools..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className={styles.searchInput}
+                />
+            </div>
+
             {isAdmin ? (
                 <>
                     {isAdding ? (
@@ -136,7 +163,7 @@ function SchoolsPage() {
                                     onChange={handleInputChange}
                                     className={styles.subschoolInput}
                                 />
-                                <input
+                                <textarea
                                     type="text"
                                     name="description"
                                     placeholder="Description"
@@ -173,7 +200,7 @@ function SchoolsPage() {
                                         value={subschoolValues.name}
                                         onChange={handleSubschoolInputChange}
                                     />
-                                    <input
+                                    <textarea
                                         type="text"
                                         name="description"
                                         placeholder="Subschool Description"
@@ -214,31 +241,50 @@ function SchoolsPage() {
                 </>
             ) : null}
 
-            {schools.map(school => (
+            {filteredSchools.map(school => (
                 <div key={school.id} className={styles.section}>
                     <h2>{school.name}</h2>
                     <p>{school.description}</p>
                     <p><strong>Practitioner:</strong> {school.practitionerTitle}</p>
-                    <p><strong>Notes:</strong> {school.notes}</p>
-                    <h2>SubSchools:</h2>
-                    <div className={styles.subschoolsContainer}>
-                        {school.subschools.map((subschool, index) => (
-                            <div key={index} className={styles.subschoolCard}>
-                                <h3 onClick={() => handleSubschoolClick(subschool, school.id)} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
-                                    {index + 1}. {subschool.name}
-                                </h3>
-                                <p>{subschool.description}</p>
-                                <p><strong>Practitioner:</strong> {subschool.practitionerTitle}</p>
-                                <p><strong>Notes:</strong> {subschool.notes}</p>
-                            </div>
-                        ))}
-                    </div>
+                    {school.notes && <p><strong>Notes:</strong> {school.notes}</p>}
 
-                    {isAdmin ? (
-                        <button onClick={() => { handleEdit(school); window.scrollTo(0, 0); }} style={{ marginTop: '25px' }} className='btnPrimary'>Edit School</button>
-                    ) : null}
+                    {school.subschools?.length > 0 && (
+                        <>
+                            <h2>SubSchools:</h2>
+                            <div className={styles.subschoolsContainer}>
+                                {school.subschools
+                                    .filter(subschool =>
+                                        subschool.name || subschool.description || subschool.practitionerTitle || subschool.notes
+                                    )
+                                    .map((subschool, index) => (
+                                        <div key={index} className={styles.subschoolCard}>
+                                            <h3
+                                                onClick={() => handleSubschoolClick(subschool, school.id)}
+                                                style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
+                                            >
+                                                {index + 1}. {subschool.name}
+                                            </h3>
+                                            {subschool.description && <p>{subschool.description}</p>}
+                                            {subschool.practitionerTitle && <p><strong>Practitioner:</strong> {subschool.practitionerTitle}</p>}
+                                            {subschool.notes && <p><strong>Notes:</strong> {subschool.notes}</p>}
+                                        </div>
+                                    ))}
+                            </div>
+                        </>
+                    )}
+
+                    {isAdmin && (
+                        <button
+                            onClick={() => { handleEdit(school); window.scrollTo(0, 0); }}
+                            style={{ marginTop: '25px', marginBottom: '20px' }}
+                            className='btnPrimary'
+                        >
+                            Edit School
+                        </button>
+                    )}
                 </div>
             ))}
+
         </div>
     );
 }

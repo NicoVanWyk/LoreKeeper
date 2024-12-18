@@ -35,9 +35,9 @@ function GlossaryPage() {
     }, {});
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', minHeight: '100vh', backgroundColor: '#f9f9f9', paddingTop: '20px' }}>
-            <div style={{ maxWidth: '600px', textAlign: 'left', padding: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: 'white', borderRadius: '8px' }}>
-                <h1 style={{ textAlign: 'center' }}>Glossary</h1>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#f9f9f9', paddingTop: '20px' }}>
+            <div style={{ maxWidth: '600px', textAlign: 'left', padding: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: 'white', borderRadius: '8px', marginBottom: '30px', marginTop: '30px' }}>
+                <h1 style={{ textAlign: 'center' }}>Terms</h1>
 
                 {/* Search Input */}
                 <input
@@ -71,6 +71,100 @@ function GlossaryPage() {
                     )}
                 </ul>
             </div>
+
+            {/* Keeping Time */}
+            <div style={{ maxWidth: '600px', textAlign: 'left', padding: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: 'white', borderRadius: '8px', marginBottom: '30px' }}>
+                {/* Overview */}
+                <h1>Keeping Time</h1>
+                <p>There are 4 Seasons of 100 Days each. Each Season has 4 Months of 25 Days each, with 25 Hours in a day. There are 5 Weeks in a Month, each Week consisting of 5 Days.</p>
+                <p>1 year → 4 seasons → 4 months per season → 25 days per month → 25 hours per day</p>
+                <p>Month names are shortened by syllables, using the first letter in each syllable. For example: <br /><br /> Bandari - Ban/Da/Ri - BDR</p>
+
+                {/* --Seasons */}
+                <h2>Seasons</h2>
+
+                <ol className='font_24' type="1">
+                    {/* Winter */}
+                    <li>Winter</li>
+                    <ol className='font_22' type="1">
+                        <li>Winter's Start</li>
+                        <li>Celynrag (Slumber of the World)</li>
+                        <li>Talan (Time of Deep Frost)</li>
+                        <li>Winter's End</li>
+                    </ol>
+
+                    {/* Spring */}
+                    <li>Spring</li>
+                    <ol className='font_22' type="1">
+                        <li>Spring's Start</li>
+                        <li>Ynsovan (Nature's March)</li>
+                        <li>Grothlynan (Waking of the World)</li>
+                        <li>Spring's End</li>
+                    </ol>
+
+                    {/* Summer */}
+                    <li>Summer</li>
+                    <ol className='font_22' type="1">
+                        <li>Summer's Start</li>
+                        <li>Jalynsong (Rising of the World)</li>
+                        <li>Bandari (Time of Great Burns)</li>
+                        <li>Summer's End</li>
+                    </ol>
+
+                    {/* Autumn */}
+                    <li>Autumn</li>
+                    <ol className='font_22' type="1">
+                        <li>Autumn's Start</li>
+                        <li>Celindro (Falling of the Leaves)</li>
+                        <li>Alynon (Slowing of the World)</li>
+                        <li>Autumn's End</li>
+                    </ol>
+                </ol>
+
+                {/* --Oddities */}
+                <h2>Oddities</h2>
+                <p>
+                    Chronomancers, and others who study time, have shown that time passes in equal portions of 4 seasons, each lasting 100 days. Each season has four months of 25 days each,
+                    and those days consist of 25 hours each. By divine creation, there are exactly 10,000 hours in a year. For this reason, it has angered many scholars that there are not 100
+                    minutes in an hour, but 60. In the same way, there are not 100 seconds in a minute, but also 60. The god of time, whichever one created it, must have had a sense of humour.
+                    <br /><br />
+                    Following from that thought, it was also a debate among the studies of time about who <i>created</i> time. The gods of time preside over it, ensuring its flow remains constant,
+                    but none have so far proven to be the creator of time. Many questions arise from this thought, and none have clear answers.
+                    <br /><br />
+                    Where is the first god of time?
+                    <br /><br />
+                    Did someone kill them?
+                    <br /><br />
+                    Are they lost or hidden?
+                </p>
+            </div>
+
+            {/* Prosthetics */}
+            <div style={{ maxWidth: '600px', textAlign: 'left', padding: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: 'white', borderRadius: '8px', marginBottom: '30px' }}>
+                {/* Overview */}
+                <h1>Prosthetics</h1>
+                <p>
+                    Prosthetics come in two forms:
+                    <ol className='font_22'>
+                        <li>A strong metal one that struggles to cast magic</li>
+                        <li>A weaker wooden one that can easily cast magic</li>
+                    </ol>
+
+                    Prosthetics are created by Runecrafters that create their own unique Runes, each one specialized to bond with whomever will receive the prosthetic. The Runes are carved or
+                    burned onto a place on the prosthetic that will be covered by another layer of whatever material it is made of (to prevent it from being damaged). Should the runes underneath
+                    be damaged, the wearer’s connection will be damaged as well, leading to weaker strength or random unintended movements.
+                    <br /><br />
+                    If a prosthetic’s runes become damaged, the wearer must return to the original Runecrafter for repairs (since only they know the runes they created) or they must buy a new
+                    prosthetic. There are standard prosthetics, but they do not act as efficiently as personalized ones - the bond they form is superficial because their runes are generic. In contrast,
+                    they can easily be repaired at any artificer if they are damaged.
+                    <br /><br />
+                    Magic can flow more easily through organic things, such as wood, meaning a higher level of skill is needed to enchant objects made of things like metal. For prosthetics, it is incredibly 
+                    difficult to create one made of metal that has the capacity to link to the user's soul completely instead of superficially (which would allow them to cast magic through it).
+                    <br /><br />
+                    So far, only arms, hands, legs and feet can be replaced by prosthetics, but many an Artificer wishes to research synthetic organs.
+                </p>
+            </div>
+
         </div>
     );
 }

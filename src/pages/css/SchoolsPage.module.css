@@ -12,6 +12,11 @@
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
+    padding-inline: 20px;
+
+    background-color: #f2f2f2;
+    border-radius: 15px;
+    border: 1px solid rgb(111, 111, 111);
 }
 
 h1, h2, h3 {
@@ -72,9 +77,25 @@ input {
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 20px;
-    width: calc(50% - 20px); /* Two cards per row with a gap */
+    width: calc(50% - 20px);
+    /* Two cards per row with a gap */
     box-sizing: border-box;
     text-align: left;
+}
+
+.searchContainer {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.searchInput {
+    width: 500px;
+    padding: 10px;
+    
+    font-size: 18px;
+
+    border: 1px solid #ccc;
+    border-radius: 15px;
 }
 
 @media (max-width: 600px) {
@@ -83,6 +104,7 @@ input {
     }
 
     .subschoolCard {
-        width: 100%; /* Single card per row on small screens */
+        width: 100%;
+        /* Single card per row on small screens */
     }
 }

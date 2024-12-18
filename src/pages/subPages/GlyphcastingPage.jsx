@@ -102,12 +102,20 @@ function GlyphcastingPage() {
                 {/* --Example Spell */}
                 <h3 className='textCenter font_28'>Example Spell</h3>
                 <p>
-                    An example of a spell that instantly creates a single projectile of fire that resembles an arrow, which can travel a long distance before dissipating:
+                    An example of a spell that instantly creates a single, small projectile of fire that resembles an arrow, which can travel a long distance before
+                    dissipating:
                 </p>
 
                 <div className='row' style={{ justifySelf: 'center' }}>
                     <img src={GlyphExample} alt="Glyph Duration" style={{ width: '350px' }} />
                 </div>
+
+                {/* --Other Geometry */}
+                <h3 className='textCenter font_28'>Other Geometry</h3>
+                <p>
+                    While the geometry above is the standard for casting a spell, the shapes used to contain the spell's properties can be swapped out according to
+                    personal preference.
+                </p>
 
             </div>
         </div>
