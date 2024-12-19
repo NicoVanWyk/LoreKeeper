@@ -18,13 +18,13 @@ const MapComponent = () => {
 
     // URLs for base maps
     const baseMapUrls = {
-        countryNames: "https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/maps%2FCountries.png?alt=media&token=cbbae2e0-64a1-41d9-b037-8f547dec649c",
-        landmarksCities: "https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/maps%2FLandmarksAndCities.png?alt=media&token=d4912efe-ec30-4c03-9e10-6967a5de8fa8",
-        combined: "https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/maps%2FCombined.png?alt=media&token=45b23859-2f26-46c9-a9d7-1cba49740d98"
+        countryNames: "https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/maps%2FCountries.png?alt=media&token=98f48d3f-55fe-47f7-91b4-3b119efece16",
+        landmarksCities: "https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/maps%2FLandmarksAndCities.png?alt=media&token=a14789e0-c2eb-4ef8-ad61-9305c7543189",
+        combined: "https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/maps%2FCombined.png?alt=media&token=46d40850-1382-47d1-a0d3-2aeb1b603b5b"
     };
 
     // URL for the regions overlay
-    const regionOverlayUrl = "https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/maps%2FRegions.png?alt=media&token=4efae0ca-826f-4770-941a-77e2ff1166ab";
+    const regionOverlayUrl = "https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/maps%2FRegions.png?alt=media&token=35b3f4f8-6302-4a39-99a8-4042762853d0";
 
     return (
         <div>

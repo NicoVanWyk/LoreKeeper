@@ -14,6 +14,8 @@ function GlossaryPage() {
         { term: "Afterlife", description: "A being enters the afterlife of the god they worshipped, keeping their only their Created Power to sustain their Spirit. If a being worshipped no god, their power either disperses or is claimed by a god of death or life." },
         { term: "Ascend", description: "A being of sufficient Power can shed its mortal body to gain a godly one. This would turn them into godlike beings, meaning they require less Worship to survive than conventional gods do." },
         { term: "Worship", description: "A god also gains power from Worship, which is increased by the amount of followers they have that are actively worshipping them. If a god loses all their Worshippers, they can survive through the help of other gods lending them power. They can also enter a hibernation-like state where they await Worship to resume. If a god's name fades from memory, they can still survive through written records or idols - but if all mentions, references, followers and idols of them are destroyed, they are also destroyed. A god requires a minimum amount of Worship to sustain themselves - they cannot consist solely off creating beings and 'harvesting' their Gained Power." },
+        { term: "Moons", description: "There are 5 moons, three visible during the night and two visible during the day. The largest moon is visible during the day, and the smallest moon is visible during the night." },
+        { term: "The Gods' Crown", description: "There is a ring around the planet, which is visible from almost all of Irea." },
     ];
 
     // State for search query

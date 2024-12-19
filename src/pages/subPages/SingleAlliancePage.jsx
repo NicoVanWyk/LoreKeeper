@@ -156,7 +156,7 @@ function SingleAlliancePage() {
             ) : (
                 <div className={styles.detailsContainer}>
                     <h1>{allianceData.name}</h1>
-                    <p><strong>Description:</strong> {allianceData.description}</p>
+                    <p style={{maxWidth: '1000px'}}><strong>Description:</strong> {allianceData.description}</p>
                     <p><strong>Formation Date:</strong> {allianceData.formationDate}</p>
                     <p><strong>Disbanded Date:</strong> {allianceData.disbandedDate || 'Still active'}</p>
                     <p>

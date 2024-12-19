@@ -112,7 +112,7 @@ function SingleLocationPage() {
         'name', 'description', 'type', 'coordinates', 'region', 'politicalEntity', 'climate', 'population', 'significance',
         'pointsOfInterest', 'economy', 'language', 'government', 'history', 'mapImageUrl', 'resources',
         'floraAndFauna', 'events', 'accessibility', 'threats', 'allies', 'enemies', 'notableResidents',
-        'culturalPractices', 'religion'
+        'culturalPractices'
     ];
 
     if (loading) {

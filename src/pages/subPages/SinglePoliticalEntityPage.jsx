@@ -151,6 +151,7 @@ function SinglePoliticalEntityPage() {
 
     return (
         <div className="container">
+            <button className='btnSecondary' onClick={() => navigate(-1)} style={{ alignSelf: 'flex-start' }}>&larr; Back</button>
             {isEditing ? (
                 <div className={styles.formContainer}>
                     <div className={styles.formGroup}>
@@ -311,7 +312,7 @@ function SinglePoliticalEntityPage() {
                             onChange={(selectedOptions) => handleSelectChange('religions', selectedOptions)}
                         />
                     </div>
-                    <button className="btnPrimary" onClick={handleSaveClick}>Save</button>
+                    <button className="btnPrimary" style={{ maxWidth: '600px' }} onClick={handleSaveClick}>Save</button>
                     <button className="btnSecondary" onClick={() => setIsEditing(false)}>Cancel</button>
                 </div>
             ) : (
@@ -326,7 +327,7 @@ function SinglePoliticalEntityPage() {
                     <p><strong>Economy Strength:</strong> {politicalEntityData.economyStrength}</p>
                     <p><strong>Language:</strong> {politicalEntityData.language}</p>
                     <p><strong>Government Type:</strong> {politicalEntityData.governmentType}</p>
-                    <p><strong>History:</strong> {politicalEntityData.history}</p>
+                    <p style={{ whiteSpace: 'pre-wrap' }}><strong>History:</strong> {politicalEntityData.history}</p>
                     <p><strong>Resources:</strong> {politicalEntityData.resources}</p>
                     <p>
                         <strong>Alliances:</strong>{' '}

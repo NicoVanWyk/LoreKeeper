@@ -142,6 +142,18 @@ function MagicPage() {
                     enchantment to create objects ranging from backpacks with more space inside than they seem, or even machines that can keep food
                     cold or frozen.
                 </p>
+
+                <h2>Blessing of the Sun</h2>
+                <p>
+                    Thousands of years ago, the god Shanajeb sacrificed themself to enchant the very sun itself. This blessing used the god's power to  imbue 
+                    the sunrays with holy power, causing most unholy and undead creatures to be harmed by the sun. Several gods, angels and other powerful beings 
+                    have sacrificed themselves to prolong the enchantment's lifespan.
+
+                    Although many Vena are harmed by this blessing, not all are deemed unholy enough to be targeted. Several Vena bloodlines may even benefit from 
+                    the blessing, although this is extremely rare.
+
+                    This blessing only applies to natural sunlight.
+                </p>
             </div>
 
             <div className={styles.section}>

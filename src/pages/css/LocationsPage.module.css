@@ -24,3 +24,10 @@
 .card p {
     margin-bottom: 0;
 }
+
+.dropdown {
+    padding: 5px;
+    border-radius: 10px;
+
+    font-size: 20px;
+}
