@@ -31,6 +31,7 @@ function NavbarComponent() {
                             <Link to="/glossary">Glossary</Link>
                             <Link to="/about">About</Link>
                             <Link to="/maps">Maps</Link>
+                            <Link to="/planes">Planes</Link>
                         </div>
                     </li>
 
@@ -86,6 +87,7 @@ function NavbarComponent() {
                     <li className="navbar-item"><Link to="/factions">Factions</Link></li>
                     <li className="navbar-item"><Link to="/stories">Stories</Link></li>
                     <li className="navbar-item"><Link to="/profile">Profile</Link></li>
+                    <li className="navbar-item"><Link to="/planes">Planes</Link></li>
                 </ul>
             </div>
         </nav>

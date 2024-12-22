@@ -145,11 +145,11 @@ function MagicPage() {
 
                 <h2>Blessing of the Sun</h2>
                 <p>
-                    Thousands of years ago, the god Shanajeb sacrificed themself to enchant the very sun itself. This blessing used the god's power to  imbue 
-                    the sunrays with holy power, causing most unholy and undead creatures to be harmed by the sun. Several gods, angels and other powerful beings 
+                    Thousands of years ago, the god Shanajeb sacrificed themself to enchant the very sun itself. This blessing used the god's power to  imbue
+                    the sunrays with holy power, causing most unholy and undead creatures to be harmed by the sun. Several gods, angels and other powerful beings
                     have sacrificed themselves to prolong the enchantment's lifespan.
 
-                    Although many Vena are harmed by this blessing, not all are deemed unholy enough to be targeted. Several Vena bloodlines may even benefit from 
+                    Although many Vena are harmed by this blessing, not all are deemed unholy enough to be targeted. Several Vena bloodlines may even benefit from
                     the blessing, although this is extremely rare.
 
                     This blessing only applies to natural sunlight.
@@ -165,14 +165,50 @@ function MagicPage() {
 
                 <h2>Spirits and Elementals</h2>
                 <p>
-                    Nature spirits and elemental beings embody the primal forces of the world, often acting as guardians or guides. Many even act as
-                    minor gods, protecting those who leave them offerings in the regions they inhabit.
+                    Nature spirits and elemental beings embody the primal forces of the world, often acting as guardians or guides. Many even act as minor gods, protecting
+                    those who leave them offerings in the regions they inhabit.
                 </p>
 
                 <h2>Demons and Angels</h2>
                 <p>
-                    Demons, devils and angels, both mortal and immortal, are imbued with magic more so than the creatures on Irea. They each serve to
-                    maintain balance in the balance of Hell (The Teach, The Infernal and The Abyss).
+                    Demons, devils and angels, both mortal and immortal, are imbued with magic more so than the creatures on Irea. They each serve to maintain balance in
+                    the balance of Hell (The Infernal and The Abyss, The Reach).
+                </p>
+
+                <h2>Vena</h2>
+                <p>
+                    Vena are a type of Vampires commonly referred to as Half Vampires. They are created in a variety of methods and as such have many different abilities and
+                    requirements for sustaining those abilities. Unlike True Vampires, many Vena are not dependant on blood to survive. Those that are, like True Vampires, feed
+                    on the blood to gain access to the life that flows through it - and therefore the Power of the creature they are feeding on. Because most animals do not have
+                    souls as powerful as (for example) a human's, Vampires cannot reliably survive by only feeding on animals.
+
+                    While there are many Vena who (like True Vampires) are dependant on blood, many do not require it or are addicted to it. The most common form of creating a Vena
+                    is through a ritual. Each different ritual makes a different type of Vena, commonly referred to Bloodlines of Vena. The four most common bloodlines are as follows:
+
+                    <ol>
+                        <li>
+                            Monei: The eyes of a Moneian Vena glow blue when they use their abilities. These Vena do not lose their original eye colour, and gain access to powerful Shadow
+                            and Transformation Magic. These Vena do not feel a need to consume blood, however they can to temporarily increase the strength of their abilities.
+                        </li>
+                        <li>
+                            Anesta: The eyes of an Anestan Vena glows purple when they use their abilities. These Vena do not lose their original eye colour, however new specks of purple 
+                            often appear in scattered clusters. These Vena form an addiction to blood, however they do not experience major withdrawal symptoms. They gain access to blood 
+                            magic and a 'feral' transformation, where they enter a state of bloodlust much more powerful than that of other Vena. While many Vena in bloodlust can exert some 
+                            form of control over themselves (for example not feeding on friends and family), an Anesta Vena is completely at the whims of their bloodlust. Feeding also does 
+                            not end their bloodlust as it does for other Vena, Anesta Vena remain in their form until they collapse from exhaustion. Thankfully, this transformation requires 
+                            a constant intake of blood to stave off exhaustion, meaning isolating a raging Anesta Vena can quickly pacify their bloodlust.
+                        </li>
+                        <li>
+                            Granai: The eyes of Granaian Vena constantly glow yellow, increasing in brightness if they use their abilities. These Vena lose their original eye colour and gain 
+                            access to Psychic Magic, particularly Telepathy and Telekinesis. They are dependant on blood to survive and are affected by the Blessing of the Sun. 
+                        </li>
+                        <li>
+                            Dashkov: The eyes of a Dashkovan Vena glow orange when they use their abilities. Their original eye colour is lost and replaced by a non-glowing orange. They become 
+                            addicted to blood and suffer withdrawal symptoms quicker if they use their abilities. They gain an ability to summon a Shadow, a featureless replication of themselves 
+                            that they can switch placed with at will. Powerful Dashovan Vena can switch between their Shadow fast enough to make it seem like the shadow is a solid entity acting 
+                            of its own volition. The most powerful of Dashkovan Vena can also create multiple Shadows and even act through them simultaneously. 
+                        </li>
+                    </ol>
                 </p>
             </div>
 

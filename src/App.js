@@ -42,6 +42,7 @@ import SingleAlliancePage from './pages/subPages/SingleAlliancePage';
 import ReligionsPage from './pages/ReligionsPage';
 import SingleReligionPage from './pages/subPages/SingleReligionPage';
 import GlyphcastingPage from './pages/subPages/GlyphcastingPage';
+import PlanesPage from './pages/subPages/PlanesPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -118,6 +119,9 @@ const AppWrapper = () => {
 
         {/* Maps Page */}
         <Route path="/maps" element={<PrivateRoute element={<MapsPage />} />} />
+
+        {/* Planes Page */}
+        <Route path="/planes" element={<PrivateRoute element={<PlanesPage />} />} />
 
         {/* Timeline */}
         <Route path="/timeline" element={<PrivateRoute element={<TimelinePage />} />} />
