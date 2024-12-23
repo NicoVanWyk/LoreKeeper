@@ -102,17 +102,86 @@ function BestiaryPage() {
             <div className={styles.heading} ref={racesRef}>
                 <h2>Races</h2>
             </div>
-            <div className={styles.cardsContainer}>
-                {filteredRaces.map((race) => (
-                    <div key={race.id} className={styles.card} onClick={() => handleCardClick('race', race.id)}>
-                        {race.imageUrl && (
-                            <img src={race.imageUrl} alt={race.name} className={styles.raceImage} />
-                        )}
-                        <div className={styles.cardContent}>
-                            <h3>{race.name}</h3>
-                        </div>
-                    </div>
-                ))}
+
+            {/* Filter and display races ending in 'Elf' */}
+            <div>
+                <h2>Elves</h2>
+                <div className={styles.cardsContainer}>
+                    {filteredRaces
+                        .filter((race) => race.name.endsWith('Elf'))
+                        .map((race) => (
+                            <div key={race.id} className={styles.card} onClick={() => handleCardClick('race', race.id)}>
+                                {race.imageUrl && (
+                                    <img src={race.imageUrl} alt={race.name} className={styles.raceImage} />
+                                )}
+                                <div className={styles.cardContent}>
+                                    <h3>{race.name}</h3>
+                                </div>
+                            </div>
+                        ))}
+                </div>
+            </div>
+
+            {/* Filter and display races ending in 'folk' */}
+            <div>
+                <h2>Humans</h2>
+                <div className={styles.cardsContainer}>
+                    {filteredRaces
+                        .filter((race) => race.name.endsWith('folk'))
+                        .map((race) => (
+                            <div key={race.id} className={styles.card} onClick={() => handleCardClick('race', race.id)}>
+                                {race.imageUrl && (
+                                    <img src={race.imageUrl} alt={race.name} className={styles.raceImage} />
+                                )}
+                                <div className={styles.cardContent}>
+                                    <h3>{race.name}</h3>
+                                </div>
+                            </div>
+                        ))}
+                </div>
+            </div>
+
+            {/* Filter and display races ending in 'dwarf' */}
+            <div>
+                <h2>Dwarves</h2>
+                <div className={styles.cardsContainer}>
+                    {filteredRaces
+                        .filter((race) => race.name.endsWith('dwarf'))
+                        .map((race) => (
+                            <div key={race.id} className={styles.card} onClick={() => handleCardClick('race', race.id)}>
+                                {race.imageUrl && (
+                                    <img src={race.imageUrl} alt={race.name} className={styles.raceImage} />
+                                )}
+                                <div className={styles.cardContent}>
+                                    <h3>{race.name}</h3>
+                                </div>
+                            </div>
+                        ))}
+                </div>
+            </div>
+
+            {/* Display all other races */}
+            <div>
+                <h2>Other Races</h2>
+                <div className={styles.cardsContainer}>
+                    {filteredRaces
+                        .filter(
+                            (race) =>
+                                !race.name.endsWith('Elf') &&
+                                !race.name.endsWith('folk') &&
+                                !race.name.endsWith('dwarf')
+                        )
+                        .map((race) => (
+                            <div key={race.id} className={styles.card} onClick={() => handleCardClick('race', race.id)}>
+                                {race.imageUrl && (
+                                    <img src={race.imageUrl} alt={race.name} className={styles.raceImage} />
+                                )}
+                                <div className={styles.cardContent}>
+                                    <h3>{race.name}</h3>
+                                </div>
+                            </div>
+                        ))}
+                </div>
             </div>
         </div>
     );

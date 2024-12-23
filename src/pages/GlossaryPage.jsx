@@ -16,6 +16,7 @@ function GlossaryPage() {
         { term: "Worship", description: "A god also gains power from Worship, which is increased by the amount of followers they have that are actively worshipping them. If a god loses all their Worshippers, they can survive through the help of other gods lending them power. They can also enter a hibernation-like state where they await Worship to resume. If a god's name fades from memory, they can still survive through written records or idols - but if all mentions, references, followers and idols of them are destroyed, they are also destroyed. A god requires a minimum amount of Worship to sustain themselves - they cannot consist solely off creating beings and 'harvesting' their Gained Power." },
         { term: "Moons", description: "There are 5 moons, three visible during the night and two visible during the day. The largest moon is visible during the day, and the smallest moon is visible during the night." },
         { term: "The Gods' Crown", description: "There is a ring around the planet, which is visible from almost all of Irea." },
+        { term: "Saints", description: "Saints are created when a large number of mortals believe a specific being is divine, usually as a messenger or servant of the gods. The Saint's power is dependant on the amount of mortals who worship them as a Saint, however most Saints have an increased lifespan and heightened Power." },
     ];
 
     // State for search query
