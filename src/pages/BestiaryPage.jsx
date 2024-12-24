@@ -160,6 +160,25 @@ function BestiaryPage() {
                 </div>
             </div>
 
+            {/* Filter and display races ending in 'dweller' */}
+            <div>
+                <h2>Merfolk</h2>
+                <div className={styles.cardsContainer}>
+                    {filteredRaces
+                        .filter((race) => race.name.endsWith('dweller'))
+                        .map((race) => (
+                            <div key={race.id} className={styles.card} onClick={() => handleCardClick('race', race.id)}>
+                                {race.imageUrl && (
+                                    <img src={race.imageUrl} alt={race.name} className={styles.raceImage} />
+                                )}
+                                <div className={styles.cardContent}>
+                                    <h3>{race.name}</h3>
+                                </div>
+                            </div>
+                        ))}
+                </div>
+            </div>
+
             {/* Display all other races */}
             <div>
                 <h2>Other Races</h2>
@@ -169,7 +188,8 @@ function BestiaryPage() {
                             (race) =>
                                 !race.name.endsWith('Elf') &&
                                 !race.name.endsWith('folk') &&
-                                !race.name.endsWith('dwarf')
+                                !race.name.endsWith('dwarf') &&
+                                !race.name.endsWith('dweller')
                         )
                         .map((race) => (
                             <div key={race.id} className={styles.card} onClick={() => handleCardClick('race', race.id)}>
