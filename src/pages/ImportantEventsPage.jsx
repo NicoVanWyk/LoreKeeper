@@ -14,6 +14,8 @@ const ImportantEventsPage = () => {
 
     const [showForm, setShowForm] = useState(false);
 
+    // TODO: Search function
+
     useEffect(() => {
         const checkUserRole = async () => {
             try {
@@ -78,20 +80,46 @@ const ImportantEventsPage = () => {
             )}
 
             <div className={styles.eventsContainer}>
-                {events.map(event => (
-                    <div
-                        key={event.id}
-                        className={styles.eventCard}
-                        onClick={() => handleCardClick(event.id)}
-                    >
-                        <h2>{event.title}</h2>
-                        <p><strong>Description: </strong>
-                            {event.description.length > 200
-                                ? `${event.description.slice(0, 200)}...`
-                                : event.description}
-                        </p>
+                {/* Filter and display events ending in 'War' */}
+                <div>
+                    <h2>Wars</h2>
+                    <div className={styles.cardsContainer}>
+                        {events
+                            .filter((event) => event.eventType.endsWith('War'))
+                            .map((event) => (
+                                <div key={event.id} className={styles.eventCard} onClick={() => handleCardClick(event.id)}>
+                                    <h2>{event.title}</h2>
+                                    <p><strong>Description: </strong>
+                                        {event.description.length > 200
+                                            ? `${event.description.slice(0, 200)}...`
+                                            : event.description}
+                                    </p>
+                                </div>
+                            ))}
                     </div>
-                ))}
+                </div>
+
+                {/* Display all other events */}
+                <div>
+                    <h2>Other Events</h2>
+                    <div className={styles.cardsContainer}>
+                        {events
+                            .filter(
+                                (event) =>
+                                    !event.eventType.endsWith('War')
+                            )
+                            .map((event) => (
+                                <div key={event.id} className={styles.eventCard} onClick={() => handleCardClick(event.id)}>
+                                    <h2>{event.title}</h2>
+                                    <p><strong>Description: </strong>
+                                        {event.description.length > 200
+                                            ? `${event.description.slice(0, 200)}...`
+                                            : event.description}
+                                    </p>
+                                </div>
+                            ))}
+                    </div>
+                </div>
             </div>
         </div>
     );

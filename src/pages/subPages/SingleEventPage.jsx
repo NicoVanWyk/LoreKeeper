@@ -162,6 +162,8 @@ function SingleEventPage() {
 
     return (
         <div className="container">
+            <button className='btnSecondary' onClick={() => navigate(-1)} style={{ alignSelf: 'flex-start' }}>&larr; Back</button>
+
             {isEditing ? (
                 <div className={`${styles.formContainer} ${styles.centered}`}>
                     <div className={styles.formGroup}>

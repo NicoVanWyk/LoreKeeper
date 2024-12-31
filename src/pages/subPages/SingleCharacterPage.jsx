@@ -8,6 +8,8 @@ import { handleImageUpload } from '../../services/bucketService';
 import { useNavigate } from 'react-router-dom';
 
 function SingleCharacterPage() {
+    // TODO: Choose species from bestiary races
+
     const navigate = useNavigate();
 
     const { characterId } = useParams();

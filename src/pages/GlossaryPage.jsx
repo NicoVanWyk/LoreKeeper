@@ -102,7 +102,7 @@ function GlossaryPage() {
                     <ol className='font_22' type="1">
                         <li>Spring's Start</li>
                         <li>Ynsovan (Nature's March)</li>
-                        <li>Grothlynan (Waking of the World)</li>
+                        <li>Grothylnan (Waking of the World)</li>
                         <li>Spring's End</li>
                     </ol>
 

@@ -21,18 +21,15 @@ const AddEventForm = () => {
     const [eventData, setEventData] = useState({
         era: '',
         year: '',
+        date: '',
         title: '',
         description: '',
-        content: '',
         polEntities: [],
         locations: [],
         eventType: '',
         charactersInvolved: [],
         significance: '',
-        visuals: '',
-        source: '',
         relatedEvents: [],
-        status: '',
         notes: ''
     });
 
@@ -112,18 +109,15 @@ const AddEventForm = () => {
         setEventData({
             era: '',
             year: '',
+            date: '',
             title: '',
             description: '',
-            content: '',
             polEntities: [],
             locations: [],
             eventType: '',
             charactersInvolved: [],
             significance: '',
-            visuals: '',
-            source: '',
             relatedEvents: [],
-            status: '',
             notes: ''
         });
     };
@@ -139,16 +133,16 @@ const AddEventForm = () => {
                 <input type="number" name="year" placeholder="Year" value={eventData.year} onChange={handleChange} required />
             </div>
             <div className={styles.formGroup}>
+                <label>Date</label>
+                <input type="string" name="date" placeholder="Date" value={eventData.date} onChange={handleChange} required />
+            </div>
+            <div className={styles.formGroup}>
                 <label>Title</label>
                 <input type="text" name="title" placeholder="Title" value={eventData.title} onChange={handleChange} required />
             </div>
             <div className={styles.formGroup}>
                 <label>Description</label>
                 <textarea name="description" placeholder="Description" value={eventData.description} onChange={handleChange} required />
-            </div>
-            <div className={styles.formGroup}>
-                <label>Content</label>
-                <textarea name="content" placeholder="Content" value={eventData.content} onChange={handleChange} required />
             </div>
             <div className={styles.formGroup}>
                 <label>Political Entities</label>
@@ -189,14 +183,6 @@ const AddEventForm = () => {
                 <input type="text" name="significance" placeholder="Significance" value={eventData.significance} onChange={handleChange} />
             </div>
             <div className={styles.formGroup}>
-                <label>Visuals</label>
-                <input type="text" name="visuals" placeholder="Visuals" value={eventData.visuals} onChange={handleChange} />
-            </div>
-            <div className={styles.formGroup}>
-                <label>Source</label>
-                <input type="text" name="source" placeholder="Source" value={eventData.source} onChange={handleChange} />
-            </div>
-            <div className={styles.formGroup}>
                 <label>Related Events</label>
                 <Select
                     isMulti
@@ -205,10 +191,6 @@ const AddEventForm = () => {
                     onChange={handleEventsChange}
                     className={styles.selectDropdown}
                 />
-            </div>
-            <div className={styles.formGroup}>
-                <label>Status</label>
-                <input type="text" name="status" placeholder="Status" value={eventData.status} onChange={handleChange} />
             </div>
             <div className={styles.formGroup}>
                 <label>Notes</label>
