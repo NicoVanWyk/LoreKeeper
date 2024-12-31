@@ -10,6 +10,7 @@ function CharactersPage() {
     const [characters, setCharacters] = useState([]);
     const [godCharacters, setGodCharacters] = useState([]);
     const [mageGodCharacters, setMageGodCharacters] = useState([]);
+    const [primordialCharacters, setPrimordialCharacters] = useState([]);
     const [otherCharacters, setOtherCharacters] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -24,12 +25,14 @@ function CharactersPage() {
                 // Separate certain characters from others
                 const gods = charactersData.filter(character => character.species?.startsWith('God'));
                 const mageGods = charactersData.filter(character => character.species?.startsWith('Mage-God'));
+                const primordials = charactersData.filter(character => character.species?.startsWith('Primordial'));
                 const others = charactersData.filter(
-                    (character) => !(character.species?.startsWith('God') || character.species?.startsWith('Mage-God'))
+                    (character) => !(character.species?.startsWith('God') || character.species?.startsWith('Mage-God') || character.species?.startsWith('Primordial'))
                 );
 
                 setGodCharacters(gods);
                 setMageGodCharacters(mageGods);
+                setPrimordialCharacters(primordials);
                 setOtherCharacters(others);
             } catch (error) {
                 console.error('Error fetching characters: ', error);
@@ -60,29 +63,41 @@ function CharactersPage() {
         setSearchTerm(e.target.value);
     };
 
-    const filteredGodCharacters = godCharacters.filter((character) =>
-        character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.gender.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.occupation.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredGodCharacters = godCharacters
+        .filter((character) =>
+            character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.gender.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.occupation.toLowerCase().includes(searchTerm.toLowerCase())
+        ).sort((a, b) => a.fullName.localeCompare(b.fullName));;
 
-    const filteredMageGodCharacters = mageGodCharacters.filter((character) =>
-        character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.gender.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.occupation.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredMageGodCharacters = mageGodCharacters
+        .filter((character) =>
+            character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.gender.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.occupation.toLowerCase().includes(searchTerm.toLowerCase())
+        ).sort((a, b) => a.fullName.localeCompare(b.fullName));;
 
-    const filteredOtherCharacters = otherCharacters.filter((character) =>
-        character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.gender.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        character.occupation.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredPrimordialCharacters = primordialCharacters
+        .filter((character) =>
+            character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.gender.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.occupation.toLowerCase().includes(searchTerm.toLowerCase())
+        ).sort((a, b) => a.fullName.localeCompare(b.fullName));;
+
+    const filteredOtherCharacters = otherCharacters
+        .filter((character) =>
+            character.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.nicknames.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.gender.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            character.occupation.toLowerCase().includes(searchTerm.toLowerCase())
+        ).sort((a, b) => a.fullName.localeCompare(b.fullName));;
 
     return (
         <div className="container">
@@ -158,6 +173,32 @@ function CharactersPage() {
             <div className={styles.cardsContainer}>
                 {filteredGodCharacters.length > 0 ? (
                     filteredGodCharacters.map((character) => (
+                        <div key={character.id} className={styles.card} onClick={() => handleCardClick(character.id)}>
+                            {character.imageUrl && (
+                                <img src={character.imageUrl} alt={character.fullName} className={styles.characterImageAll} />
+                            )}
+                            <div className={styles.cardContent}>
+                                <h3>{character.fullName}</h3>
+                                <h4>{character.nicknames}</h4>
+                                <p><strong>Species:</strong> {character.species}</p>
+                                <p><strong>Gender:</strong> {character.gender}</p>
+                                <p><strong>Age by 5E 1690 (Or Date of Death):</strong> {character.age}</p>
+                                <p><strong>Occupation/Role:</strong> {character.occupation}</p>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p>No God characters found.</p>
+                )}
+            </div>
+
+            {/* Separator Line */}
+            <div style={{ margin: '30px 0', border: '5px solid #020818', borderRadius: '15px', width: '100%' }}></div>
+
+            <h2>Primordials</h2>
+            <div className={styles.cardsContainer}>
+                {filteredPrimordialCharacters.length > 0 ? (
+                    filteredPrimordialCharacters.map((character) => (
                         <div key={character.id} className={styles.card} onClick={() => handleCardClick(character.id)}>
                             {character.imageUrl && (
                                 <img src={character.imageUrl} alt={character.fullName} className={styles.characterImageAll} />

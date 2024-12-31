@@ -85,7 +85,12 @@ const ReligionsPage = () => {
                         onClick={() => handleCardClick(religion.id)}
                     >
                         <h2>{religion.name}</h2>
-                        <p><strong>Description:</strong> {religion.description}</p>
+
+                        <p><strong>Description: </strong>
+                            {religion.description.length > 200
+                                ? `${religion.description.slice(0, 200)}...`
+                                : religion.description}
+                        </p>
                     </div>
                 ))}
             </div>

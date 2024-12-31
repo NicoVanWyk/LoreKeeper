@@ -23,6 +23,7 @@ function SingleEventPage() {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
     const [charactersOptions, setCharactersOptions] = useState([]);
+    const [charactersInvolved, setCharactersInvolved] = useState([]);
     const [locationsOptions, setLocationsOptions] = useState([]);
     const [eventsOptions, setEventsOptions] = useState([]);
 
@@ -75,7 +76,7 @@ function SingleEventPage() {
                         getAllCharacters().then(characters => characters.find(char => char.id === characterId))
                     )
                 );
-                setCharactersOptions(charactersInvolved);
+                setCharactersInvolved(charactersInvolved);
             } catch (error) {
                 console.error('Error fetching event: ', error);
                 setLoading(false);
@@ -115,6 +116,8 @@ function SingleEventPage() {
                 setLocationsOptions(locationOptions);
                 setPolEntitiesOptions(polEntityOptions);
                 setEventsOptions(eventOptions);
+
+                console.log(characterOptions);
             } catch (error) {
                 console.error('Error fetching options: ', error);
             }
@@ -174,6 +177,10 @@ function SingleEventPage() {
                         <input type="number" name="year" value={eventData.year} onChange={handleInputChange} />
                     </div>
                     <div className={styles.formGroup}>
+                        <label>Date</label>
+                        <input type="text" name="date" value={eventData.date} onChange={handleInputChange} />
+                    </div>
+                    <div className={styles.formGroup}>
                         <label>Description</label>
                         <textarea name="description" value={eventData.description} onChange={handleInputChange}></textarea>
                     </div>
@@ -222,24 +229,8 @@ function SingleEventPage() {
                         <input type="text" name="eventType" value={eventData.eventType} onChange={handleInputChange} />
                     </div>
                     <div className={styles.formGroup}>
-                        <label>Content</label>
-                        <textarea name="content" value={eventData.content} onChange={handleInputChange}></textarea>
-                    </div>
-                    <div className={styles.formGroup}>
                         <label>Significance</label>
                         <input type="text" name="significance" value={eventData.significance} onChange={handleInputChange} />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label>Visuals</label>
-                        <input type="text" name="visuals" value={eventData.visuals} onChange={handleInputChange} />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label>Source</label>
-                        <input type="text" name="source" value={eventData.source} onChange={handleInputChange} />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label>Status</label>
-                        <input type="text" name="status" value={eventData.status} onChange={handleInputChange} />
                     </div>
                     <div className={styles.formGroup}>
                         <label>Notes</label>
@@ -254,8 +245,7 @@ function SingleEventPage() {
                 <div className={styles.detailsContainer}>
                     <div className={styles.eventInfo}>
                         <h1>{eventData.title}</h1>
-                        <p><strong>Era:</strong> {eventData.era}</p>
-                        <p><strong>Year:</strong> {eventData.year}</p>
+                        <p>Date: {eventData.era}E {eventData.year}; {eventData.date}</p>
                         <p><strong>Description:</strong> {eventData.description}</p>
 
                         <p>
@@ -300,7 +290,7 @@ function SingleEventPage() {
 
                         <p>
                             <strong>Characters Involved:</strong>{' '}
-                            {charactersOptions
+                            {charactersInvolved
                                 .filter(character => character) // Ensure the character exists
                                 .map((character, index) => (
                                     <span
@@ -309,17 +299,13 @@ function SingleEventPage() {
                                         style={{ cursor: 'pointer', textDecoration: 'underline', color: 'blue' }}
                                     >
                                         {character.fullName}
-                                        {index < charactersOptions.length - 1 && ', '}
+                                        {index < charactersInvolved.length - 1 && ', '}
                                     </span>
                                 ))}
                         </p>
 
                         <p><strong>Event Type:</strong> {eventData.eventType}</p>
-                        <p><strong>Content:</strong> {eventData.content}</p>
                         <p><strong>Significance:</strong> {eventData.significance}</p>
-                        <p><strong>Visuals:</strong> {eventData.visuals}</p>
-                        <p><strong>Source:</strong> {eventData.source}</p>
-                        <p><strong>Status:</strong> {eventData.status}</p>
                         <p><strong>Notes:</strong> {eventData.notes}</p>
                     </div>
                     {isAdmin && (

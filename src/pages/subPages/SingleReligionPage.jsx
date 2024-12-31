@@ -146,9 +146,9 @@ function SingleReligionPage() {
             ) : (
                 <div className={styles.detailsContainer}>
                     <h1>{religionData.name}</h1>
-                    <p><strong>Description:</strong> {religionData.description}</p>
+                    <p style={{ maxWidth: '800px', whiteSpace: 'pre-wrap' }}><strong>Description:</strong> {religionData.description}</p>
                     <p><strong>Status:</strong> {religionData.status}</p>
-                    <p>
+                    <p style={{ maxWidth: '800px' }}>
                         <strong>Gods:</strong>{' '}
                         {godsData.map((god, index) => (
                             <span

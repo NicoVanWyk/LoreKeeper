@@ -85,7 +85,11 @@ const ImportantEventsPage = () => {
                         onClick={() => handleCardClick(event.id)}
                     >
                         <h2>{event.title}</h2>
-                        <p><strong>Description:</strong> {event.description}</p>
+                        <p><strong>Description: </strong>
+                            {event.description.length > 200
+                                ? `${event.description.slice(0, 200)}...`
+                                : event.description}
+                        </p>
                     </div>
                 ))}
             </div>
