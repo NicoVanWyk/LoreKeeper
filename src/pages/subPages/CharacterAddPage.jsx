@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addCharacter } from '../../services/charactersService';
+import { addCharacter, getAllCharacters } from '../../services/charactersService';
 import { Oval } from 'react-loader-spinner';
 import styles from '../css/CharacterAddPage.module.css';
 import { handleImageUpload } from '../../services/bucketService';
+import Select from 'react-select';
 
 function CharacterAddPage() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
+
+    const [charactersOptions, setCharactersOptions] = useState([]);
 
     const [characterData, setCharacterData] = useState({
         fullName: '',
@@ -18,9 +21,8 @@ function CharacterAddPage() {
         species: '',
         occupation: '',
         physicalDescription: '',
-        typicalClothing: '',
         placeOfBirth: '',
-        family: '',
+        family: [],
         educationTraining: '',
         significantEvents: '',
         traits: '',
@@ -32,16 +34,45 @@ function CharacterAddPage() {
         skills: '',
         allies: '',
         enemies: '',
-        loveInterests: '',
-        plotInvolvement: '',
-        keyActions: '',
-        characterArc: '',
+        loveInterests: [],
         imageUrl: 'https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/Logo.jpg?alt=media&token=b3c66f08-5659-49a0-877c-1a03841ce2bd',
     });
+
+    // Populate the selects with all the options available.
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                // --Get all information form the DB
+                const characters = await getAllCharacters();
+
+                // --Collect the name of the option to make it easier for the user to know what they are adding
+                const characterOptions = characters.map((character) => ({
+                    value: character.id,
+                    label: character.fullName,
+                }));
+
+                // --Set the options available
+                setCharactersOptions(characterOptions);
+            } catch (error) {
+                console.error('Error fetching character options: ', error);
+            }
+        };
+
+        fetchOptions();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCharacterData({ ...characterData, [name]: value });
+    };
+
+    // Handle changes to the Select
+    const handleLoveInterestsChange = (selectedOptions) => {
+        setCharacterData({ ...characterData, loveInterests: selectedOptions.map((option) => option.value) });
+    };
+
+    const handleFamilyChange = (selectedOptions) => {
+        setCharacterData({ ...characterData, family: selectedOptions.map((option) => option.value) });
     };
 
     const handleFileChange = (e) => {
@@ -87,7 +118,7 @@ function CharacterAddPage() {
                     <input type="text" name="nicknames" value={characterData.nicknames} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
-                    <label>Age by 5E 1690</label>
+                    <label>Age by 5E 1690 (Or Death)</label>
                     <input type="text" name="age" value={characterData.age} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
@@ -107,17 +138,31 @@ function CharacterAddPage() {
                     <textarea name="physicalDescription" value={characterData.physicalDescription} onChange={handleChange} className="large-textarea"></textarea>
                 </div>
                 <div className={styles.formGroup}>
-                    <label>Typical Clothing/Armor</label>
-                    <textarea name="typicalClothing" value={characterData.typicalClothing} onChange={handleChange} className="large-textarea"></textarea>
-                </div>
-                <div className={styles.formGroup}>
                     <label>Place of Birth</label>
                     <textarea name="placeOfBirth" value={characterData.placeOfBirth} onChange={handleChange} className="large-textarea"></textarea>
                 </div>
+
                 <div className={styles.formGroup}>
                     <label>Family</label>
-                    <textarea name="family" value={characterData.family} onChange={handleChange} className="large-textarea"></textarea>
+                    <Select
+                        isMulti
+                        options={charactersOptions}
+                        value={charactersOptions.filter((option) => characterData.family?.includes(option.value))}
+                        onChange={handleFamilyChange}
+                        className={styles.selectDropdown}
+                    />
                 </div>
+                <div className={styles.formGroup}>
+                    <label>Love Interests</label>
+                    <Select
+                        isMulti
+                        options={charactersOptions}
+                        value={charactersOptions.filter((option) => characterData.loveInterests?.includes(option.value))}
+                        onChange={handleLoveInterestsChange}
+                        className={styles.selectDropdown}
+                    />
+                </div>
+
                 <div className={styles.formGroup}>
                     <label>Education/Training</label>
                     <textarea name="educationTraining" value={characterData.educationTraining} onChange={handleChange} className="large-textarea"></textarea>
@@ -161,22 +206,6 @@ function CharacterAddPage() {
                 <div className={styles.formGroup}>
                     <label>Enemies</label>
                     <textarea name="enemies" value={characterData.enemies} onChange={handleChange} className="large-textarea"></textarea>
-                </div>
-                <div className={styles.formGroup}>
-                    <label>Love Interests</label>
-                    <textarea name="loveInterests" value={characterData.loveInterests} onChange={handleChange} className="large-textarea"></textarea>
-                </div>
-                <div className={styles.formGroup}>
-                    <label>Current Role in the Story</label>
-                    <textarea name="plotInvolvement" value={characterData.plotInvolvement} onChange={handleChange} className="large-textarea"></textarea>
-                </div>
-                <div className={styles.formGroup}>
-                    <label>Key Actions</label>
-                    <textarea name="keyActions" value={characterData.keyActions} onChange={handleChange} className="large-textarea"></textarea>
-                </div>
-                <div className={styles.formGroup}>
-                    <label>Character Arc</label>
-                    <textarea name="characterArc" value={characterData.characterArc} onChange={handleChange} className="large-textarea"></textarea>
                 </div>
 
                 <div className={`${styles.formGroup} ${styles.fullWidth}`}>

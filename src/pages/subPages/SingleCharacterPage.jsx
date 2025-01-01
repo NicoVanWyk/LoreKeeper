@@ -3,27 +3,53 @@ import { useParams } from 'react-router-dom';
 import styles from '../css/SingleCharacterPage.module.css';
 import { useAuth } from '../../contexts/authContext';
 import { getUserProfile } from '../../services/userService';
-import { getCharacter, updateCharacter } from '../../services/charactersService';
+import { getAllCharacters, getCharacter, updateCharacter } from '../../services/charactersService';
 import { handleImageUpload } from '../../services/bucketService';
 import { useNavigate } from 'react-router-dom';
+import Select from 'react-select';
 
 function SingleCharacterPage() {
-    // TODO: Change to array + dropdown of choices: species (species), family (characters), allies: (characters), enemies: (characters), loveInterests: (characters)
+    // NOTE: Species will remain a text box and not a dropdown because the species, subspecies and former species can be noted (if applicable).
+
+    // TODO: Change to array + dropdown of choices: 
+    // Family (characters), loveInterests: (characters)
+    // Allies: (characters, factions), enemies: (characters, factions)
 
     const navigate = useNavigate();
 
     const { characterId } = useParams();
     const { currentUser } = useAuth();
     const [characterData, setCharacterData] = useState({});
+    const [familyData, setFamilyData] = useState([]);
+    const [loveInterestData, setLoveInterestData] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    const [charactersOptions, setCharactersOptions] = useState([]);
+
     useEffect(() => {
         const fetchCharacter = async () => {
             try {
                 const character = await getCharacter(characterId);
+
+                // Fetch family details
+                const family = await Promise.all(
+                    character.family.map(familyId =>
+                        getAllCharacters().then(characters => characters.find(char => char.id === familyId))
+                    )
+                );
+
+                // Fetch family details
+                const loveInterests = await Promise.all(
+                    character.loveInterests.map(interestId =>
+                        getAllCharacters().then(characters => characters.find(char => char.id === interestId))
+                    )
+                );
+
+                setFamilyData(family);
+                setLoveInterestData(loveInterests)
                 setCharacterData(character);
                 setLoading(false);
             } catch (error) {
@@ -47,6 +73,29 @@ function SingleCharacterPage() {
         checkUserRole();
     }, [characterId, currentUser]);
 
+    // Populate the selects with all the options available.
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                // --Get all information form the DB
+                const characters = await getAllCharacters();
+
+                // --Collect the name of the option to make it easier for the user to know what they are adding
+                const characterOptions = characters.map((character) => ({
+                    value: character.id,
+                    label: character.fullName,
+                }));
+
+                // --Set the options available
+                setCharactersOptions(characterOptions);
+            } catch (error) {
+                console.error('Error fetching character options: ', error);
+            }
+        };
+
+        fetchOptions();
+    }, []);
+
     const handleEditClick = () => {
         setIsEditing(true);
     };
@@ -54,6 +103,15 @@ function SingleCharacterPage() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCharacterData({ ...characterData, [name]: value });
+    };
+
+    // Handle changes to the Select
+    const handleLoveInterestsChange = (selectedOptions) => {
+        setCharacterData({ ...characterData, loveInterests: selectedOptions.map((option) => option.value) });
+    };
+
+    const handleFamilyChange = (selectedOptions) => {
+        setCharacterData({ ...characterData, family: selectedOptions.map((option) => option.value) });
     };
 
     const handleSubmit = async (e) => {
@@ -107,7 +165,7 @@ function SingleCharacterPage() {
                         <input type="text" name="gender" value={characterData.gender} onChange={handleChange} />
                     </div>
                     <div className={styles.formGroup}>
-                        <label>Age By 5E 1690</label>
+                        <label>Age By 5E 1690 (Or Death)</label>
                         <input type="text" name="age" value={characterData.age} onChange={handleChange} />
                     </div>
                     <div className={styles.formGroup}>
@@ -119,17 +177,31 @@ function SingleCharacterPage() {
                         <textarea name="physicalDescription" value={characterData.physicalDescription} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
                     <div className={styles.formGroup}>
-                        <label>Typical Clothing/Armor</label>
-                        <textarea name="typicalClothing" value={characterData.typicalClothing} onChange={handleChange} className={styles.largeTextarea}></textarea>
-                    </div>
-                    <div className={styles.formGroup}>
                         <label>Place of Birth</label>
                         <textarea name="placeOfBirth" value={characterData.placeOfBirth} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
+
                     <div className={styles.formGroup}>
                         <label>Family</label>
-                        <textarea name="family" value={characterData.family} onChange={handleChange} className={styles.largeTextarea}></textarea>
+                        <Select
+                            isMulti
+                            options={charactersOptions}
+                            value={charactersOptions.filter((option) => characterData.family?.includes(option.value))}
+                            onChange={handleFamilyChange}
+                            className={styles.selectDropdown}
+                        />
                     </div>
+                    <div className={styles.formGroup}>
+                        <label>Love Interests</label>
+                        <Select
+                            isMulti
+                            options={charactersOptions}
+                            value={charactersOptions.filter((option) => characterData.loveInterests?.includes(option.value))}
+                            onChange={handleLoveInterestsChange}
+                            className={styles.selectDropdown}
+                        />
+                    </div>
+
                     <div className={styles.formGroup}>
                         <label>Education/Training</label>
                         <textarea name="educationTraining" value={characterData.educationTraining} onChange={handleChange} className={styles.largeTextarea}></textarea>
@@ -174,22 +246,6 @@ function SingleCharacterPage() {
                         <label>Enemies</label>
                         <textarea name="enemies" value={characterData.enemies} onChange={handleChange} className={styles.largeTextarea}></textarea>
                     </div>
-                    <div className={styles.formGroup}>
-                        <label>Love Interests</label>
-                        <textarea name="loveInterests" value={characterData.loveInterests} onChange={handleChange} className={styles.largeTextarea}></textarea>
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label>Current Role in the Story</label>
-                        <textarea name="plotInvolvement" value={characterData.plotInvolvement} onChange={handleChange} className={styles.largeTextarea}></textarea>
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label>Key Actions</label>
-                        <textarea name="keyActions" value={characterData.keyActions} onChange={handleChange} className={styles.largeTextarea}></textarea>
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label>Character Arc</label>
-                        <textarea name="characterArc" value={characterData.characterArc} onChange={handleChange} className={styles.largeTextarea}></textarea>
-                    </div>
 
                     <div className={styles.formGroup}>
                         <label>Upload New Image</label>
@@ -232,18 +288,13 @@ function SingleCharacterPage() {
                             )}
                         </div>
 
-                        {characterData.physicalDescription || characterData.typicalClothing ? (
+                        {characterData.physicalDescription ? (
                             <>
                                 <hr className={styles.separator} />
                                 <h2>Physical Characteristics</h2>
                                 {characterData.physicalDescription && (
                                     <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
                                         <strong>Physical Description:</strong><br /> {characterData.physicalDescription}
-                                    </p>
-                                )}
-                                {characterData.typicalClothing && (
-                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
-                                        <strong>Typical Clothing/Armor:</strong><br /> {characterData.typicalClothing}
                                     </p>
                                 )}
                             </>
@@ -257,11 +308,6 @@ function SingleCharacterPage() {
                                     {characterData.placeOfBirth && (
                                         <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
                                             <strong>Place of Birth:</strong><br /> {characterData.placeOfBirth}
-                                        </p>
-                                    )}
-                                    {characterData.family && (
-                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
-                                            <strong>Family:</strong><br /> {characterData.family}
                                         </p>
                                     )}
                                     {characterData.educationTraining && (
@@ -327,11 +373,6 @@ function SingleCharacterPage() {
                                             <strong>Skills:</strong><br /> {characterData.skills}
                                         </p>
                                     )}
-                                    {characterData.allies && (
-                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
-                                            <strong>Allies:</strong><br /> {characterData.allies}
-                                        </p>
-                                    )}
                                 </div>
                             </>
                         ) : null}
@@ -341,39 +382,51 @@ function SingleCharacterPage() {
                                 <hr className={styles.separator} />
                                 <h2>Relationships</h2>
                                 <div>
+                                    {characterData.allies && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Allies:</strong><br /> {characterData.allies}
+                                        </p>
+                                    )}
                                     {characterData.enemies && (
                                         <p className={`${styles.font22} ${styles.subDiv_3_p} preserve-whitespace`}>
                                             <strong>Enemies:</strong><br /> {characterData.enemies}
                                         </p>
                                     )}
+                                    {characterData.family && (
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Family:</strong>{' '}
+                                            {familyData
+                                                .filter(familyMember => familyMember)
+                                                .map((familyMember, index) => (
+                                                    <span
+                                                        key={familyMember.id}
+                                                        onClick={() => navigate(`/characters/${familyMember.id}`)}
+                                                        style={{ cursor: 'pointer', textDecoration: 'underline', color: 'blue' }}
+                                                    >
+                                                        {familyMember.fullName}
+                                                        {index < familyData.length - 1 && ', '}
+                                                    </span>
+                                                ))}
+                                        </p>
+                                    )}
                                     {characterData.loveInterests && (
-                                        <p className={`${styles.font22} ${styles.subDiv_3_p} preserve-whitespace`}>
-                                            <strong>Love Interests:</strong><br /> {characterData.loveInterests}
+                                        <p className={`${styles.font22} ${styles.subDiv_2_p} preserve-whitespace`}>
+                                            <strong>Love Interests:</strong>{' '}
+                                            {loveInterestData
+                                                .filter(loveInterest => loveInterest)
+                                                .map((loveInterest, index) => (
+                                                    <span
+                                                        key={loveInterest.id}
+                                                        onClick={() => navigate(`/characters/${loveInterest.id}`)}
+                                                        style={{ cursor: 'pointer', textDecoration: 'underline', color: 'blue' }}
+                                                    >
+                                                        {loveInterest.fullName}
+                                                        {index < loveInterestData.length - 1 && ', '}
+                                                    </span>
+                                                ))}
                                         </p>
                                     )}
                                 </div>
-                            </>
-                        ) : null}
-
-                        {characterData.plotInvolvement || characterData.keyActions || characterData.characterArc ? (
-                            <>
-                                <hr className={styles.separator} />
-                                <h2>Role in the Story</h2>
-                                {characterData.plotInvolvement && (
-                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
-                                        <strong>Current Role in the Story:</strong><br /> {characterData.plotInvolvement}
-                                    </p>
-                                )}
-                                {characterData.keyActions && (
-                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
-                                        <strong>Key Actions:</strong><br /> {characterData.keyActions}
-                                    </p>
-                                )}
-                                {characterData.characterArc && (
-                                    <p style={{ marginTop: '5px' }} className={`${styles.font22} preserve-whitespace`}>
-                                        <strong>Character Arc:</strong><br /> {characterData.characterArc}
-                                    </p>
-                                )}
                             </>
                         ) : null}
 
