@@ -9,12 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 
 function SingleCharacterPage() {
-    // NOTE: Species will remain a text box and not a dropdown because the species, subspecies and former species can be noted (if applicable).
-
-    // TODO: Change to array + dropdown of choices: 
-    // Family (characters), loveInterests: (characters)
-    // Allies: (characters, factions), enemies: (characters, factions)
-
     const navigate = useNavigate();
 
     const { characterId } = useParams();
@@ -35,21 +29,25 @@ function SingleCharacterPage() {
                 const character = await getCharacter(characterId);
 
                 // Fetch family details
-                const family = await Promise.all(
-                    character.family.map(familyId =>
-                        getAllCharacters().then(characters => characters.find(char => char.id === familyId))
-                    )
-                );
+                if (character.family) {
+                    const family = await Promise.all(
+                        character.family.map(familyId =>
+                            getAllCharacters().then(characters => characters.find(char => char.id === familyId))
+                        )
+                    );
+                    setFamilyData(family);
+                }
 
-                // Fetch family details
-                const loveInterests = await Promise.all(
-                    character.loveInterests.map(interestId =>
-                        getAllCharacters().then(characters => characters.find(char => char.id === interestId))
-                    )
-                );
+                if (character.loveInterest) {
+                    // Fetch family details
+                    const loveInterests = await Promise.all(
+                        character.loveInterests.map(interestId =>
+                            getAllCharacters().then(characters => characters.find(char => char.id === interestId))
+                        )
+                    );
+                    setLoveInterestData(loveInterests)
+                }
 
-                setFamilyData(family);
-                setLoveInterestData(loveInterests)
                 setCharacterData(character);
                 setLoading(false);
             } catch (error) {
@@ -300,7 +298,7 @@ function SingleCharacterPage() {
                             </>
                         ) : null}
 
-                        {characterData.placeOfBirth || characterData.family || characterData.educationTraining ? (
+                        {characterData.placeOfBirth || characterData.educationTraining ? (
                             <>
                                 <hr className={styles.separator} />
                                 <h2>Background</h2>
@@ -348,7 +346,7 @@ function SingleCharacterPage() {
                             </>
                         ) : null}
 
-                        {characterData.strengthsWeaknesses || characterData.motivations || characterData.magicAbilities || characterData.skills || characterData.allies ? (
+                        {characterData.strengthsWeaknesses || characterData.motivations || characterData.magicAbilities || characterData.skills ? (
                             <>
                                 <hr className={styles.separator} />
                                 <h2>Abilities</h2>
@@ -377,7 +375,7 @@ function SingleCharacterPage() {
                             </>
                         ) : null}
 
-                        {characterData.enemies || characterData.loveInterests ? (
+                        {characterData.enemies || characterData.loveInterests || characterData.allies || characterData.family ? (
                             <>
                                 <hr className={styles.separator} />
                                 <h2>Relationships</h2>
