@@ -9,7 +9,7 @@ function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const characterId = 'qtozih6F9ippeuYJqoe4';
+    const characterId = '64Eh5P6qMXrCoAW1nXB9';
 
     useEffect(() => {
         const fetchCharacter = async () => {

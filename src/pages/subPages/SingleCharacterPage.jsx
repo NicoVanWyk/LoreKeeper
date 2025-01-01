@@ -8,7 +8,7 @@ import { handleImageUpload } from '../../services/bucketService';
 import { useNavigate } from 'react-router-dom';
 
 function SingleCharacterPage() {
-    // TODO: Choose species from bestiary races
+    // TODO: Change to array + dropdown of choices: species (species), family (characters), allies: (characters), enemies: (characters), loveInterests: (characters)
 
     const navigate = useNavigate();
 
