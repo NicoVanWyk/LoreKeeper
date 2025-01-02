@@ -1,18 +1,29 @@
+// Base Imports
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { addCharacter, getAllCharacters } from '../../services/charactersService';
-import { Oval } from 'react-loader-spinner';
+// CSS Import
 import styles from '../css/CharacterAddPage.module.css';
+// Navigation Import
+import { useNavigate } from 'react-router-dom';
+// Service Imports
+import { addCharacter, getAllCharacters } from '../../services/charactersService';
 import { handleImageUpload } from '../../services/bucketService';
+// React loader spinner import
+import { Oval } from 'react-loader-spinner';
+// React select import
 import Select from 'react-select';
 
 function CharacterAddPage() {
+    // Enable Navigation
     const navigate = useNavigate();
+    // UseStates
+    // --Controls Loading
     const [loading, setLoading] = useState(false);
+    // --Image Selected to upload
     const [selectedFile, setSelectedFile] = useState(null);
-
+    // --Available options for selecting characters
     const [charactersOptions, setCharactersOptions] = useState([]);
 
+    // Initial Data for a character
     const [characterData, setCharacterData] = useState({
         fullName: '',
         nicknames: '',
@@ -61,28 +72,31 @@ function CharacterAddPage() {
         fetchOptions();
     }, []);
 
+    // Handle form changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCharacterData({ ...characterData, [name]: value });
     };
 
-    // Handle changes to the Select
+    // Handle changes to the love interests select
     const handleLoveInterestsChange = (selectedOptions) => {
         setCharacterData({ ...characterData, loveInterests: selectedOptions.map((option) => option.value) });
     };
 
+    // Handle changes to the family select
     const handleFamilyChange = (selectedOptions) => {
         setCharacterData({ ...characterData, family: selectedOptions.map((option) => option.value) });
     };
-
+    // --Handle a user uploading a new image
     const handleFileChange = (e) => {
         setSelectedFile(e.target.files[0]);
     };
-
+    // --Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
+            // ----Upload the selected image
             let imageUrl = '';
             if (selectedFile) {
                 imageUrl = await handleImageUpload(selectedFile, `characters/${characterData.fullName}`);
@@ -90,6 +104,7 @@ function CharacterAddPage() {
                 imageUrl = "https://firebasestorage.googleapis.com/v0/b/lorekeeper-6ffd8.appspot.com/o/Logo.jpg?alt=media&token=b3c66f08-5659-49a0-877c-1a03841ce2bd";
             }
 
+            // ----Add a character
             await addCharacter({ ...characterData, imageUrl });
             navigate('/characters');
         } catch (error) {
@@ -102,12 +117,14 @@ function CharacterAddPage() {
         <div className={`container ${styles.centeredForm}`}>
             <h2 className="TitleText">Add Character</h2>
 
+            {/* Loader */}
             {loading && (
                 <div className="loading-container">
                     <Oval color="#020818" height={80} width={80} />
                 </div>
             )}
 
+            {/* Form for the user to add data */}
             <form onSubmit={handleSubmit} className={styles.form}>
                 <div className={styles.formGroup}>
                     <label>Full Name</label>

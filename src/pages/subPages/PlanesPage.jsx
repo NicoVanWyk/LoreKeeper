@@ -1,4 +1,6 @@
+// Base Imports
 import React from 'react';
+// CSS Import
 import styles from '../css/MagicPage.module.css';
 
 function PlanesPage() {

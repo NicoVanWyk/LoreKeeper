@@ -1,19 +1,38 @@
+// Base Imports
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// CSS Import
 import styles from '../css/SchoolsPage.module.css';
-import { useAuth } from '../../contexts/authContext';
+// Navigation Import
+import { useNavigate } from 'react-router-dom';
+// Service Imports
 import { getUserProfile } from '../../services/userService';
 import { addSchool, getSchools, updateSchool } from '../../services/magicService';
+// Context Imports
+import { useAuth } from '../../contexts/authContext';
 
 function SchoolsPage() {
+    // Enable Navigation
+    const navigate = useNavigate();
+    // --Receive the current user from the authContext
     const { currentUser } = useAuth();
-    const [filteredSchools, setFilteredSchools] = useState([]);
+    // UseStates
+    // --Searching
+    // ----Holds the user's search
     const [searchQuery, setSearchQuery] = useState('');
+    // ----Which schools are shown based on the user's search
+    const [filteredSchools, setFilteredSchools] = useState([]);
+    // --Checks if the current user is an admin
     const [isAdmin, setIsAdmin] = useState(false);
+    // --Is the user editing the page?
     const [isEditing, setIsEditing] = useState(false);
+    // --Which school is selected for editing?
     const [selectedSchoolId, setSelectedSchoolId] = useState(null);
+    // --Controls wether or not the user is adding a class
     const [isAdding, setIsAdding] = useState(false);
+    // --Holds all of the schools received from the DB
     const [schools, setSchools] = useState([]);
+
+    // Initial Data for a school
     const [schoolValues, setSchoolValues] = useState({
         name: '',
         description: '',
@@ -21,6 +40,7 @@ function SchoolsPage() {
         notes: '',
         subschools: []
     });
+    // Initial Data for a subschool
     const [subschoolValues, setSubschoolValues] = useState({
         name: '',
         description: '',
@@ -28,9 +48,9 @@ function SchoolsPage() {
         notes: ''
     });
 
-    const navigate = useNavigate();
-
     useEffect(() => {
+        // Check to see if the current user is an admin. 
+        // TODO: See AddChapterPage ToDo
         const checkUserRole = async () => {
             try {
                 const userDoc = await getUserProfile(currentUser.uid);
@@ -42,6 +62,7 @@ function SchoolsPage() {
             }
         };
 
+        // Fetch the schools
         const fetchSchools = async () => {
             try {
                 const fetchedSchools = await getSchools();
@@ -56,6 +77,7 @@ function SchoolsPage() {
         fetchSchools();
     }, [currentUser]);
 
+    // Handle form changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setSchoolValues(prevValues => ({
@@ -63,7 +85,7 @@ function SchoolsPage() {
             [name]: value
         }));
     };
-
+    // --Handle subschool form changes
     const handleSubschoolInputChange = (e) => {
         const { name, value } = e.target;
         setSubschoolValues(prevValues => ({
@@ -71,7 +93,7 @@ function SchoolsPage() {
             [name]: value
         }));
     };
-
+    // --Handle add subschool form submission
     const handleAddSubschool = () => {
         if (subschoolValues.name && subschoolValues.description && subschoolValues.practitionerTitle) {
             setSchoolValues(prevValues => ({
@@ -88,7 +110,7 @@ function SchoolsPage() {
             alert('Please complete all subschool fields before adding another.');
         }
     };
-
+    // --Handle form submission
     const handleSubmit = async () => {
         try {
             if (isEditing) {
@@ -111,7 +133,7 @@ function SchoolsPage() {
             console.error('Error adding/updating school:', error);
         }
     };
-
+    // Handle which class is being edited
     const handleEdit = (school) => {
         setSelectedSchoolId(school.id);
         setSchoolValues(school);
@@ -119,10 +141,12 @@ function SchoolsPage() {
         setIsAdding(true);
     };
 
+    // Navigate to the subschool page
     const handleSubschoolClick = (subschool, schoolId) => {
         navigate(`/subschools/${subschool.name}`, { state: { subschool, schoolId } });
     };
 
+    // Change which items are displayed based on the user's search
     const handleSearchChange = (e) => {
         const query = e.target.value.toLowerCase();
         setSearchQuery(query);
@@ -140,6 +164,7 @@ function SchoolsPage() {
         <div className={styles.container}>
             <h1>Schools Of Magic</h1>
 
+            {/* Search bar */}
             <div className={styles.searchContainer}>
                 <input
                     type="text"
@@ -152,6 +177,7 @@ function SchoolsPage() {
 
             {isAdmin ? (
                 <>
+                    {/* Is the user adding a school? */}
                     {isAdding ? (
                         <div>
                             <div className={styles.subschoolInputsContainer}>
@@ -241,6 +267,7 @@ function SchoolsPage() {
                 </>
             ) : null}
 
+            {/* Display the schools, based on the user's search */}
             {filteredSchools.map(school => (
                 <div key={school.id} className={styles.section}>
                     <h2>{school.name}</h2>
@@ -273,6 +300,7 @@ function SchoolsPage() {
                         </>
                     )}
 
+                    {/* Is the user editing a school? */}
                     {isAdmin && (
                         <button
                             onClick={() => { handleEdit(school); window.scrollTo(0, 0); }}

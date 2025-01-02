@@ -1,18 +1,29 @@
+// Base Imports
 import React, { useEffect, useState } from 'react';
-import styles from '../css/SchoolsPage.module.css'; // Import the shared CSS file
-import { useAuth } from '../../contexts/authContext';
+// CSS Import
+import styles from '../css/SchoolsPage.module.css';
+// Service Imports
 import { getUserProfile } from '../../services/userService';
 import { addClass, getClasses, updateClass } from '../../services/magicService';
+// Context Imports
+import { useAuth } from '../../contexts/authContext';
 
 function ClassesPage() {
+    // --Receive the current user from the authContext
     const { currentUser } = useAuth();
+    // UseStates
+    // --Checks if the current user is an admin
     const [isAdmin, setIsAdmin] = useState(false);
-
+    // --Controls wether or not editing fields are shown
     const [isEditing, setIsEditing] = useState(false);
+    // --The id of the class that is currently being edited
     const [selectedClassId, setSelectedClassId] = useState(null);
-
+    // --Controls wether or not the user is adding a class
     const [isAdding, setIsAdding] = useState(false);
+    // --Holds all of the classes
     const [classes, setClasses] = useState([]);
+
+    // Initial Data for a class
     const [classValues, setClassValues] = useState({
         title: '',
         description: '',
@@ -20,7 +31,10 @@ function ClassesPage() {
         commonSchools: []
     });
 
+
     useEffect(() => {
+        // Check to see if the current user is an admin. 
+        // TODO: See AddChapterPage ToDo
         const checkUserRole = async () => {
             try {
                 const userDoc = await getUserProfile(currentUser.uid);
@@ -32,6 +46,7 @@ function ClassesPage() {
             }
         };
 
+        // Fetch all of the data for the classes
         const fetchClasses = async () => {
             try {
                 const fetchedClasses = await getClasses();
@@ -45,6 +60,7 @@ function ClassesPage() {
         fetchClasses();
     }, [currentUser]);
 
+    // Handle form changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setClassValues(prevValues => ({
@@ -52,7 +68,7 @@ function ClassesPage() {
             [name]: value
         }));
     };
-
+    // --Handle form submission
     const handleSubmit = async () => {
         try {
             if (isEditing) {
@@ -74,7 +90,7 @@ function ClassesPage() {
             console.error('Error adding/updating class:', error);
         }
     };
-
+    // Handle which class is being edited
     const handleEdit = (classItem) => {
         setSelectedClassId(classItem.id);
         setClassValues(classItem);
@@ -87,6 +103,7 @@ function ClassesPage() {
             <h1>Magic Classes</h1>
             {isAdmin ? (
                 <>
+                    {/* Is the user adding a class? */}
                     {isAdding ? (
                         <div className={styles.subschoolInputsContainer}>
                             <input
@@ -140,6 +157,7 @@ function ClassesPage() {
                     <p><strong>Notes:</strong> {classItem.notes}</p>
                     <p><strong>Common Schools:</strong> {classItem.commonSchools.join(', ')}</p>
 
+                    {/* Is the user editing a class? */}
                     {isAdmin ? (
                         <button onClick={() => handleEdit(classItem)} style={{ marginTop: '25px' }} className='btnPrimary'>Edit</button>
                     ) : null}

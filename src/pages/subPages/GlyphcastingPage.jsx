@@ -1,4 +1,6 @@
+// Base Imports
 import React from 'react';
+// CSS Import
 import styles from '../css/MagicPage.module.css';
 // Image Imports
 import FullGlyph from '../../assets/Magic/FullGlyph.png';
