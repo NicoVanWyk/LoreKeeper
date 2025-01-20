@@ -43,6 +43,7 @@ import ReligionsPage from './pages/ReligionsPage';
 import SingleReligionPage from './pages/subPages/SingleReligionPage';
 import GlyphcastingPage from './pages/subPages/GlyphcastingPage';
 import PlanesPage from './pages/subPages/PlanesPage';
+import KironaanPage from './pages/KironaanPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -96,6 +97,9 @@ const AppWrapper = () => {
 
         {/* Glossary */}
         <Route path="/glossary" element={<PrivateRoute element={<GlossaryPage />} />} />
+
+        {/* Kironaan */}
+        <Route path="/kironaan" element={<PrivateRoute element={<KironaanPage />} />} />
 
         {/* About */}
         <Route path="/about" element={<PrivateRoute element={<AboutPage />} />} />

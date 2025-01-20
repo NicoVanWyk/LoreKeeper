@@ -1,24 +1,8 @@
 import React, { useState } from 'react';
+import { GlossaryTerms } from '../contexts/glossaryTerms';
 
 function GlossaryPage() {
-    const glossaryTerms = [
-        { term: "Mage-God", description: "A Mage-God is a being whose Soul has been Awakened through the use of a magical ritual, allowing them to gain the benefits of having an Awakened Soul. They also become immortal at the cost of severing their soul from their god, similar to Vena." },
-        { term: "Awakened Soul", description: "A being whose Soul is Awakened can absorb the Power of the Souls of those they kill. This does not mean they are inherently immortal, but they will find it easier to reach immortality - if the gods don't kill them first." },
-        { term: "Vena", description: "A Vena is a  being whose soul has been partially Awakened. They gain immortality through severing the connection their soul has with the god that made them. This means that their Power will either be claimed by the god they worshipped, the being that killed them if possible, or will disperse." },
-        { term: "Soul", description: "The Soul is separated into three parts: Creation Power, Gained Power and Personality." },
-        { term: "Power", description: "Power is a being's ability to affect the world around them. This can be through direct actions, Magic or even just knowledge. Beings with greater power can survive greater spells, cast more spells, cast stronger spells and survive ordinarily fatal injuries. They can also often perform seemingly impossible feats. Power increases as a being ages and learns skills." },
-        { term: "Creation Power", description: "Creation Power is the Power used to create a being. Usually by a god, this Power is enough to keep the being alive and will be returned to the god that made them. Usually, a god will allow a being to keep this gained power so that they may be sustained in their afterlife." },
-        { term: "Gained Power", description: "Gained Power is the Power a being gained through their life. This is from learning skills and aging, and while a being never loses their gained power they can lose the ability to utilise that power as they age. Most immortal beings do not have this drawback and can therefore utilise most or all of their Gained Power. This power is usually claimed by the god that made the being, with a portion being granted to gods of life and death as they facilitate the movement of great amounts of mortal Souls." },
-        { term: "Soul Personality/Spirit", description: "A Soul Personality is a being's unique personality. It is tied directly to their Soul, and persists after the death of the body. It can also be called someone's Spirit." },
-        { term: "Vampire", description: "A Vampire is a creature whose Soul is not only Awakened, but their existence is close to that of the Mage-Gods. They gain powerful abilities at the cost of becoming dependant on blood - specifically the life force (magic) that flows through it. They feed on a person's Gained Power to keep their own bodies functioning. If they do not feed, their bodies will burn out and they will slowly wither away as their new powers consume more energy than they can make on their own. Vampires of sufficient Power can also Ascend, but the gods have ensured that no Vampire has been successful thus far." },
-        { term: "Afterlife", description: "A being enters the afterlife of the god they worshipped, keeping their only their Created Power to sustain their Spirit. If a being worshipped no god, their power either disperses or is claimed by a god of death or life." },
-        { term: "Ascend", description: "A being of sufficient Power can shed its mortal body to gain a godly one. This would turn them into godlike beings, meaning they require less Worship to survive than conventional gods do." },
-        { term: "Worship", description: "A god also gains power from Worship, which is increased by the amount of followers they have that are actively worshipping them. If a god loses all their Worshippers, they can survive through the help of other gods lending them power. They can also enter a hibernation-like state where they await Worship to resume. If a god's name fades from memory, they can still survive through written records or idols - but if all mentions, references, followers and idols of them are destroyed, they are also destroyed. A god requires a minimum amount of Worship to sustain themselves - they cannot consist solely off creating beings and 'harvesting' their Gained Power." },
-        { term: "Moons", description: "There are 5 moons, three visible during the night and two visible during the day. The largest moon is visible during the day, and the smallest moon is visible during the night." },
-        { term: "The Gods' Crown", description: "There is a ring around the planet, which is visible from almost all of Irea." },
-        { term: "Saints", description: "Saints are created when a large number of mortals believe a specific being is divine, usually as a messenger or servant of the gods. The Saint's power is dependant on the amount of mortals who worship them as a Saint, however most Saints have an increased lifespan and heightened Power." },
-        { term: "Kironaan (Planet)", description: "Kironaan was a megaplanet that was a collaborative project and creation by the majority of the Primordial Gods." },
-    ];
+    const glossaryTerms = GlossaryTerms;
 
     // State for search query
     const [searchQuery, setSearchQuery] = useState('');
@@ -264,16 +248,16 @@ function GlossaryPage() {
 
                     Peráäs left the Pact of Hatred during the first half of the war to assist Nex, Arexká and Káäni as they were overwhelmed with the sudden increase in mortals dying to the war.
                     <br /><br />
-                    The conflict stretched for ages, eventually culminating in Renaïna killing Loänaïso to use their power to attack the Kironaan Planet. They wiped all life from the planet, causing 
+                    The conflict stretched for ages, eventually culminating in Renaïna killing Loänaïso to use their power to attack the Kironaan Planet. They wiped all life from the planet, causing
                     multiple Primordials to begin fading away.
                     <br /><br />
-                    Most notably, Nīrsél began sustaining Meko, and worked with Lét to create a world deep within their shared domain filled only with plant life to sustain those who required it. Other 
+                    Most notably, Nīrsél began sustaining Meko, and worked with Lét to create a world deep within their shared domain filled only with plant life to sustain those who required it. Other
                     Primordials sustained those who could not draw strength from were sustained by others.
                     <br /><br />
-                    After securing the future of the Primordials, Nīrsél entered the conflict himself. He began to systematically break apart the Pact of Hatred, ending the war by capturing all of its 
+                    After securing the future of the Primordials, Nīrsél entered the conflict himself. He began to systematically break apart the Pact of Hatred, ending the war by capturing all of its
                     members. Even Peráäs was captured for having been a part of the Pact during the first portion of the war.
                     <br /><br />
-                    After the war, a deal was made with Toāsi so preserve the Kironaan Planet in the moments just after Renaïna's attack - it would be a world filled with only dust and abandoned buildings, 
+                    After the war, a deal was made with Toāsi so preserve the Kironaan Planet in the moments just after Renaïna's attack - it would be a world filled with only dust and abandoned buildings,
                     preserved and trapped in this state of time forever to serve as a memorial.
                 </p>
 
@@ -297,20 +281,20 @@ function GlossaryPage() {
                         <li>Posо̄</li>
                     </ol>
 
-                    Káäni, lured by temptations of power by Renaïna, joined the Second Pact of Hatred, working with the Primordial of Hatred to create a new form of magic - Necromancy. This forced Nex and 
+                    Káäni, lured by temptations of power by Renaïna, joined the Second Pact of Hatred, working with the Primordial of Hatred to create a new form of magic - Necromancy. This forced Nex and
                     Arexká to join the Pact of Darkness, as they were horrified by their child's actions.
                     <br /><br />
-                    Renaïna, echoing his actions in the previous war, killed Moäsiän and absorbed his power. This filled the other Primordials with fear of a second event like the destruction of the 
-                    Kironaan Planet, forcing Meko and Ekraïsa to join the Pact of Darkness. In addition, Peráäs felt fear that they would see a repetition of history - having only joined the Second Pact to 
+                    Renaïna, echoing his actions in the previous war, killed Moäsiän and absorbed his power. This filled the other Primordials with fear of a second event like the destruction of the
+                    Kironaan Planet, forcing Meko and Ekraïsa to join the Pact of Darkness. In addition, Peráäs felt fear that they would see a repetition of history - having only joined the Second Pact to
                     attain freedom from their imprisonment. After the death of Moäsiän, they left the Second Pact and joined the Pact of Darkness.
                     <br /><br />
-                    With the amount of Primordials that had joined the conflict, the mortals under their control began to join as well. Galaxies began to fight one another, and Mortal Pacts began forming 
+                    With the amount of Primordials that had joined the conflict, the mortals under their control began to join as well. Galaxies began to fight one another, and Mortal Pacts began forming
                     against the creations of their creators' enemies.
                     <br /><br />
-                    Meko created a centralised planet named Dorana, which would serve as the transportation hub for the Pact of Darkness' mortal soldiers. While this occurred, Meko would also create a child 
+                    Meko created a centralised planet named Dorana, which would serve as the transportation hub for the Pact of Darkness' mortal soldiers. While this occurred, Meko would also create a child
                     with Ekraïsa - Banxuïsa.
                     <br /><br />
-                    After a long conflict, the final battle approached - and it was to be fought on the remains of the Kironaan Planet. The Second Chaos Pact arrived there as an insult, awaiting the Pact of 
+                    After a long conflict, the final battle approached - and it was to be fought on the remains of the Kironaan Planet. The Second Chaos Pact arrived there as an insult, awaiting the Pact of
                     Darkness' arrival.
                     <br /><br />
                     The Pact of Darkness formed a strategy to have the Second Pact be split up:
@@ -319,10 +303,10 @@ function GlossaryPage() {
                         <li>Lét, Nīrsél, Ekraïsa and Peráäs would face Renaïna</li>
                         <li>Nex, Arexká and Posо̄ would face Washi</li>
                     </ul>
-                    During the battle, Káäni would attack Meko's soldiers, revealing Banxuïsa hidden among the soldiers. Nearly killing Meko's child, Káäni would face the unbridled wrath of Meko. Having 
+                    During the battle, Káäni would attack Meko's soldiers, revealing Banxuïsa hidden among the soldiers. Nearly killing Meko's child, Káäni would face the unbridled wrath of Meko. Having
                     lost control, Meko inadvertently infused their domain with Rage, forever tainting magic because of it.
                     <br /><br />
-                    Meko killed Káäni in their rage, despite having promised Nex and Arexká to spare them. In addition, Washi and Posо̄ were once again united - after all, Washi only joined the opposing pact 
+                    Meko killed Káäni in their rage, despite having promised Nex and Arexká to spare them. In addition, Washi and Posо̄ were once again united - after all, Washi only joined the opposing pact
                     to have the war last longer, as their domain demanded.
                     <br /><br />
                     Lét and Nīrsél defeated Renaïna, and brought them to Toāsi to be imprisoned for eternity, in a prison that only Toāsi could open.
@@ -338,19 +322,19 @@ function GlossaryPage() {
                 <p>
                     Mortal souls are made of three parts: the soul, created power, and gained power.
                     <br /><br />
-                    Created power is the power a god used to create a mortal. Think of it as a deposit into a savings account. Gained power is the power a mortal gains during its life. Think of it as rent 
+                    Created power is the power a god used to create a mortal. Think of it as a deposit into a savings account. Gained power is the power a mortal gains during its life. Think of it as rent
                     on that deposit. Power is gained through learning skills, ageing and everyday life.
                     <br /><br />
                     The soul is who you are. It is your personality, your thoughts, your memories. These three come together to form a mortal creature.
                     <br /><br />
-                    But what about immortal creatures like vampires? Well, they have severed their soul from their god. This is somewhat confusingly worded, as what they actually do is remove their created 
+                    But what about immortal creatures like vampires? Well, they have severed their soul from their god. This is somewhat confusingly worded, as what they actually do is remove their created
                     power and send it back to their creator. This means that death no longer has a reason to hunt them, since the created power (that belongs to the creator) has been returned to them.
                     <br /><br />
                     It is this reason that they are considered Lesser Beings on the Divinity scale. They can gain exponentially more power than mortals because they have an infinite time to do it.
                     <br /><br />
                     They still enter the afterlife of whatever god they believe in should they die, and their gained power will disperse into the universe.
                     <br /><br />
-                    When a mortal dies, the gained power is taken by the god they believed in, and their created power is used to sustain them in the afterlife. Once they choose to relinquish the afterlife, 
+                    When a mortal dies, the gained power is taken by the god they believed in, and their created power is used to sustain them in the afterlife. Once they choose to relinquish the afterlife,
                     they will cease to exist and their created power will return to the god they believed in.
                 </p>
             </div>
@@ -364,10 +348,10 @@ function GlossaryPage() {
                     <br /><br />
                     Its existence is described by itself as such:
                     <blockquote>
-                        Since before Time existed, I have consumed. This consumption was wild and unstoppable, a primitive thing. This was until I consumed a great thinker: I consumed everything of them, their 
-                        mind, their history, their body, everything except a single idea. A single moment of comprehension, perhaps aided by several minds about to be destroyed, forced my primitive self to face 
-                        a surprisingly daunting concept. Paraphrased, the idea was that, if the Void has consumed everything, what will be left for it to consume? I spared this idea because it scared me. A comedic 
-                        concept I know, the embodiment of non-existence feeling existential dread, but it allowed me to collect more concepts and minds, realising that I alone held the power to ensure I would be 
+                        Since before Time existed, I have consumed. This consumption was wild and unstoppable, a primitive thing. This was until I consumed a great thinker: I consumed everything of them, their
+                        mind, their history, their body, everything except a single idea. A single moment of comprehension, perhaps aided by several minds about to be destroyed, forced my primitive self to face
+                        a surprisingly daunting concept. Paraphrased, the idea was that, if the Void has consumed everything, what will be left for it to consume? I spared this idea because it scared me. A comedic
+                        concept I know, the embodiment of non-existence feeling existential dread, but it allowed me to collect more concepts and minds, realising that I alone held the power to ensure I would be
                         able to consume for eternity.
                     </blockquote>
                     It has eternal patience because it knows that everything will eventually be consumed by it.
@@ -379,10 +363,10 @@ function GlossaryPage() {
                 {/* Overview */}
                 <h1>The Truth</h1>
                 <p>
-                    The gods of this world are gods, very powerful deities that can create and destroy life. Despite this, there are more powerful beings in the universe. Not eldritch beings or ancient gods, but 
+                    The gods of this world are gods, very powerful deities that can create and destroy life. Despite this, there are more powerful beings in the universe. Not eldritch beings or ancient gods, but
                     beings impossibly more powerful than any other.
                     <br /><br />
-                    These beings could be called Primordial Gods, and are the personifications of certain concepts. Some are infinitely old, while others are old beyond comprehension. They create universes and 
+                    These beings could be called Primordial Gods, and are the personifications of certain concepts. Some are infinitely old, while others are old beyond comprehension. They create universes and
                     embody more power than is possible to comprehend.
                     <br /><br />
                     A good example of the power structure is this:

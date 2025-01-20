@@ -1,23 +1,37 @@
+// Base Imports
 import React, { useState, useEffect } from 'react';
+// CSS Import
+import styles from '../css/SingleEventPage.module.css';
+// Navigation Import
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/authContext';
+// Service Imports
 import { getUserProfile } from '../../services/userService';
 import { getAlliance, updateAlliance } from '../../services/alliancesService';
 import { getAllPoliticalEntities } from '../../services/politicalEntitiesService';
+// Context Imports
+import { useAuth } from '../../contexts/authContext';
+// React Select Import
 import Select from 'react-select';
-import styles from '../css/SingleEventPage.module.css';
 
 function SingleAlliancePage() {
-    const { currentUser } = useAuth();
+    // Enable Navigation
+    const navigate = useNavigate();
+    // --Receive data from the parameters
     const { allianceId } = useParams();
+    // --Receive the current user from the authContext
+    const { currentUser } = useAuth();
+    // UseStates
+    // --Controls Loading
+    const [loading, setLoading] = useState(true);
+    // --Checks if the current user is an admin
     const [isAdmin, setIsAdmin] = useState(false);
+    // --The data the user supplies
     const [allianceData, setAllianceData] = useState({});
+    // Data received from the database
     const [membersData, setMembersData] = useState([]);
     const [politicalEntitiesOptions, setPoliticalEntitiesOptions] = useState([]);
+    // --Controls wether or not the editable fields are shown.
     const [isEditing, setIsEditing] = useState(false);
-    const [loading, setLoading] = useState(true);
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         const checkUserRole = async () => {
@@ -156,7 +170,7 @@ function SingleAlliancePage() {
             ) : (
                 <div className={styles.detailsContainer}>
                     <h1>{allianceData.name}</h1>
-                    <p style={{maxWidth: '1000px'}}><strong>Description:</strong> {allianceData.description}</p>
+                    <p style={{ maxWidth: '1000px' }}><strong>Description:</strong> {allianceData.description}</p>
                     <p><strong>Formation Date:</strong> {allianceData.formationDate}</p>
                     <p><strong>Disbanded Date:</strong> {allianceData.disbandedDate || 'Still active'}</p>
                     <p>

@@ -22,7 +22,7 @@ function ChapterPage() {
     const [loading, setLoading] = useState(true)
     // --Checks if the current user is an admin
     const [isAdmin, setIsAdmin] = useState(false);
-    // --The dat a the user supplies
+    // --The data the user supplies
     const [chapterData, setChapterData] = useState({});
     const [storyData, setStoryData] = useState({});
     // --Controls wether or not the editable fields are shown.

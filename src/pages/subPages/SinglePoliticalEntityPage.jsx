@@ -318,7 +318,7 @@ function SinglePoliticalEntityPage() {
             ) : (
                 <div className={styles.detailsContainer}>
                     <h1>{politicalEntityData.name}</h1>
-                    <p><strong>Description:</strong> {politicalEntityData.description}</p>
+                    <p style={{whiteSpace: 'pre-wrap'}}><strong>Description:</strong> {politicalEntityData.description}</p>
                     <p><strong>Status:</strong> {politicalEntityData.status}</p>
                     <p><strong>Region:</strong> {politicalEntityData.region}</p>
                     <p><strong>Climate:</strong> {politicalEntityData.climate}</p>

@@ -4,6 +4,21 @@ body {
     font-family: "Cormorant Garamond", serif;
 }
 
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('../src/assets/Fonts/KironaanFont.ttf') format('ttf'),
+        url('../src/assets/Fonts/KironaanFont.woff') format('woff'),
+        url('../src/assets/Fonts/KironaanFont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.KironaanFont {
+    font-family: 'MyCustomFont', sans-serif;
+    font-size: 38px;
+    letter-spacing: 5px;
+}
+
 label {
     font-size: 24px;
     margin-bottom: 5px;

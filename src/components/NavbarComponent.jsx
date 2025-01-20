@@ -29,6 +29,7 @@ function NavbarComponent() {
                         <Link to="/" className="dropbtn">Home</Link>
                         <div className="dropdown-content">
                             <Link to="/glossary">Glossary</Link>
+                            <Link to="/kironaan">Kironaan</Link>
                             <Link to="/about">About</Link>
                             <Link to="/maps">Maps</Link>
                             <Link to="/planes">Planes</Link>
@@ -73,6 +74,7 @@ function NavbarComponent() {
                 <ul className={`navbar-menu mobile-menu ${menuOpen ? 'open' : ''}`}>
                     <li className="navbar-item"><Link to="/">Home</Link></li>
                     <li className="navbar-item"><Link to="/glossary">Glossary</Link></li>
+                    <li className="navbar-item"><Link to="/kironaan">Kironaan</Link></li>
                     <li className="navbar-item"><Link to="/about">About</Link></li>
                     <li className="navbar-item"><Link to="/characters">Characters</Link></li>
                     <li className="navbar-item"><Link to="/important-events">Important Events</Link></li>
