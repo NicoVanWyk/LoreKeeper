@@ -90,6 +90,7 @@ function NavbarComponent() {
                     <li className="navbar-item"><Link to="/stories">Stories</Link></li>
                     <li className="navbar-item"><Link to="/profile">Profile</Link></li>
                     <li className="navbar-item"><Link to="/planes">Planes</Link></li>
+                    <li className="navbar-item"><Link to="/magic/glyphcasting">Planes</Link></li>
                 </ul>
             </div>
         </nav>
