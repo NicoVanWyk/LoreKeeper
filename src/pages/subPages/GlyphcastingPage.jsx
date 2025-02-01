@@ -11,6 +11,7 @@ import GlyphShape from '../../assets/Magic/GlyphShape.png';
 import GlyphCount from '../../assets/Magic/GlyphCount.png';
 import GlyphElementTrigger from '../../assets/Magic/GlyphTriggerAndSymbol.png'
 import GlyphExample from '../../assets/Magic/GlyphExample.png'
+import GlyphDrawer from '../../components/GlyphDrawer';
 
 function GlyphcastingPage() {
     return (
@@ -118,6 +119,8 @@ function GlyphcastingPage() {
                     While the geometry above is the standard for casting a spell, the shapes used to contain the spell's properties can be swapped out according to
                     personal preference.
                 </p>
+
+                <GlyphDrawer />
 
             </div>
         </div>

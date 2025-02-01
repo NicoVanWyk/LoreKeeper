@@ -1,0 +1,53 @@
+/* GlyphDrawer.module.css */
+
+.connectDotsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.glyphCanvas {
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #D79A53;
+    margin-top: 10px;
+}
+
+.glyphPoint {
+    cursor: pointer;
+}
+
+text {
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.inputBox {
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    width: 200px;
+    text-align: center;
+}
+
+.drawButton {
+    background-color: #D79A53;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.drawButton:hover {
+    background-color: #b3753d;
+}

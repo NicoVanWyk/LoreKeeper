@@ -36,8 +36,9 @@ export const KironaanTerms = [
     { translation: "Friend", term: "Erasa", type: "Noun" },
     { translation: "Friendship", term: "Tateresi", type: "Noun" },
     { translation: "Finality", term: "Xuin", type: "Noun" },
+    { translation: "Fire", term: "Kixna", type: "Noun" },
     // --G
-    { translation: "Grimoire", term: "Khasal", type: "Noun" },
+    { translation: "Grimoire", term: "Kahsal", type: "Noun" },
     { translation: "Gambling", term: "Resa", type: "Noun" },
     { translation: "Ground", term: "Sera", type: "Noun" },
     { translation: "Ghost", term: "óndoras", type: "Noun" },
@@ -177,6 +178,7 @@ export const KironaanTerms = [
     { translation: "Abandon", term: "kéxmir", type: "Verb" },
     // --B
     { translation: "Bear", term: "inasir", type: "Verb" },
+    { translation: "Be", term: "Kénmir", type: "Verb" },
     { translation: "Burn", term: "beraxmir", type: "Verb" },
     // --C
     { translation: "Call", term: "tómir", type: "Verb" },
