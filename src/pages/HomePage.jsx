@@ -30,13 +30,8 @@ function HomePage() {
         <div className={styles.homeContainer}>
             <header className={styles.homeHeader}>
                 <h1>Welcome to Irea</h1>
-                <p>Explore the lore of the continent of Irea, from magic to timelines</p>
+                <p>Lore, timeline, maps &  Characters</p>
             </header>
-
-            <section className={styles.introSection}>
-                <h2>Discover the World of Irea</h2>
-                <p>Irea is a land of magic and mystery, where countless adventures await. Dive into the lore, explore interactive map, and meet the diverse characters that inhabit this world.</p>
-            </section>
 
             <section className={styles.featuredContent}>
                 <h2>Featured Content</h2>
