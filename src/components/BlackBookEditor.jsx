@@ -356,14 +356,14 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
 
     const resolveTokenOutput = (tokenIdx, wordIdx) => {
         if (tokenMeta.phraseHead[tokenIdx]) return tokenMeta.phraseHead[tokenIdx].term.toLowerCase();
-        const {base, prefixes, hasPossession} = parseSigils(tokens[tokenIdx]);
+        const {base, prefixes, hasPossession, leadingPunct, trailingPunct} = parseSigils(tokens[tokenIdx]);
         const resolved = resolveByWordIdx(wordIdx);
         const nextWI = wordIdx + 1;
         const nextTI = wordTokenIndices[nextWI];
         let adverbTerm = null;
         if (nextTI !== undefined && tokenMeta.adverbOf[nextTI] === tokenIdx)
             adverbTerm = resolveByWordIdx(nextWI)?.term || parseSigils(tokens[nextTI]).base;
-        return buildCompound(resolved?.term || base, prefixes, hasPossession, adverbTerm).toLowerCase();
+        return buildCompound(resolved?.term || base, prefixes, hasPossession, adverbTerm, leadingPunct, trailingPunct).toLowerCase();
     };
 
     const buildKironaan = () =>

@@ -34,16 +34,20 @@ export const parseSigils = (tok) => {
             }
         }
     }
-    rest = rest.replace(/^[.()\[\],;]+|[.()\[\],;]+$/g, '');
-    return {base: rest, prefixes, hasPossession};
+    const leadingMatch = rest.match(/^([.()\[\],;!?]+)/);
+    const trailingMatch = rest.match(/([.()\[\],;!?]+)$/);
+    const leadingPunct = leadingMatch ? leadingMatch[1] : '';
+    const trailingPunct = trailingMatch ? trailingMatch[1] : '';
+    rest = rest.replace(/^[.()\[\],;!?]+|[.()\[\],;!?]+$/g, '');
+    return {base: rest, prefixes, hasPossession, leadingPunct, trailingPunct};
 };
 
-export const buildCompound = (baseTerm, prefixes, hasPossession, adverbTerm = null) => {
+export const buildCompound = (baseTerm, prefixes, hasPossession, adverbTerm = null, leadingPunct = '', trailingPunct = '') => {
     const sorted = [...prefixes].sort((a, b) => a.order - b.order);
     const parts = [...sorted.map(p => p.prefix), baseTerm];
     if (adverbTerm) parts.push(adverbTerm);
     if (hasPossession) parts.push('Orsik');
-    return parts.join('-');
+    return `${leadingPunct}${parts.join('-')}${trailingPunct}`;
 };
 
 export const computeTokenMeta = (tokens, terms) => {
@@ -68,7 +72,6 @@ export const computeTokenMeta = (tokens, terms) => {
         const sortedPhrases = [...phraseTerms].sort((a, b) => b.translation.split(/\s+/).length - a.translation.split(/\s+/).length);
         let phraseMatched = false;
         for (const pt of sortedPhrases) {
-            // Check each comma-separated meaning
             const meanings = pt.translation.split(/\s*,\s*/);
             for (const meaning of meanings) {
                 const pw = meaning.toLowerCase().split(/\s+/);
@@ -183,9 +186,17 @@ export const getComposerSpellingSuggestions = (text) => {
 export const decodeKironaan = (str) =>
     (str || '').replace(/([bcdfghjklmnpqrstvwxyz])\\/gi, '$1$1');
 
-// ── Partial phrase matching ───────────────────────────────────
-// Each comma-separated meaning is checked independently.
-// Stores matchedMeaning so callers know exactly which words to highlight/replace.
+// NEW: Detect all possible NLP types for a word
+export const detectAllNlpTypes = (word) => {
+    const doc = nlp(word);
+    const types = [];
+    if (doc.verbs().length) types.push('Verb');
+    if (doc.adjectives().length) types.push('Adjective');
+    if (doc.adverbs().length) types.push('Adverb');
+    if (doc.nouns().length) types.push('Noun');
+    return types.length > 0 ? types : ['Noun']; // Default to Noun if nothing detected
+};
+
 export const findPartialPhraseMatches = (tokens, terms) => {
     const wordTokens = tokens.filter(t => !/^\s+$/.test(t));
     const wordBases = wordTokens.map(t => normalize(parseSigils(t).base));
@@ -202,8 +213,6 @@ export const findPartialPhraseMatches = (tokens, terms) => {
                 const missing = phraseWords.filter(pw => !wordBases.includes(pw));
                 if (matched.length < minMatch) continue;
 
-                // Replace matched tokens in text order with the full matched meaning,
-                // dropping duplicates so computeTokenMeta can absorb the complete phrase.
                 const apply = (text) => {
                     const toks = text.split(/(\s+)/);
                     let phraseInserted = false;
@@ -228,14 +237,12 @@ export const findPartialPhraseMatches = (tokens, terms) => {
         });
 };
 
-// ── Grammar suggestions ───────────────────────────────────────
 export const analyzeGrammarSuggestions = (text) => {
     if (!text.trim()) return [];
     const suggestions = [];
     const doc = nlp(text);
     const trimmed = text.trimEnd();
 
-    // Past-tense verbs → # prefix
     doc.verbs().forEach(phrase => {
         const verbText = phrase.text().trim();
         if (!verbText) return;
@@ -255,7 +262,6 @@ export const analyzeGrammarSuggestions = (text) => {
         }
     });
 
-    // "will + verb" → & prefix, drop "will"
     const willMatch = text.match(/\bwill\s+([a-z]+)\b/i);
     if (willMatch) {
         const futureVerb = willMatch[1].toLowerCase();
@@ -270,7 +276,6 @@ export const analyzeGrammarSuggestions = (text) => {
         }
     }
 
-    // Trailing "?" → ? sigil on the main verb
     if (trimmed.endsWith('?')) {
         const mainVerbPhrase = doc.verbs().first();
         const mainVerbText = mainVerbPhrase.found ? mainVerbPhrase.text().trim() : null;
@@ -299,4 +304,143 @@ export const analyzeGrammarSuggestions = (text) => {
     }
 
     return suggestions;
+};
+
+// NEW: Analyze word order violations with fixes
+export const analyzeWordOrderViolations = (tokens, terms, selectedMeanings) => {
+    const violations = [];
+    const wordIndices = tokens.map((t, i) => /^\s+$/.test(t) ? null : i).filter(i => i !== null);
+
+    const resolveType = (tokenIdx, wordIdx) => {
+        const {base} = parseSigils(tokens[tokenIdx]);
+        const sel = selectedMeanings[wordIdx];
+        if (sel?.termId) {
+            const found = terms.find(t => t.id === sel.termId);
+            if (found) return found.type;
+        }
+        const n = normalize(base);
+        const matches = terms.filter(t =>
+            t.translation.split(/[,\s]+/).some(tr => normalize(tr) === n)
+        );
+        return matches[0]?.type || null;
+    };
+
+    const getBase = (tokenIdx) => parseSigils(tokens[tokenIdx]).base;
+
+    let lastVerbIdx = -1, lastVerbWord = null;
+    let lastNounIdx = -1, lastNounWord = null;
+
+    wordIndices.forEach((tokenIdx, wordIdx) => {
+        const type = resolveType(tokenIdx, wordIdx);
+        const base = getBase(tokenIdx);
+
+        if (type === 'Verb') {
+            lastVerbIdx = tokenIdx;
+            lastVerbWord = base;
+        }
+
+        if (type === 'Noun') {
+            lastNounIdx = tokenIdx;
+            lastNounWord = base;
+        }
+
+        if (type === 'Pronouns' && lastVerbIdx > -1 && lastVerbIdx < tokenIdx) {
+            violations.push({
+                id: `pronoun-${tokenIdx}`,
+                message: `"${base}": pronoun after verb — subject should precede verb`,
+                type: 'word-order',
+                word: base,
+                verbWord: lastVerbWord,
+                apply: (text) => {
+                    // Check if violation still exists
+                    const parts = text.split(/(\s+)/);
+                    let verbIdx = -1, pronounIdx = -1;
+
+                    for (let i = 0; i < parts.length; i++) {
+                        if (normalize(parts[i]) === normalize(lastVerbWord)) verbIdx = i;
+                        if (normalize(parts[i]) === normalize(base) && verbIdx !== -1 && verbIdx < i) {
+                            pronounIdx = i;
+                            break;
+                        }
+                    }
+
+                    if (verbIdx === -1 || pronounIdx === -1) return text; // Already fixed
+
+                    // Swap: collect everything, then reconstruct with swap
+                    const result = [...parts];
+                    const temp = result[verbIdx];
+                    result[verbIdx] = result[pronounIdx];
+                    result[pronounIdx] = temp;
+                    return result.join('');
+                }
+            });
+        }
+
+        if (type === 'Adjective' && lastNounIdx > -1 && lastNounIdx < tokenIdx) {
+            violations.push({
+                id: `adjective-${tokenIdx}`,
+                message: `"${base}": adjective after noun — move adjective before noun`,
+                type: 'word-order',
+                word: base,
+                nounWord: lastNounWord,
+                apply: (text) => {
+                    // Check if violation still exists
+                    const parts = text.split(/(\s+)/);
+                    let nounIdx = -1, adjIdx = -1;
+
+                    for (let i = 0; i < parts.length; i++) {
+                        if (normalize(parts[i]) === normalize(lastNounWord)) nounIdx = i;
+                        if (normalize(parts[i]) === normalize(base) && nounIdx !== -1 && nounIdx < i) {
+                            adjIdx = i;
+                            break;
+                        }
+                    }
+
+                    if (nounIdx === -1 || adjIdx === -1) return text; // Already fixed
+
+                    const result = [...parts];
+                    const temp = result[nounIdx];
+                    result[nounIdx] = result[adjIdx];
+                    result[adjIdx] = temp;
+                    return result.join('');
+                }
+            });
+        }
+
+        if (type === 'Adverb' && lastVerbIdx > -1 && lastVerbIdx < tokenIdx) {
+            const prevTI = wordIndices[wordIdx - 1];
+            if (prevTI !== lastVerbIdx) return; // Only if adjacent
+
+            violations.push({
+                id: `adverb-${tokenIdx}`,
+                message: `"${base}": adverb after verb — move adverb before verb`,
+                type: 'word-order',
+                word: base,
+                verbWord: lastVerbWord,
+                apply: (text) => {
+                    // Check if violation still exists
+                    const parts = text.split(/(\s+)/);
+                    let verbIdx = -1, advIdx = -1;
+
+                    for (let i = 0; i < parts.length; i++) {
+                        if (normalize(parts[i]) === normalize(lastVerbWord)) verbIdx = i;
+                        if (normalize(parts[i]) === normalize(base) && verbIdx !== -1 && verbIdx < i) {
+                            advIdx = i;
+                            break;
+                        }
+                    }
+
+                    if (verbIdx === -1 || advIdx === -1) return text; // Already fixed
+
+                    const result = [...parts];
+                    const temp = result[verbIdx];
+                    result[verbIdx] = result[advIdx];
+                    result[advIdx] = temp;
+                    return result.join('');
+                }
+            });
+        }
+    });
+
+    return violations;
 };

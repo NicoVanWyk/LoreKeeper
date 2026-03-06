@@ -1,11 +1,11 @@
 ﻿import React, {useState, useEffect, useRef, useMemo} from 'react';
-import nlp from 'compromise';
 import {addKironaanTerm, getAllKironaanTerms} from '../services/kironaanService';
 import {
     SIGIL_PREFIXES, SIGIL_SUFFIX,
     parseSigils, buildCompound, normalize, computeTokenMeta,
     decodeKironaan, getComposerSpellingSuggestions, getSpellingSuggestions,
-    analyzeGrammarSuggestions, findPartialPhraseMatches
+    analyzeGrammarSuggestions, findPartialPhraseMatches, analyzeWordOrderViolations,
+    detectAllNlpTypes
 } from '../utils/kironaanUtils';
 
 const ADMIN_UID = 'baQCmZdQOna3KhFSjoTA3jt2Lw72';
@@ -26,14 +26,7 @@ const ORDER_NAMES = ['', 'Question', 'Plural', 'Negative', 'Degree', 'Descriptor
 
 const displayType = (t) => t === 'NaN' ? 'Other' : t;
 const normalizeKr = (w) => w.toLowerCase().trim();
-const detectNlpType = (word) => {
-    const doc = nlp(word);
-    if (doc.verbs().length) return 'Verb';
-    if (doc.adjectives().length) return 'Adjective';
-    if (doc.adverbs().length) return 'Adverb';
-    if (doc.nouns().length) return 'Noun';
-    return 'Noun';
-};
+
 const fetchDictDef = async (word) => {
     try {
         const r = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
@@ -134,39 +127,6 @@ function TermTooltip({term, translation, type}) {
                     color: 'white',
                     borderRadius: 6,
                     padding: '5px 10px',
-                    fontSize: 12,
-                    whiteSpace: 'nowrap',
-                    zIndex: 300,
-                    display: 'flex',
-                    gap: 6,
-                    alignItems: 'center'
-                }}>
-                    {translation && <><span>{translation}</span><span style={{opacity: 0.4}}>·</span></>}
-                    <span style={{opacity: 0.75}}>{decodeKironaan(term)}</span>
-                    {type && <><span style={{opacity: 0.4}}>·</span><span
-                        style={{opacity: 0.65, fontStyle: 'italic'}}>{displayType(type)}</span></>}
-                </span>
-            )}
-        </span>
-    );
-}
-
-function KrToken({term, translation, type}) {
-    const [show, setShow] = useState(false);
-    return (
-        <span onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}
-              style={{position: 'relative', cursor: 'default'}}>
-            {term}
-            {show && (
-                <span style={{
-                    position: 'absolute',
-                    bottom: '120%',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: '#333',
-                    color: 'white',
-                    borderRadius: 5,
-                    padding: '4px 8px',
                     fontSize: 12,
                     whiteSpace: 'nowrap',
                     zIndex: 300,
@@ -502,13 +462,63 @@ function PhraseSuggestionsBanner({suggestions}) {
     );
 }
 
+// NEW: Word order violations banner
+function WordOrderViolationsBanner({violations, onApply, onApplyAll}) {
+    if (!violations.length) return null;
+    return (
+        <div style={{
+            marginTop: 6,
+            padding: '8px 12px',
+            background: '#fff3e0',
+            borderRadius: 6,
+            border: '1px solid #ff9800'
+        }}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6}}>
+                <span style={{fontSize: 12, fontWeight: 700, color: '#e65100'}}>⚠ Word order warnings</span>
+                {violations.length > 1 && (
+                    <button onClick={onApplyAll} style={{
+                        padding: '2px 10px',
+                        background: '#ff9800',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        fontSize: 12,
+                        fontWeight: 600
+                    }}>Fix All</button>
+                )}
+            </div>
+            <div style={{display: 'flex', flexDirection: 'column', gap: 5}}>
+                {violations.map(v => (
+                    <div key={v.id}
+                         style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8}}>
+                        <span style={{fontSize: 13, color: '#bf360c'}}><span
+                            style={{color: '#ff9800', marginRight: 4}}>⚠</span>{v.message}</span>
+                        <button onClick={() => onApply(v)} style={{
+                            padding: '2px 10px',
+                            background: 'white',
+                            border: '1px solid #ff9800',
+                            borderRadius: 4,
+                            cursor: 'pointer',
+                            fontSize: 12,
+                            color: '#e65100',
+                            whiteSpace: 'nowrap'
+                        }}>Fix
+                        </button>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 // ── Compose Tab ───────────────────────────────────────────────
 
 function ComposeTab({terms, onTermsChange, isAdmin}) {
     const [text, setText] = useState('');
     const [popover, setPopover] = useState(null);
     const [modal, setModal] = useState(null);
-    const [form, setForm] = useState({translations: [], term: '', type: 'Noun', detectedType: 'Noun'});
+    const [form, setForm] = useState({translations: [], term: '', type: 'Noun', detectedTypes: []});
     const [tagInput, setTagInput] = useState('');
     const [defs, setDefs] = useState({});
     const [copied, setCopied] = useState('');
@@ -563,7 +573,11 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
     const grammarSuggestions = useMemo(() => analyzeGrammarSuggestions(text), [text]);
     const phraseSuggestions = useMemo(() => findPartialPhraseMatches(tokens, terms), [text, terms]); // eslint-disable-line
 
-    // pendingPhraseMap: tokenIdx → suggestion (for chip highlighting + confirm flow)
+    // NEW: Word order violations with fixes
+    const wordOrderViolations = useMemo(() =>
+            analyzeWordOrderViolations(tokens, terms, selectedMeanings),
+        [text, terms, JSON.stringify(selectedMeanings)]); // eslint-disable-line
+
     const pendingPhraseMap = useMemo(() => {
         const map = new Map();
         const wordIndices = tokens.map((t, i) => /^\s+$/.test(t) ? null : i).filter(i => i !== null);
@@ -577,8 +591,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
         return map;
     }, [text, phraseSuggestions]); // eslint-disable-line
 
-    // phrasePreviewMap: tokenIdx → { output, translation, skip }
-    // Used only for the Kironaan preview so it shows the phrase term without user confirming.
     const phrasePreviewMap = useMemo(() => {
         const map = new Map();
         phraseSuggestions.forEach(s => {
@@ -624,7 +636,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                 resolved: pt
             };
         }
-        const {base, prefixes, hasPossession} = parseSigils(tok);
+        const {base, prefixes, hasPossession, leadingPunct, trailingPunct} = parseSigils(tok);
         const resolved = resolveBase(base, idx);
         const wordIndices = tokens.map((t, i) => /^\s+$/.test(t) ? null : i).filter(i => i !== null);
         const myWI = wordIndices.indexOf(idx);
@@ -637,7 +649,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
             }
         }
         return {
-            output: buildCompound(resolved.term, prefixes, hasPossession, adverbTerm).toLowerCase(),
+            output: buildCompound(resolved.term, prefixes, hasPossession, adverbTerm, leadingPunct, trailingPunct).toLowerCase(),
             base,
             prefixes,
             hasPossession,
@@ -658,22 +670,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
 
     const kironaan = buildKironaan();
     const kironaaDecoded = decodeKironaan(kironaan);
-
-    const sentenceViolations = useMemo(() => {
-        const violations = [];
-        let lastVerbIdx = -1, lastNounIdx = -1;
-        tokens.forEach((tok, i) => {
-            if (/^\s+$/.test(tok) || tokenMeta.absorbed.has(i) || tokenMeta.adverbOf[i] !== undefined) return;
-            const type = resolveToken(tok, i)?.resolved?.type;
-            if (type === 'Verb') lastVerbIdx = i;
-            if (type === 'Noun') lastNounIdx = i;
-            if (type === 'Pronouns' && lastVerbIdx > -1)
-                violations.push(`"${tok}": pronoun after verb — subject should precede the verb`);
-            if (type === 'Adjective' && lastNounIdx > -1 && lastNounIdx < i)
-                violations.push(`"${tok}": adjective after noun — descriptors precede the base word in Kironaan`);
-        });
-        return violations;
-    }, [text, terms, JSON.stringify(selectedMeanings)]); // eslint-disable-line
 
     const copy = (val, label) => {
         navigator.clipboard.writeText(val);
@@ -696,8 +692,13 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
         setPopover(null);
     };
     const openQuickAdd = (word) => {
-        const d = detectNlpType(word);
-        setForm({translations: [word], term: '', type: d, detectedType: d});
+        const detectedTypes = detectAllNlpTypes(word);
+        setForm({
+            translations: [word],
+            term: '',
+            type: detectedTypes[0] || 'Noun',
+            detectedTypes
+        });
         setTagInput('');
         setDefs({});
         setModal(word);
@@ -742,7 +743,20 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                         onApplyAll={() => setText(applyAllSuggestions(text, grammarSuggestions))}
                     />
 
-                    {/* Phrase suggestions banner (informational) */}
+                    {/* Word order violations - NEW */}
+                    <WordOrderViolationsBanner
+                        violations={wordOrderViolations}
+                        onApply={v => setText(v.apply(text))}
+                        onApplyAll={() => {
+                            let result = text;
+                            wordOrderViolations.forEach(v => {
+                                result = v.apply(result);
+                            });
+                            setText(result);
+                        }}
+                    />
+
+                    {/* Phrase suggestions banner */}
                     <PhraseSuggestionsBanner suggestions={phraseSuggestions}/>
 
                     {/* Phrase confirm bar */}
@@ -876,7 +890,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                                 );
                             }
 
-                            // Pending phrase candidate — click to open confirm bar
                             const pendingSuggestion = pendingPhraseMap.get(i);
                             if (pendingSuggestion) {
                                 const {base} = parseSigils(tok);
@@ -960,25 +973,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                             );
                         })}
                     </div>
-
-                    {/* Grammar violations */}
-                    {sentenceViolations.length > 0 && (
-                        <div style={{
-                            marginTop: 8,
-                            padding: '8px 12px',
-                            background: '#fff3e0',
-                            borderRadius: 6,
-                            border: '1px solid #ff9800'
-                        }}>
-                            <div style={{fontWeight: 600, fontSize: 13, color: '#e65100', marginBottom: 4}}>Grammar
-                                warnings
-                            </div>
-                            {sentenceViolations.map((v, i) => <div key={i} style={{
-                                fontSize: 13,
-                                color: '#bf360c'
-                            }}>⚠ {v}</div>)}
-                        </div>
-                    )}
 
                     {/* Kironaan preview */}
                     <div style={{
@@ -1199,28 +1193,24 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                         <div style={{marginBottom: 20}}>
                             <label style={{display: 'block', fontSize: 13, marginBottom: 4, color: '#555'}}>
                                 Type
-                                {form.detectedType && <span style={{
-                                    marginLeft: 6,
-                                    fontSize: 12,
-                                    padding: '2px 7px',
-                                    borderRadius: 10,
-                                    background: '#e3f2fd',
-                                    color: '#1565c0'
-                                }}>NLP: {form.detectedType}</span>}
-                                {form.type !== form.detectedType && (
-                                    <span style={{marginLeft: 8, fontSize: 11, color: '#ff9800'}}>
-                                        (overriding)
-                                        <button onClick={() => setForm(p => ({...p, type: p.detectedType}))} style={{
-                                            marginLeft: 5,
-                                            fontSize: 11,
-                                            color: '#1976d2',
-                                            background: 'none',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            padding: 0,
-                                            textDecoration: 'underline'
-                                        }}>reset</button>
-                                    </span>
+                                {form.detectedTypes.length > 0 && (
+                                    <div style={{marginTop: 4, display: 'flex', gap: 4, flexWrap: 'wrap'}}>
+                                        {form.detectedTypes.map(t => (
+                                            <button key={t}
+                                                    onClick={() => setForm(p => ({...p, type: t}))}
+                                                    style={{
+                                                        padding: '2px 7px',
+                                                        borderRadius: 10,
+                                                        background: form.type === t ? '#1565c0' : '#e3f2fd',
+                                                        color: form.type === t ? 'white' : '#1565c0',
+                                                        border: `1px solid ${form.type === t ? '#1565c0' : '#90caf9'}`,
+                                                        fontSize: 12,
+                                                        cursor: 'pointer'
+                                                    }}>
+                                                {form.type === t ? '✓ ' : ''}{t}
+                                            </button>
+                                        ))}
+                                    </div>
                                 )}
                             </label>
                             <select value={form.type} onChange={e => setForm(p => ({...p, type: e.target.value}))}
@@ -1229,7 +1219,8 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                                         padding: '8px 10px',
                                         border: '1px solid #ccc',
                                         borderRadius: 5,
-                                        fontSize: 15
+                                        fontSize: 15,
+                                        marginTop: 4
                                     }}>
                                 {TYPES.map(t => <option key={t}>{t}</option>)}
                             </select>
