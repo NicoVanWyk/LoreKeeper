@@ -2,7 +2,7 @@
 import {addKironaanTerm, getAllKironaanTerms} from '../services/kironaanService';
 import {
     SIGIL_PREFIXES, SIGIL_SUFFIX,
-    parseSigils, buildCompound, normalize, computeTokenMeta,
+    parseSigils, buildCompound, normalize, computeTokenMeta, lcsWordDiff,
     decodeKironaan, getComposerSpellingSuggestions, getSpellingSuggestions,
     analyzeGrammarSuggestions, findPartialPhraseMatches, analyzeWordOrderViolations,
     detectAllNlpTypes
@@ -40,11 +40,21 @@ const fetchDictDef = async (word) => {
 
 const getSegmentInfo = (seg, terms) => {
     const n = normalizeKr(seg);
-    if (SEGMENT_ORDER_MAP[n]) {
-        const {order, label} = SEGMENT_ORDER_MAP[n];
+    const nDecoded = normalizeKr(decodeKironaan(seg));
+    
+    if (SEGMENT_ORDER_MAP[n] || SEGMENT_ORDER_MAP[nDecoded]) {
+        const entry = SEGMENT_ORDER_MAP[n] || SEGMENT_ORDER_MAP[nDecoded];
+        const {order, label} = entry;
         return {order, label, translation: label, type: 'Prefix', term: seg};
     }
-    const match = terms.find(t => normalizeKr(t.term) === n || decodeKironaan(normalizeKr(t.term)) === n);
+    
+    // Try to match term in both encoded and decoded forms
+    const match = terms.find(t => {
+        const termNorm = normalizeKr(t.term);
+        const termDecoded = normalizeKr(decodeKironaan(t.term));
+        return termNorm === n || termDecoded === n || termNorm === nDecoded || termDecoded === nDecoded;
+    });
+    
     if (!match) return {order: null, label: 'Unknown', translation: null, type: 'Unknown', term: seg};
     return {
         order: TYPE_ORDER[match.type] ?? null,
@@ -113,6 +123,7 @@ function SpellingBanner({changes, suggested, onApply}) {
 
 function TermTooltip({term, translation, type}) {
     const [show, setShow] = useState(false);
+    const displayTerm = decodeKironaan(term);
     return (
         <span onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}
               style={{position: 'relative', cursor: 'default'}}>
@@ -135,7 +146,7 @@ function TermTooltip({term, translation, type}) {
                     alignItems: 'center'
                 }}>
                     {translation && <><span>{translation}</span><span style={{opacity: 0.4}}>·</span></>}
-                    <span style={{opacity: 0.75}}>{decodeKironaan(term)}</span>
+                    <span style={{opacity: 0.75}}>{displayTerm}</span>
                     {type && <><span style={{opacity: 0.4}}>·</span><span
                         style={{opacity: 0.65, fontStyle: 'italic'}}>{displayType(type)}</span></>}
                 </span>
@@ -462,7 +473,6 @@ function PhraseSuggestionsBanner({suggestions}) {
     );
 }
 
-// NEW: Word order violations banner
 function WordOrderViolationsBanner({violations, onApply, onApplyAll}) {
     if (!violations.length) return null;
     return (
@@ -524,7 +534,9 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
     const [copied, setCopied] = useState('');
     const [selectedMeanings, setSelectedMeanings] = useState({});
     const [confirmingPhrase, setConfirmingPhrase] = useState(null);
+    const [rejectedPhrases, setRejectedPhrases] = useState(new Set());
     const popRef = useRef(null);
+    const prevTextRef = useRef('');
 
     useEffect(() => {
         const h = (e) => {
@@ -534,11 +546,42 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
         return () => document.removeEventListener('mousedown', h);
     }, []);
 
+    // Preserve selections when text changes using LCS diff
     useEffect(() => {
-        setSelectedMeanings({});
+        if (prevTextRef.current === text) return;
+        
+        const oldTokens = prevTextRef.current.split(/(\s+)/);
+        const newTokens = text.split(/(\s+)/);
+        const oldWords = oldTokens.filter(t => !/^\s+$/.test(t)).map(t => parseSigils(t).base);
+        const newWords = newTokens.filter(t => !/^\s+$/.test(t)).map(t => parseSigils(t).base);
+        
+        // Build old selections array compatible with lcsWordDiff
+        const oldSelections = oldWords.map((w, i) => {
+            const meaning = selectedMeanings[i];
+            return {
+                word: w,
+                termId: meaning ? `${meaning.term}_${meaning.type}` : null,
+                meaning: meaning
+            };
+        });
+        
+        // Use LCS to map old selections to new positions
+        const diffResult = lcsWordDiff(oldWords, newWords, oldSelections);
+        
+        // Convert back to selectedMeanings format
+        const mappedMeanings = {};
+        diffResult.forEach((item, idx) => {
+            if (item.termId && oldSelections.find(s => s.termId === item.termId)?.meaning) {
+                mappedMeanings[idx] = oldSelections.find(s => s.termId === item.termId).meaning;
+            }
+        });
+        
+        setSelectedMeanings(mappedMeanings);
         setPopover(null);
         setConfirmingPhrase(null);
-    }, [text]);
+        setRejectedPhrases(new Set());
+        prevTextRef.current = text;
+    }, [text]); // eslint-disable-line
 
     useEffect(() => {
         form.translations.forEach(w => {
@@ -550,6 +593,30 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
     }, [form.translations.join(',')]); // eslint-disable-line
 
     const tokens = text.split(/(\s+)/);
+    
+    // Expand tokens containing hyphens into sub-tokens
+    const expandedTokens = [];
+    const tokenToOriginalMap = new Map(); // Maps expanded index to original index
+    let originalIdx = 0;
+    
+    tokens.forEach((tok) => {
+        if (/^\s+$/.test(tok)) {
+            expandedTokens.push(tok);
+            tokenToOriginalMap.set(expandedTokens.length - 1, originalIdx);
+        } else {
+            // Split on hyphens but preserve them
+            const parts = tok.split(/(-)/);
+            parts.forEach(part => {
+                if (part) {
+                    expandedTokens.push(part);
+                    tokenToOriginalMap.set(expandedTokens.length - 1, originalIdx);
+                }
+            });
+        }
+        originalIdx++;
+    });
+    
+    const workingTokens = expandedTokens;
     const nonPhraseTerms = terms.filter(t => t.type !== 'Phrases');
 
     const findMatches = (word) => {
@@ -569,51 +636,28 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
         return ms[0];
     };
 
-    const tokenMeta = useMemo(() => computeTokenMeta(tokens, terms), [text, terms]); // eslint-disable-line
+    const tokenMeta = useMemo(() => computeTokenMeta(workingTokens, terms), [text, terms]); // eslint-disable-line
     const grammarSuggestions = useMemo(() => analyzeGrammarSuggestions(text), [text]);
-    const phraseSuggestions = useMemo(() => findPartialPhraseMatches(tokens, terms), [text, terms]); // eslint-disable-line
-
-    // NEW: Word order violations with fixes
+    const phraseSuggestions = useMemo(() => findPartialPhraseMatches(workingTokens, terms), [text, terms]); // eslint-disable-line
     const wordOrderViolations = useMemo(() =>
-            analyzeWordOrderViolations(tokens, terms, selectedMeanings),
+            analyzeWordOrderViolations(workingTokens, terms, selectedMeanings),
         [text, terms, JSON.stringify(selectedMeanings)]); // eslint-disable-line
 
     const pendingPhraseMap = useMemo(() => {
         const map = new Map();
-        const wordIndices = tokens.map((t, i) => /^\s+$/.test(t) ? null : i).filter(i => i !== null);
+        const wordIndices = workingTokens.map((t, i) => /^\s+$/.test(t) ? null : i).filter(i => i !== null);
         phraseSuggestions.forEach(s => {
+            // Skip if this phrase was rejected
+            if (rejectedPhrases.has(s.phrase.term)) return;
+            
             const phraseNorms = s.matchedMeaning.toLowerCase().split(/\s+/).map(normalize);
             wordIndices.forEach(tIdx => {
-                const base = normalize(parseSigils(tokens[tIdx]).base);
+                const base = normalize(parseSigils(workingTokens[tIdx]).base);
                 if (phraseNorms.includes(base)) map.set(tIdx, s);
             });
         });
         return map;
-    }, [text, phraseSuggestions]); // eslint-disable-line
-
-    const phrasePreviewMap = useMemo(() => {
-        const map = new Map();
-        phraseSuggestions.forEach(s => {
-            const phraseNorms = s.matchedMeaning.toLowerCase().split(/\s+/).map(normalize);
-            let placed = false;
-            tokens.forEach((tok, tIdx) => {
-                if (/^\s+$/.test(tok)) return;
-                const base = normalize(parseSigils(tok).base);
-                if (!phraseNorms.includes(base)) return;
-                if (!placed) {
-                    map.set(tIdx, {
-                        output: s.phrase.term.toLowerCase(),
-                        translation: s.phrase.translation,
-                        skip: false
-                    });
-                    placed = true;
-                } else {
-                    map.set(tIdx, {skip: true});
-                }
-            });
-        });
-        return map;
-    }, [text, phraseSuggestions]); // eslint-disable-line
+    }, [text, phraseSuggestions, rejectedPhrases]); // eslint-disable-line
 
     const getStatus = (base, idx) => {
         if (!normalize(base)) return null;
@@ -626,6 +670,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
 
     const resolveToken = (tok, idx) => {
         if (/^\s+$/.test(tok)) return {output: tok, base: tok, prefixes: [], hasPossession: false, resolved: null};
+        if (tok === '-') return {output: '-', base: '-', prefixes: [], hasPossession: false, resolved: null};
         if (tokenMeta.phraseHead[idx]) {
             const pt = tokenMeta.phraseHead[idx];
             return {
@@ -638,13 +683,13 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
         }
         const {base, prefixes, hasPossession, leadingPunct, trailingPunct} = parseSigils(tok);
         const resolved = resolveBase(base, idx);
-        const wordIndices = tokens.map((t, i) => /^\s+$/.test(t) ? null : i).filter(i => i !== null);
+        const wordIndices = workingTokens.map((t, i) => /^\s+$/.test(t) || t === '-' ? null : i).filter(i => i !== null);
         const myWI = wordIndices.indexOf(idx);
         let adverbTerm = null;
         if (myWI !== -1 && myWI + 1 < wordIndices.length) {
             const nextIdx = wordIndices[myWI + 1];
             if (tokenMeta.adverbOf[nextIdx] === idx) {
-                const {base: advBase} = parseSigils(tokens[nextIdx]);
+                const {base: advBase} = parseSigils(workingTokens[nextIdx]);
                 adverbTerm = resolveBase(advBase, nextIdx).term || advBase;
             }
         }
@@ -658,12 +703,13 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
     };
 
     const buildKironaan = () =>
-        tokens.map((tok, idx) => {
+        workingTokens.map((tok, idx) => {
             if (/^\s+$/.test(tok)) return tok;
-            const po = phrasePreviewMap.get(idx);
-            if (po?.skip) return '';
-            if (po?.output) return po.output;
-            if (tokenMeta.absorbed.has(idx) && !tokenMeta.phraseHead[idx]) return '';
+            if (tok === '-') return '-';
+            if (tokenMeta.phraseHead[idx]) {
+                return tokenMeta.phraseHead[idx].term.toLowerCase();
+            }
+            if (tokenMeta.absorbed.has(idx)) return '';
             if (tokenMeta.adverbOf[idx] !== undefined) return '';
             return resolveToken(tok, idx).output;
         }).join('');
@@ -736,14 +782,12 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
 
             {text.trim() && (
                 <>
-                    {/* Grammar suggestions */}
                     <GrammarSuggestionsBanner
                         suggestions={grammarSuggestions}
                         onApply={s => setText(s.apply(text))}
                         onApplyAll={() => setText(applyAllSuggestions(text, grammarSuggestions))}
                     />
 
-                    {/* Word order violations - NEW */}
                     <WordOrderViolationsBanner
                         violations={wordOrderViolations}
                         onApply={v => setText(v.apply(text))}
@@ -756,10 +800,8 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                         }}
                     />
 
-                    {/* Phrase suggestions banner */}
                     <PhraseSuggestionsBanner suggestions={phraseSuggestions}/>
 
-                    {/* Phrase confirm bar */}
                     {confirmingPhrase && (
                         <div style={{
                             marginTop: 6,
@@ -791,7 +833,10 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                                             fontWeight: 600
                                         }}>Yes
                                 </button>
-                                <button onClick={() => setConfirmingPhrase(null)}
+                                <button onClick={() => {
+                                    setRejectedPhrases(prev => new Set([...prev, confirmingPhrase.phrase.term]));
+                                    setConfirmingPhrase(null);
+                                }}
                                         style={{
                                             padding: '2px 10px',
                                             background: 'white',
@@ -806,7 +851,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                         </div>
                     )}
 
-                    {/* Chip row */}
                     <div style={{
                         display: 'flex',
                         flexWrap: 'wrap',
@@ -818,9 +862,9 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                         marginTop: 6,
                         minHeight: 42
                     }}>
-                        {tokens.map((tok, i) => {
+                        {workingTokens.map((tok, i) => {
                             if (/^\s+$/.test(tok)) return <span key={i} style={{width: 6}}/>;
-
+                            if (tok === '-') return <span key={i} style={{color: '#999', fontSize: 14}}>-</span>;
                             if (tokenMeta.absorbed.has(i) && !tokenMeta.phraseHead[i]) return (
                                 <span key={i}
                                       title={normalize(tok) === 'to' ? "'to' absorbed" : "Part of matched phrase"}
@@ -989,13 +1033,19 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                             marginBottom: 3
                         }}>KIRONAAN PREVIEW</span>
                         <span className="KironaanFont" style={{fontSize: 20}}>
-                            {tokens.map((tok, i) => {
+                            {workingTokens.map((tok, i) => {
                                 if (/^\s+$/.test(tok)) return <span key={i}> </span>;
-                                const po = phrasePreviewMap.get(i);
-                                if (po?.skip) return null;
-                                if ((tokenMeta.absorbed.has(i) && !tokenMeta.phraseHead[i]) || tokenMeta.adverbOf[i] !== undefined) return null;
-                                if (po?.output) return <TermTooltip key={i} term={po.output}
-                                                                    translation={po.translation} type="Phrases"/>;
+                                if (tok === '-') return <span key={i}>-</span>;
+                                
+                                if (tokenMeta.phraseHead[i]) {
+                                    const pt = tokenMeta.phraseHead[i];
+                                    return <TermTooltip key={i} term={pt.term.toLowerCase()}
+                                                        translation={pt.translation} type="Phrases"/>;
+                                }
+                                
+                                if ((tokenMeta.absorbed.has(i) && !tokenMeta.phraseHead[i]) || 
+                                    tokenMeta.adverbOf[i] !== undefined) return null;
+                                
                                 const {output, resolved} = resolveToken(tok, i);
                                 return <TermTooltip key={i} term={output} translation={resolved?.translation}
                                                     type={resolved?.type}/>;
@@ -1009,7 +1059,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                         }}>{kironaaDecoded}</span>
                     </div>
 
-                    {/* Copy bar */}
                     <div style={{display: 'flex', gap: 8, marginTop: 8, alignItems: 'center', flexWrap: 'wrap'}}>
                         <button onClick={() => copy(text, 'english')} style={{
                             padding: '7px 16px',
@@ -1039,7 +1088,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                              onQuickAdd={openQuickAdd} isAdmin={isAdmin} popRef={popRef}/>
             )}
 
-            {/* Quick-add modal */}
             {modal && (
                 <div style={{
                     position: 'fixed',

@@ -10,12 +10,30 @@ const displayType = (t) => t === 'NaN' ? 'Other' : t;
 function PsalmRenderer({psalm, terms}) {
     const tokens = useMemo(() => psalm.englishText.split(/(\s+)/), [psalm.englishText]);
 
+    // Expand tokens containing hyphens into sub-tokens
+    const expandedTokens = useMemo(() => {
+        const result = [];
+        tokens.forEach((tok) => {
+            if (/^\s+$/.test(tok)) {
+                result.push(tok);
+            } else {
+                const parts = tok.split(/(-)/);
+                parts.forEach(part => {
+                    if (part) result.push(part);
+                });
+            }
+        });
+        return result;
+    }, [tokens]);
+
+    const workingTokens = expandedTokens;
+
     const wordTokenIndices = useMemo(
-        () => tokens.map((t, i) => /^\s+$/.test(t) ? null : i).filter(i => i !== null),
-        [tokens]
+        () => workingTokens.map((t, i) => (/^\s+$/.test(t) || t === '-') ? null : i).filter(i => i !== null),
+        [workingTokens]
     );
 
-    const tokenMeta = useMemo(() => computeTokenMeta(tokens, terms), [tokens, terms]);
+    const tokenMeta = useMemo(() => computeTokenMeta(workingTokens, terms), [workingTokens, terms]);
 
     const nonPhraseTerms = terms.filter(t => t.type !== 'Phrases');
     const findMatches = (base) => {
@@ -32,7 +50,7 @@ function PsalmRenderer({psalm, terms}) {
         const sel = psalm.wordSelections?.[wIdx];
         const tIdx = wordTokenIndices[wIdx];
         if (tIdx === undefined) return null;
-        const {base} = parseSigils(tokens[tIdx]);
+        const {base} = parseSigils(workingTokens[tIdx]);
         if (sel?.termId) {
             const found = terms.find(t => t.id === sel.termId);
             if (found) return found;
@@ -43,8 +61,9 @@ function PsalmRenderer({psalm, terms}) {
     };
 
     const renderItems = useMemo(() => {
-        return tokens.map((tok, tIdx) => {
+        return workingTokens.map((tok, tIdx) => {
             if (/^\s+$/.test(tok)) return {tIdx, isSpace: true};
+            if (tok === '-') return {tIdx, isHyphen: true};
 
             const wIdx = wordTokenIndices.indexOf(tIdx);
 
@@ -64,7 +83,7 @@ function PsalmRenderer({psalm, terms}) {
             const nextTI = wordTokenIndices[nextWI];
             let adverbTerm = null;
             if (nextTI !== undefined && tokenMeta.adverbOf[nextTI] === tIdx) {
-                adverbTerm = resolveByWordIdx(nextWI)?.term || parseSigils(tokens[nextTI]).base;
+                adverbTerm = resolveByWordIdx(nextWI)?.term || parseSigils(workingTokens[nextTI]).base;
             }
 
             const output = buildCompound(
@@ -72,9 +91,15 @@ function PsalmRenderer({psalm, terms}) {
             ).toLowerCase();
             return {tIdx, output, resolved};
         });
-    }, [tokens, tokenMeta, psalm.wordSelections, terms]); // eslint-disable-line
+    }, [workingTokens, tokenMeta, psalm.wordSelections, terms, wordTokenIndices]); // eslint-disable-line
 
-    const kironaan = renderItems.map(r => r.isSpace ? ' ' : r.skip ? '' : (r.output || '')).join('');
+    const kironaan = renderItems.map(r => {
+        if (r.isSpace) return ' ';
+        if (r.isHyphen) return '-';
+        if (r.skip) return '';
+        return r.output || '';
+    }).join('');
+    
     const kironaaDecoded = decodeKironaan(kironaan);
 
     return (
@@ -88,14 +113,18 @@ function PsalmRenderer({psalm, terms}) {
             <div className="KironaanFont" style={{fontSize: 18, lineHeight: 1.8, marginBottom: 4}}>
                 {renderItems.map((r, i) => {
                     if (r.isSpace) return <span key={i}> </span>;
+                    if (r.isHyphen) return <span key={i}>-</span>;
                     if (r.skip) return null;
+                    // Keep backslashes for Kironaan font (they render special glyphs)
+                    const fontOutput = r.output || '';
+                    const decodedOutput = decodeKironaan(fontOutput);
                     const tip = r.resolved?.translation
-                        ? `${r.resolved.translation} · ${decodeKironaan(r.output || '')} · ${displayType(r.resolved.type || '')}`
+                        ? `${r.resolved.translation} · ${decodedOutput} · ${displayType(r.resolved.type || '')}`
                         : null;
                     return (
                         <span key={i} title={tip || undefined}
                               style={{cursor: tip ? 'help' : 'default'}}>
-                            {r.output}{' '}
+                            {fontOutput}{' '}
                         </span>
                     );
                 })}
