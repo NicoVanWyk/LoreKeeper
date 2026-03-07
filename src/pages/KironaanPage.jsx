@@ -5,7 +5,7 @@ import {getAllPsalms, deletePsalm} from '../services/blackBookService';
 import KironaanWorkbench from '../components/KironaanWorkbench';
 import BlackBookViewer from '../components/BlackBookViewer';
 import BlackBookEditor from '../components/BlackBookEditor';
-import {getSpellingSuggestions, decodeKironaan} from '../utils/kironaanUtils';
+import {getComposerSpellingSuggestions, decodeKironaan} from '../utils/kironaanUtils';
 import {auth} from '../firebase';
 
 const ADMIN_UID = 'baQCmZdQOna3KhFSjoTA3jt2Lw72';
@@ -89,7 +89,7 @@ function EditModal({target, terms, onSave, onClose}) {
     const [tagInput, setTagInput] = useState('');
 
     const detectedType = detectNlpType(translations[0] || '');
-    const spelling = getSpellingSuggestions(term);
+    const spelling = getComposerSpellingSuggestions(term);
     const hasCapital = /[A-Z]/.test(term);
 
     useEffect(() => {

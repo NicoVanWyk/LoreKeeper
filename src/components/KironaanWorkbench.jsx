@@ -1,6 +1,7 @@
 ﻿import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {addKironaanTerm, getAllKironaanTerms} from '../services/kironaanService';
 import {
+    NUMBER_TERMS, isNumberTerm, parseKironaanNumber, buildKironaanNumber,
     SIGIL_PREFIXES, SIGIL_SUFFIX,
     parseSigils, buildCompound, normalize, computeTokenMeta, lcsWordDiff,
     decodeKironaan, getComposerSpellingSuggestions, getSpellingSuggestions,
@@ -46,6 +47,18 @@ const getSegmentInfo = (seg, terms) => {
         const entry = SEGMENT_ORDER_MAP[n] || SEGMENT_ORDER_MAP[nDecoded];
         const {order, label} = entry;
         return {order, label, translation: label, type: 'Prefix', term: seg};
+    }
+
+    // In getSegmentInfo function, add before term matching:
+    if (n === 'é' || nDecoded === 'poquin') {
+        return {order: null, label: 'Add', translation: 'plus', type: 'Operator', term: seg};
+    }
+    if (n === 'ann' || nDecoded === 'ann' || n === 'toran' || nDecoded === 'toran') {
+        return {order: null, label: 'Power', translation: 'to the power of', type: 'Operator', term: seg};
+    }
+    if (NUMBER_TERMS[n] !== undefined || NUMBER_TERMS[nDecoded] !== undefined) {
+        const val = NUMBER_TERMS[n] ?? NUMBER_TERMS[nDecoded];
+        return {order: null, label: 'Number', translation: val.toString(), type: 'Number', term: seg};
     }
     
     // Try to match term in both encoded and decoded forms
@@ -546,7 +559,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
         return () => document.removeEventListener('mousedown', h);
     }, []);
 
-    // Preserve selections when text changes using LCS diff
     useEffect(() => {
         if (prevTextRef.current === text) return;
         
@@ -555,7 +567,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
         const oldWords = oldTokens.filter(t => !/^\s+$/.test(t)).map(t => parseSigils(t).base);
         const newWords = newTokens.filter(t => !/^\s+$/.test(t)).map(t => parseSigils(t).base);
         
-        // Build old selections array compatible with lcsWordDiff
         const oldSelections = oldWords.map((w, i) => {
             const meaning = selectedMeanings[i];
             return {
@@ -565,10 +576,8 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
             };
         });
         
-        // Use LCS to map old selections to new positions
         const diffResult = lcsWordDiff(oldWords, newWords, oldSelections);
         
-        // Convert back to selectedMeanings format
         const mappedMeanings = {};
         diffResult.forEach((item, idx) => {
             if (item.termId && oldSelections.find(s => s.termId === item.termId)?.meaning) {
@@ -594,26 +603,16 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
 
     const tokens = text.split(/(\s+)/);
     
-    // Expand tokens containing hyphens into sub-tokens
     const expandedTokens = [];
-    const tokenToOriginalMap = new Map(); // Maps expanded index to original index
-    let originalIdx = 0;
-    
     tokens.forEach((tok) => {
         if (/^\s+$/.test(tok)) {
             expandedTokens.push(tok);
-            tokenToOriginalMap.set(expandedTokens.length - 1, originalIdx);
         } else {
-            // Split on hyphens but preserve them
             const parts = tok.split(/(-)/);
             parts.forEach(part => {
-                if (part) {
-                    expandedTokens.push(part);
-                    tokenToOriginalMap.set(expandedTokens.length - 1, originalIdx);
-                }
+                if (part) expandedTokens.push(part);
             });
         }
-        originalIdx++;
     });
     
     const workingTokens = expandedTokens;
@@ -637,6 +636,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
     };
 
     const tokenMeta = useMemo(() => computeTokenMeta(workingTokens, terms), [text, terms]); // eslint-disable-line
+    const numberPhrases = useMemo(() => findNumberPhrases(workingTokens), [text]); // eslint-disable-line
     const grammarSuggestions = useMemo(() => analyzeGrammarSuggestions(text), [text]);
     const phraseSuggestions = useMemo(() => findPartialPhraseMatches(workingTokens, terms), [text, terms]); // eslint-disable-line
     const wordOrderViolations = useMemo(() =>
@@ -645,9 +645,8 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
 
     const pendingPhraseMap = useMemo(() => {
         const map = new Map();
-        const wordIndices = workingTokens.map((t, i) => /^\s+$/.test(t) ? null : i).filter(i => i !== null);
+        const wordIndices = workingTokens.map((t, i) => /^\s+$/.test(t) || t === '-' ? null : i).filter(i => i !== null);
         phraseSuggestions.forEach(s => {
-            // Skip if this phrase was rejected
             if (rejectedPhrases.has(s.phrase.term)) return;
             
             const phraseNorms = s.matchedMeaning.toLowerCase().split(/\s+/).map(normalize);
@@ -782,6 +781,41 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
 
             {text.trim() && (
                 <>
+                    {numberPhrases.length > 0 && (
+                        <div style={{
+                            marginTop: 6,
+                            padding: '8px 12px',
+                            background: '#e3f2fd',
+                            borderRadius: 6,
+                            border: '1px solid #64b5f6'
+                        }}>
+                            <div style={{fontSize: 12, fontWeight: 700, color: '#1565c0', marginBottom: 6}}>
+                                ✦ Number conversions available
+                            </div>
+                            {numberPhrases.map((np, i) => (
+                                <div key={i} style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    marginBottom: 4
+                                }}>
+                                    <span style={{fontSize: 13}}>
+                                        "{np.englishPhrase}" ({np.decimal}) → <span className="KironaanFont">{np.kironaan}</span>
+                                    </span>
+                                    <button onClick={() => setText(np.apply(text))} style={{
+                                        padding: '2px 10px',
+                                        background: '#1565c0',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: 4,
+                                        cursor: 'pointer',
+                                        fontSize: 12
+                                    }}>Convert</button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     <GrammarSuggestionsBanner
                         suggestions={grammarSuggestions}
                         onApply={s => setText(s.apply(text))}
@@ -1018,7 +1052,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                         })}
                     </div>
 
-                    {/* Kironaan preview */}
                     <div style={{
                         marginTop: 8,
                         padding: '8px 12px',

@@ -15,6 +15,31 @@ export const SIGIL_PREFIXES = [
 ];
 export const SIGIL_SUFFIX = {sigil: '@', suffix: 'Orsik', order: 8, label: 'Possession', color: '#e65100'};
 
+export const NUMBER_TERMS = {
+    'xás': 0,
+    'brás': 1,
+    'derás': 2,
+    'qirás': 3,
+    'esán': 4,
+    'derán': 5,
+    'sīkán': 6,
+    'xekán': 7,
+    'asī': 8,
+    'asībrax': 9,
+    'pósárasī': 16,
+    'phosáderáquinasī': 24,
+    'derásī': 32
+};
+
+const ENGLISH_NUMBERS = {
+    'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9,
+    'ten': 10, 'eleven': 11, 'twelve': 12, 'thirteen': 13, 'fourteen': 14, 'fifteen': 15, 'sixteen': 16,
+    'seventeen': 17, 'eighteen': 18, 'nineteen': 19, 'twenty': 20, 'thirty': 30, 'forty': 40, 'fifty': 50,
+    'sixty': 60, 'seventy': 70, 'eighty': 80, 'ninety': 90, 'hundred': 100, 'thousand': 1000, 'million': 1000000
+};
+
+const normalizeKr = (w) => w.toLowerCase().trim().replace(/[^a-zāēīōūäëïöüáéíóú]/gi, '');
+
 export const normalize = (w) => w.toLowerCase().replace(/[^a-z]/gi, '');
 
 export const parseSigils = (tok) => {
@@ -186,7 +211,6 @@ export const getComposerSpellingSuggestions = (text) => {
 export const decodeKironaan = (str) =>
     (str || '').replace(/([bcdfghjklmnpqrstvwxyz])\\/gi, '$1$1');
 
-// NEW: Detect all possible NLP types for a word
 export const detectAllNlpTypes = (word) => {
     const doc = nlp(word);
     const types = [];
@@ -194,11 +218,11 @@ export const detectAllNlpTypes = (word) => {
     if (doc.adjectives().length) types.push('Adjective');
     if (doc.adverbs().length) types.push('Adverb');
     if (doc.nouns().length) types.push('Noun');
-    return types.length > 0 ? types : ['Noun']; // Default to Noun if nothing detected
+    return types.length > 0 ? types : ['Noun'];
 };
 
 export const findPartialPhraseMatches = (tokens, terms) => {
-    const wordTokens = tokens.filter(t => !/^\s+$/.test(t));
+    const wordTokens = tokens.filter(t => !/^\s+$/.test(t) && t !== '-');
     const wordBases = wordTokens.map(t => normalize(parseSigils(t).base));
 
     return terms
@@ -306,10 +330,9 @@ export const analyzeGrammarSuggestions = (text) => {
     return suggestions;
 };
 
-// NEW: Analyze word order violations with fixes
 export const analyzeWordOrderViolations = (tokens, terms, selectedMeanings) => {
     const violations = [];
-    const wordIndices = tokens.map((t, i) => /^\s+$/.test(t) ? null : i).filter(i => i !== null);
+    const wordIndices = tokens.map((t, i) => /^\s+$/.test(t) || t === '-' ? null : i).filter(i => i !== null);
 
     const resolveType = (tokenIdx, wordIdx) => {
         const {base} = parseSigils(tokens[tokenIdx]);
@@ -352,7 +375,6 @@ export const analyzeWordOrderViolations = (tokens, terms, selectedMeanings) => {
                 word: base,
                 verbWord: lastVerbWord,
                 apply: (text) => {
-                    // Check if violation still exists
                     const parts = text.split(/(\s+)/);
                     let verbIdx = -1, pronounIdx = -1;
 
@@ -364,9 +386,8 @@ export const analyzeWordOrderViolations = (tokens, terms, selectedMeanings) => {
                         }
                     }
 
-                    if (verbIdx === -1 || pronounIdx === -1) return text; // Already fixed
+                    if (verbIdx === -1 || pronounIdx === -1) return text;
 
-                    // Swap: collect everything, then reconstruct with swap
                     const result = [...parts];
                     const temp = result[verbIdx];
                     result[verbIdx] = result[pronounIdx];
@@ -384,7 +405,6 @@ export const analyzeWordOrderViolations = (tokens, terms, selectedMeanings) => {
                 word: base,
                 nounWord: lastNounWord,
                 apply: (text) => {
-                    // Check if violation still exists
                     const parts = text.split(/(\s+)/);
                     let nounIdx = -1, adjIdx = -1;
 
@@ -396,7 +416,7 @@ export const analyzeWordOrderViolations = (tokens, terms, selectedMeanings) => {
                         }
                     }
 
-                    if (nounIdx === -1 || adjIdx === -1) return text; // Already fixed
+                    if (nounIdx === -1 || adjIdx === -1) return text;
 
                     const result = [...parts];
                     const temp = result[nounIdx];
@@ -409,7 +429,7 @@ export const analyzeWordOrderViolations = (tokens, terms, selectedMeanings) => {
 
         if (type === 'Adverb' && lastVerbIdx > -1 && lastVerbIdx < tokenIdx) {
             const prevTI = wordIndices[wordIdx - 1];
-            if (prevTI !== lastVerbIdx) return; // Only if adjacent
+            if (prevTI !== lastVerbIdx) return;
 
             violations.push({
                 id: `adverb-${tokenIdx}`,
@@ -418,7 +438,6 @@ export const analyzeWordOrderViolations = (tokens, terms, selectedMeanings) => {
                 word: base,
                 verbWord: lastVerbWord,
                 apply: (text) => {
-                    // Check if violation still exists
                     const parts = text.split(/(\s+)/);
                     let verbIdx = -1, advIdx = -1;
 
@@ -430,7 +449,7 @@ export const analyzeWordOrderViolations = (tokens, terms, selectedMeanings) => {
                         }
                     }
 
-                    if (verbIdx === -1 || advIdx === -1) return text; // Already fixed
+                    if (verbIdx === -1 || advIdx === -1) return text;
 
                     const result = [...parts];
                     const temp = result[verbIdx];
@@ -443,4 +462,191 @@ export const analyzeWordOrderViolations = (tokens, terms, selectedMeanings) => {
     });
 
     return violations;
+};
+
+export const parseEnglishNumber = (text) => {
+    const words = text.toLowerCase().replace(/[^a-z\s0-9]/g, '').trim().split(/\s+/);
+    
+    if (words.length === 1) {
+        const num = parseInt(words[0]);
+        if (!isNaN(num)) return num;
+    }
+    
+    let total = 0, current = 0;
+    
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        if (word === 'and') continue;
+        
+        const value = ENGLISH_NUMBERS[word];
+        if (value === undefined) return null;
+        
+        if (value >= 100) {
+            if (current === 0) current = 1;
+            current *= value;
+            if (value >= 1000) {
+                total += current;
+                current = 0;
+            }
+        } else {
+            current += value;
+        }
+    }
+    
+    return total + current;
+};
+
+export const buildKironaanNumber = (decimal) => {
+    if (decimal === 0) return 'xás';
+    
+    for (const [term, value] of Object.entries(NUMBER_TERMS)) {
+        if (value === decimal) return term;
+    }
+    
+    const parts = [];
+    let remaining = decimal;
+    
+    // Handle large powers of 8
+    const powers = [];
+    let temp = remaining;
+    let pow = 0;
+    while (temp >= 8) {
+        temp = Math.floor(temp / 8);
+        pow++;
+    }
+    
+    if (pow >= 4) {
+        const base = Math.floor(remaining / Math.pow(8, pow));
+        if (base < 8) {
+            const baseTerm = Object.keys(NUMBER_TERMS).find(k => NUMBER_TERMS[k] === base);
+            const powTerm = Object.keys(NUMBER_TERMS).find(k => NUMBER_TERMS[k] === pow);
+            if (baseTerm && powTerm) {
+                parts.push(`${baseTerm}-ánn-${powTerm}`);
+                remaining -= base * Math.pow(8, pow);
+            }
+        }
+    }
+    
+    if (remaining >= 32) {
+        const count = Math.floor(remaining / 32);
+        if (count === 1) parts.push('derásī');
+        else {
+            const countTerm = Object.keys(NUMBER_TERMS).find(k => NUMBER_TERMS[k] === count);
+            if (countTerm) parts.push(`${countTerm}-derásī`);
+        }
+        remaining %= 32;
+    }
+    
+    if (remaining >= 16) {
+        parts.push('pósárasī');
+        remaining -= 16;
+    }
+    
+    if (remaining >= 8) {
+        const count = Math.floor(remaining / 8);
+        if (count === 1) parts.push('asī');
+        else {
+            const countTerm = Object.keys(NUMBER_TERMS).find(k => NUMBER_TERMS[k] === count);
+            if (countTerm) parts.push(`${countTerm}-asī`);
+        }
+        remaining %= 8;
+    }
+    
+    if (remaining > 0) {
+        const remainTerm = Object.keys(NUMBER_TERMS).find(k => NUMBER_TERMS[k] === remaining);
+        if (remainTerm) parts.push(remainTerm);
+    }
+    
+    return parts.join('-é-');
+};
+
+export const findNumberPhrases = (tokens) => {
+    const suggestions = [];
+    const wordIndices = tokens.map((t, i) => /^\s+$/.test(t) || t === '-' ? null : i).filter(i => i !== null);
+    
+    for (let start = 0; start < wordIndices.length; start++) {
+        for (let len = 1; len <= Math.min(5, wordIndices.length - start); len++) {
+            const indices = wordIndices.slice(start, start + len);
+            const phrase = indices.map(i => parseSigils(tokens[i]).base).join(' ');
+            
+            const decimal = parseEnglishNumber(phrase);
+            if (decimal !== null && decimal > 0) {
+                const kironaan = buildKironaanNumber(decimal);
+                
+                suggestions.push({
+                    startIdx: indices[0],
+                    endIdx: indices[indices.length - 1],
+                    englishPhrase: phrase,
+                    decimal,
+                    kironaan,
+                    apply: (text) => {
+                        const parts = text.split(/(\s+)/);
+                        let replaced = false;
+                        return parts.map((part, i) => {
+                            if (i === indices[0] && !replaced) {
+                                replaced = true;
+                                return kironaan;
+                            }
+                            if (indices.includes(i) && i !== indices[0]) return '';
+                            return part;
+                        }).join('').replace(/\s{2,}/g, ' ').trim();
+                    }
+                });
+                break;
+            }
+        }
+    }
+    
+    return suggestions;
+};
+
+export const parseKironaanNumber = (kironaanStr) => {
+    const segments = kironaanStr.toLowerCase().split('-').map(s => s.trim());
+    let total = 0;
+    let current = null;
+    let nextOp = null;
+    
+    for (const seg of segments) {
+        const n = normalizeKr(decodeKironaan(seg));
+        
+        if (n === 'é' || n === 'poquin') {
+            if (current !== null) total += current;
+            current = null;
+            nextOp = 'add';
+            continue;
+        }
+        
+        if (n === 'ann' || n === 'toran') {
+            nextOp = 'power';
+            continue;
+        }
+        
+        const value = NUMBER_TERMS[n];
+        if (value === undefined) return null;
+        
+        if (nextOp === 'power') {
+            current = Math.pow(current, value);
+            nextOp = null;
+        } else if (nextOp === 'add') {
+            total += value;
+            current = null;
+            nextOp = null;
+        } else if (current === null) {
+            current = value;
+        } else {
+            current *= value;
+        }
+    }
+    
+    if (current !== null) total += current;
+    return total;
+};
+
+export const isNumberTerm = (term) => {
+    const n = normalizeKr(decodeKironaan(term));
+    return NUMBER_TERMS[n] !== undefined || 
+           n === 'é' || 
+           n === 'poquin' || 
+           n === 'ann' || 
+           n === 'toran';
 };

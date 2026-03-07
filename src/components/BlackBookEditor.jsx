@@ -5,7 +5,7 @@ import {addPsalm, updatePsalm} from '../services/blackBookService';
 import {
     SIGIL_PREFIXES, SIGIL_SUFFIX,
     parseSigils, buildCompound, normalize, computeTokenMeta, lcsWordDiff,
-    decodeKironaan, getComposerSpellingSuggestions, findPartialPhraseMatches
+    decodeKironaan, getComposerSpellingSuggestions, findPartialPhraseMatches, findNumberPhrases
 } from '../utils/kironaanUtils';
 
 const ADMIN_UID = 'baQCmZdQOna3KhFSjoTA3jt2Lw72';
@@ -35,8 +35,6 @@ const fetchDictDef = async (word) => {
 };
 
 const buildInitialSelections = (psalm) => psalm?.wordSelections?.length ? psalm.wordSelections : [];
-
-// ── Sub-components ────────────────────────────────────────────
 
 function SpellingBanner({changes, suggested, onApply}) {
     if (!changes.length) return null;
@@ -231,8 +229,6 @@ function EditorWordPopover({popover, currentTermId, terms, onSelect, onQuickAdd,
     );
 }
 
-// ── Main Editor ───────────────────────────────────────────────
-
 function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, nextOrder}) {
     const isAdmin = userId === ADMIN_UID;
 
@@ -281,13 +277,11 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
 
     const tokens = englishText.split(/(\s+)/);
     
-    // Expand tokens containing hyphens into sub-tokens
     const expandedTokens = [];
     tokens.forEach((tok) => {
         if (/^\s+$/.test(tok)) {
             expandedTokens.push(tok);
         } else {
-            // Split on hyphens but preserve them
             const parts = tok.split(/(-)/);
             parts.forEach(part => {
                 if (part) expandedTokens.push(part);
@@ -315,13 +309,13 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
     };
 
     const tokenMeta = useMemo(() => computeTokenMeta(workingTokens, terms), [englishText, terms]); // eslint-disable-line
+    const numberPhrases = useMemo(() => findNumberPhrases(workingTokens), [englishText]); // eslint-disable-line
     const phraseSuggestions = useMemo(() => findPartialPhraseMatches(workingTokens, terms), [englishText, terms]); // eslint-disable-line
 
     const pendingPhraseMap = useMemo(() => {
         const map = new Map();
         const wordIndices = workingTokens.map((t, i) => (/^\s+$/.test(t) || t === '-') ? null : i).filter(i => i !== null);
         phraseSuggestions.forEach(s => {
-            // Skip if this phrase was rejected
             if (rejectedPhrases.has(s.phrase.term)) return;
             
             const phraseNorms = s.matchedMeaning.toLowerCase().split(/\s+/).map(normalize);
@@ -562,6 +556,41 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                               }}/>
                 </div>
 
+                {numberPhrases.length > 0 && (
+                    <div style={{
+                        marginTop: 6,
+                        padding: '8px 12px',
+                        background: '#e3f2fd',
+                        borderRadius: 6,
+                        border: '1px solid #64b5f6'
+                    }}>
+                        <div style={{fontSize: 12, fontWeight: 700, color: '#1565c0', marginBottom: 6}}>
+                            ✦ Number conversions available
+                        </div>
+                        {numberPhrases.map((np, i) => (
+                            <div key={i} style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                marginBottom: 4
+                            }}>
+                                <span style={{fontSize: 13}}>
+                                    "{np.englishPhrase}" ({np.decimal}) → <span className="KironaanFont">{np.kironaan}</span>
+                                </span>
+                                <button onClick={() => handleTextChange(np.apply(englishText))} style={{
+                                    padding: '2px 10px',
+                                    background: '#1565c0',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: 4,
+                                    cursor: 'pointer',
+                                    fontSize: 12
+                                }}>Convert</button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 <PhraseSuggestionsBanner suggestions={phraseSuggestions}/>
 
                 {confirmingPhrase && (
@@ -784,7 +813,6 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                             })}
                         </div>
 
-                        {/* Kironaan preview */}
                         <div style={{
                             marginBottom: 18,
                             padding: '8px 12px',
