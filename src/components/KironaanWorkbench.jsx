@@ -1,12 +1,11 @@
 ﻿import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {addKironaanTerm, getAllKironaanTerms} from '../services/kironaanService';
 import {
-    NUMBER_TERMS, isNumberTerm, parseKironaanNumber, buildKironaanNumber,
     SIGIL_PREFIXES, SIGIL_SUFFIX,
     parseSigils, buildCompound, normalize, computeTokenMeta, lcsWordDiff,
     decodeKironaan, getComposerSpellingSuggestions, getSpellingSuggestions,
     analyzeGrammarSuggestions, findPartialPhraseMatches, analyzeWordOrderViolations,
-    detectAllNlpTypes
+    detectAllNlpTypes, findNumberPhrases, NUMBER_TERMS, isNumberTerm, parseKironaanNumber
 } from '../utils/kironaanUtils';
 
 const ADMIN_UID = 'baQCmZdQOna3KhFSjoTA3jt2Lw72';
