@@ -44,6 +44,7 @@ import SingleReligionPage from './pages/subPages/SingleReligionPage';
 import GlyphcastingPage from './pages/subPages/GlyphcastingPage';
 import PlanesPage from './pages/subPages/PlanesPage';
 import KironaanPage from './pages/KironaanPage';
+import BlackBookPage from './pages/BlackBookPage';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -100,6 +101,7 @@ const AppWrapper = () => {
 
         {/* Kironaan */}
         <Route path="/kironaan" element={<PrivateRoute element={<KironaanPage />} />} />
+        <Route path="/black-book" element={<PrivateRoute element={<BlackBookPage />} />} />
 
         {/* About */}
         <Route path="/about" element={<PrivateRoute element={<AboutPage />} />} />

@@ -240,6 +240,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
     const [saving, setSaving] = useState(false);
     const [confirmingPhrase, setConfirmingPhrase] = useState(null);
     const [rejectedPhrases, setRejectedPhrases] = useState(new Set());
+    const [readableEnglish, setReadableEnglish] = useState(psalm?.readableEnglish || '');
 
     const [modal, setModal] = useState(null);
     const [form, setForm] = useState({translations: [], term: '', type: 'Noun', detectedType: 'Noun'});
@@ -429,10 +430,10 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
         if (!title.trim() || !englishText.trim()) return;
         setSaving(true);
         const syncedSelections = wordTokenIndices.map((tIdx, wIdx) => ({
-            word: parseSigils(tokens[tIdx]).base,
+            word: parseSigils(workingTokens[tIdx]).base,
             termId: wordSelections[wIdx]?.termId || null
         }));
-        const data = {title: title.trim(), order: Number(order), englishText, wordSelections: syncedSelections};
+        const data = {title: title.trim(), order: Number(order), englishText, readableEnglish: readableEnglish.trim(), wordSelections: syncedSelections};
         try {
             if (psalm?.id) await updatePsalm(psalm.id, data);
             else await addPsalm(data);
@@ -554,6 +555,25 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                                   resize: 'vertical',
                                   boxSizing: 'border-box'
                               }}/>
+                </div>
+
+                <div style={{marginBottom: 6}}>
+                    <label style={{display: 'block', fontSize: 13, marginBottom: 4, color: '#555'}}>
+                        Readable English Translation
+                        <span style={{marginLeft: 8, fontSize: 11, color: '#aaa'}}>Optional - for display purposes</span>
+                    </label>
+                    <textarea value={readableEnglish} onChange={e => setReadableEnglish(e.target.value)}
+                            placeholder="Enter a more readable English version for display…"
+                            style={{
+                                width: '100%',
+                                minHeight: 80,
+                                padding: 10,
+                                fontSize: 15,
+                                borderRadius: 6,
+                                border: '1px solid #ccc',
+                                resize: 'vertical',
+                                boxSizing: 'border-box'
+                            }}/>
                 </div>
 
                 {numberPhrases.length > 0 && (

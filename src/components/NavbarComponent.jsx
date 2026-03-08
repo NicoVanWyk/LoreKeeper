@@ -30,6 +30,7 @@ function NavbarComponent() {
                         <div className="dropdown-content">
                             <Link to="/glossary">Glossary</Link>
                             <Link to="/kironaan">Kironaan</Link>
+                            <Link to="/black-book">Black Book</Link>
                             <Link to="/about">About</Link>
                             <Link to="/maps">Maps</Link>
                             <Link to="/planes">Planes</Link>
@@ -75,6 +76,7 @@ function NavbarComponent() {
                     <li className="navbar-item"><Link to="/">Home</Link></li>
                     <li className="navbar-item"><Link to="/glossary">Glossary</Link></li>
                     <li className="navbar-item"><Link to="/kironaan">Kironaan</Link></li>
+                    <li className="navbar-item"><Link to="/black-book">Black Book</Link></li>
                     <li className="navbar-item"><Link to="/about">About</Link></li>
                     <li className="navbar-item"><Link to="/characters">Characters</Link></li>
                     <li className="navbar-item"><Link to="/important-events">Important Events</Link></li>
