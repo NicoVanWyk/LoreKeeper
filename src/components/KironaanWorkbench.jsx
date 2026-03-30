@@ -5,7 +5,8 @@ import {
     parseSigils, buildCompound, normalize, computeTokenMeta, lcsWordDiff,
     decodeKironaan, getComposerSpellingSuggestions, getSpellingSuggestions,
     analyzeGrammarSuggestions, findPartialPhraseMatches, analyzeWordOrderViolations,
-    detectAllNlpTypes, findNumberPhrases, NUMBER_TERMS, isNumberTerm, parseKironaanNumber
+    detectAllNlpTypes, findNumberPhrases, NUMBER_TERMS, isNumberTerm, parseKironaanNumber,
+    isConceptShortcut, resolveConceptShortcut
 } from '../utils/kironaanUtils';
 
 const ADMIN_UID = 'baQCmZdQOna3KhFSjoTA3jt2Lw72';
@@ -41,14 +42,13 @@ const fetchDictDef = async (word) => {
 const getSegmentInfo = (seg, terms) => {
     const n = normalizeKr(seg);
     const nDecoded = normalizeKr(decodeKironaan(seg));
-    
+
     if (SEGMENT_ORDER_MAP[n] || SEGMENT_ORDER_MAP[nDecoded]) {
         const entry = SEGMENT_ORDER_MAP[n] || SEGMENT_ORDER_MAP[nDecoded];
         const {order, label} = entry;
         return {order, label, translation: label, type: 'Prefix', term: seg};
     }
 
-    // In getSegmentInfo function, add before term matching:
     if (n === 'é' || nDecoded === 'poquin') {
         return {order: null, label: 'Add', translation: 'plus', type: 'Operator', term: seg};
     }
@@ -59,14 +59,13 @@ const getSegmentInfo = (seg, terms) => {
         const val = NUMBER_TERMS[n] ?? NUMBER_TERMS[nDecoded];
         return {order: null, label: 'Number', translation: val.toString(), type: 'Number', term: seg};
     }
-    
-    // Try to match term in both encoded and decoded forms
+
     const match = terms.find(t => {
         const termNorm = normalizeKr(t.term);
         const termDecoded = normalizeKr(decodeKironaan(t.term));
         return termNorm === n || termDecoded === n || termNorm === nDecoded || termDecoded === nDecoded;
     });
-    
+
     if (!match) return {order: null, label: 'Unknown', translation: null, type: 'Unknown', term: seg};
     return {
         order: TYPE_ORDER[match.type] ?? null,
@@ -91,8 +90,6 @@ const validateCompound = (segments, terms) => {
     }
     return {infos, violations};
 };
-
-// ── Shared sub-components ─────────────────────────────────────
 
 function SpellingBanner({changes, suggested, onApply}) {
     if (!changes.length) return null;
@@ -400,8 +397,6 @@ function WordPopover({popover, selectedMeanings, onSelect, onQuickAdd, isAdmin, 
     );
 }
 
-// ── Banner components ─────────────────────────────────────────
-
 const applyAllSuggestions = (text, suggestions) => {
     const ordered = [...suggestions.filter(s => s.type === 'tense'), ...suggestions.filter(s => s.type !== 'tense')];
     return ordered.reduce((t, s) => s.apply(t), text);
@@ -534,8 +529,6 @@ function WordOrderViolationsBanner({violations, onApply, onApplyAll}) {
     );
 }
 
-// ── Compose Tab ───────────────────────────────────────────────
-
 function ComposeTab({terms, onTermsChange, isAdmin}) {
     const [text, setText] = useState('');
     const [popover, setPopover] = useState(null);
@@ -560,12 +553,12 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
 
     useEffect(() => {
         if (prevTextRef.current === text) return;
-        
+
         const oldTokens = prevTextRef.current.split(/(\s+)/);
         const newTokens = text.split(/(\s+)/);
         const oldWords = oldTokens.filter(t => !/^\s+$/.test(t)).map(t => parseSigils(t).base);
         const newWords = newTokens.filter(t => !/^\s+$/.test(t)).map(t => parseSigils(t).base);
-        
+
         const oldSelections = oldWords.map((w, i) => {
             const meaning = selectedMeanings[i];
             return {
@@ -574,16 +567,16 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                 meaning: meaning
             };
         });
-        
+
         const diffResult = lcsWordDiff(oldWords, newWords, oldSelections);
-        
+
         const mappedMeanings = {};
         diffResult.forEach((item, idx) => {
             if (item.termId && oldSelections.find(s => s.termId === item.termId)?.meaning) {
                 mappedMeanings[idx] = oldSelections.find(s => s.termId === item.termId).meaning;
             }
         });
-        
+
         setSelectedMeanings(mappedMeanings);
         setPopover(null);
         setConfirmingPhrase(null);
@@ -601,7 +594,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
     }, [form.translations.join(',')]); // eslint-disable-line
 
     const tokens = text.split(/(\s+)/);
-    
+
     const expandedTokens = [];
     tokens.forEach((tok) => {
         if (/^\s+$/.test(tok)) {
@@ -613,7 +606,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
             });
         }
     });
-    
+
     const workingTokens = expandedTokens;
     const nonPhraseTerms = terms.filter(t => t.type !== 'Phrases');
 
@@ -628,6 +621,9 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
         return nonPhraseTerms.filter(t => t.translation.split(/[,\s]+/).some(tr => normalize(tr).startsWith(n) && normalize(tr) !== n));
     };
     const resolveBase = (base, idx) => {
+        if (isConceptShortcut(base)) {
+            return resolveConceptShortcut(base);
+        }
         if (selectedMeanings[idx]) return selectedMeanings[idx];
         const ms = findMatches(base);
         if (!ms.length) return {term: base, translation: null, type: null};
@@ -647,7 +643,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
         const wordIndices = workingTokens.map((t, i) => /^\s+$/.test(t) || t === '-' ? null : i).filter(i => i !== null);
         phraseSuggestions.forEach(s => {
             if (rejectedPhrases.has(s.phrase.term)) return;
-            
+
             const phraseNorms = s.matchedMeaning.toLowerCase().split(/\s+/).map(normalize);
             wordIndices.forEach(tIdx => {
                 const base = normalize(parseSigils(workingTokens[tIdx]).base);
@@ -659,6 +655,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
 
     const getStatus = (base, idx) => {
         if (!normalize(base)) return null;
+        if (isConceptShortcut(base)) return 'matched';
         if (selectedMeanings[idx]) return 'matched';
         const ms = findMatches(base);
         if (!ms.length) return findPartialMatches(base).length ? 'partial' : 'unmatched';
@@ -679,7 +676,26 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                 resolved: pt
             };
         }
-        const {base, prefixes, hasPossession, leadingPunct, trailingPunct} = parseSigils(tok);
+        const {
+            base,
+            prefixes,
+            hasPossession,
+            leadingPunct,
+            trailingPunct,
+            isConceptShortcut: isConcept
+        } = parseSigils(tok);
+
+        if (isConcept) {
+            const concept = resolveConceptShortcut(base);
+            return {
+                output: `${leadingPunct}${concept.term}${trailingPunct}`,
+                base,
+                prefixes: [],
+                hasPossession: false,
+                resolved: concept
+            };
+        }
+
         const resolved = resolveBase(base, idx);
         const wordIndices = workingTokens.map((t, i) => /^\s+$/.test(t) || t === '-' ? null : i).filter(i => i !== null);
         const myWI = wordIndices.indexOf(idx);
@@ -760,7 +776,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
     };
 
     const {suggested: spellSuggested, changes: spellChanges} = getComposerSpellingSuggestions(form.term);
-    const hasCapital = /[A-Z]/.test(form.term);
+    const hasCapital = /[A-Z]/.test(form.term) && !(form.term.length === 1 && /^[A-ZÁÉÍÓÚ{}|]$/.test(form.term));
 
     return (
         <div>
@@ -799,7 +815,8 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                                     marginBottom: 4
                                 }}>
                                     <span style={{fontSize: 13}}>
-                                        "{np.englishPhrase}" ({np.decimal}) → <span className="KironaanFont">{np.kironaan}</span>
+                                        "{np.englishPhrase}" ({np.decimal}) → <span
+                                        className="KironaanFont">{np.kironaan}</span>
                                     </span>
                                     <button onClick={() => setText(np.apply(text))} style={{
                                         padding: '2px 10px',
@@ -809,7 +826,8 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                                         borderRadius: 4,
                                         cursor: 'pointer',
                                         fontSize: 12
-                                    }}>Convert</button>
+                                    }}>Convert
+                                    </button>
                                 </div>
                             ))}
                         </div>
@@ -898,6 +916,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                         {workingTokens.map((tok, i) => {
                             if (/^\s+$/.test(tok)) return <span key={i} style={{width: 6}}/>;
                             if (tok === '-') return <span key={i} style={{color: '#999', fontSize: 14}}>-</span>;
+
                             if (tokenMeta.absorbed.has(i) && !tokenMeta.phraseHead[i]) return (
                                 <span key={i}
                                       title={normalize(tok) === 'to' ? "'to' absorbed" : "Part of matched phrase"}
@@ -917,6 +936,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                                     {tok}
                                 </span>
                             );
+
                             if (tokenMeta.adverbOf[i] !== undefined) return (
                                 <span key={i} title="Attached as adverb suffix to preceding verb"
                                       style={{
@@ -940,6 +960,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                                     }}>adv-suffix</span>
                                 </span>
                             );
+
                             if (tokenMeta.phraseHead[i]) {
                                 const pt = tokenMeta.phraseHead[i];
                                 return (
@@ -1000,7 +1021,35 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                                 );
                             }
 
-                            const {base, prefixes, hasPossession} = parseSigils(tok);
+                            const {base, prefixes, hasPossession, isConceptShortcut: isConcept} = parseSigils(tok);
+
+                            if (isConcept) {
+                                const concept = resolveConceptShortcut(base);
+                                return (
+                                    <span key={i}
+                                          title={`${concept.symbol} → ${concept.conceptName}`}
+                                          style={{
+                                              display: 'inline-flex',
+                                              alignItems: 'center',
+                                              gap: 4,
+                                              padding: '3px 10px',
+                                              borderRadius: 14,
+                                              fontSize: 15,
+                                              userSelect: 'none',
+                                              background: '#fff9e6',
+                                              border: '1px solid #ffd700',
+                                              cursor: 'help'
+                                          }}>
+                                        {base}
+                                        <span style={{fontSize: 11, color: '#b8860b', fontStyle: 'italic'}}>
+                                            {concept.conceptName}
+                                        </span>
+                                        <span
+                                            style={{width: 7, height: 7, borderRadius: '50%', background: '#ffd700'}}/>
+                                    </span>
+                                );
+                            }
+
                             const status = getStatus(base, i);
                             const sel = selectedMeanings[i];
                             return (
@@ -1068,16 +1117,16 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                             {workingTokens.map((tok, i) => {
                                 if (/^\s+$/.test(tok)) return <span key={i}> </span>;
                                 if (tok === '-') return <span key={i}>-</span>;
-                                
+
                                 if (tokenMeta.phraseHead[i]) {
                                     const pt = tokenMeta.phraseHead[i];
                                     return <TermTooltip key={i} term={pt.term.toLowerCase()}
                                                         translation={pt.translation} type="Phrases"/>;
                                 }
-                                
-                                if ((tokenMeta.absorbed.has(i) && !tokenMeta.phraseHead[i]) || 
+
+                                if ((tokenMeta.absorbed.has(i) && !tokenMeta.phraseHead[i]) ||
                                     tokenMeta.adverbOf[i] !== undefined) return null;
-                                
+
                                 const {output, resolved} = resolveToken(tok, i);
                                 return <TermTooltip key={i} term={output} translation={resolved?.translation}
                                                     type={resolved?.type}/>;
@@ -1335,8 +1384,6 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
     );
 }
 
-// ── Validate Tab ──────────────────────────────────────────────
-
 function ValidateTab({terms}) {
     const [text, setText] = useState('');
     const [copied, setCopied] = useState(false);
@@ -1488,8 +1535,6 @@ function ValidateTab({terms}) {
         </div>
     );
 }
-
-// ── Workbench wrapper ─────────────────────────────────────────
 
 function KironaanWorkbench({userId, terms, onTermsChange}) {
     const [tab, setTab] = useState('compose');

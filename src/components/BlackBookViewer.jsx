@@ -2,7 +2,7 @@
 import {
     parseSigils, buildCompound, normalize, computeTokenMeta, decodeKironaan
 } from '../utils/kironaanUtils';
-
+import {isConceptShortcut, resolveConceptShortcut} from '../utils/kironaanUtils';
 const displayType = (t) => t === 'NaN' ? 'Other' : t;
 
 // Renders a psalm's Kironaan output. termIds are resolved live from terms[],
@@ -50,11 +50,16 @@ function PsalmRenderer({psalm, terms}) {
         const sel = psalm.wordSelections?.[wIdx];
         const tIdx = wordTokenIndices[wIdx];
         if (tIdx === undefined) return null;
-        const {base} = parseSigils(workingTokens[tIdx]);
+        const {base, isConceptShortcut: isConcept} = parseSigils(workingTokens[tIdx]);
+
+        // Handle concept shortcuts
+        if (isConcept) {
+            return resolveConceptShortcut(base);
+        }
+
         if (sel?.termId) {
             const found = terms.find(t => t.id === sel.termId);
             if (found) return found;
-            // termId stored but term was deleted — fall back to auto-resolve
         }
         const ms = findMatches(base);
         return ms[0] || {term: base, translation: null, type: null};
@@ -75,10 +80,16 @@ function PsalmRenderer({psalm, terms}) {
                 return {tIdx, output: pt.term.toLowerCase(), resolved: pt};
             }
 
-            const {base, prefixes, hasPossession} = parseSigils(tok);
+            const {base, prefixes, hasPossession, isConceptShortcut: isConcept} = parseSigils(tok);
+
+            // Handle concept shortcuts
+            if (isConcept) {
+                const concept = resolveConceptShortcut(base);
+                return {tIdx, output: concept.term, resolved: concept};
+            }
+
             const resolved = resolveByWordIdx(wIdx);
 
-            // Adverb suffix: if next word-token is an adverb attached to this verb
             const nextWI = wIdx + 1;
             const nextTI = wordTokenIndices[nextWI];
             let adverbTerm = null;

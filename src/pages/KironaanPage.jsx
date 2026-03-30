@@ -90,7 +90,7 @@ function EditModal({target, terms, onSave, onClose}) {
 
     const detectedType = detectNlpType(translations[0] || '');
     const spelling = getComposerSpellingSuggestions(term);
-    const hasCapital = /[A-Z]/.test(term);
+    const hasCapital = /[A-Z]/.test(term) && !(term.length === 1 && /^[A-ZÁÉÍÓÚ{}|]$/.test(term));
 
     useEffect(() => {
         translations.forEach(w => {
@@ -549,9 +549,9 @@ function KironaanPage() {
                         .map((s, i) => <li key={i}>{s}</li>)}
                 </ol>
                 <h1>Example:</h1>
-                <p>Lors Hesamir Sók-Dis-Ki-Gré-Pó-Deraksi (You know Past Non-Alchemists? || You know people who were not
+                <p>lors hesamir sók-dis-ki-gré-pó-deraksi (You know Past Non-Alchemists? || You know people who were not
                     previously alchemists?)</p>
-                <p className="KironaanFont" style={{marginTop: 0}}>Lors Hesamir Sók_Dis_Gré_Ki_Deraksi</p>
+                <p className="KironaanFont" style={{marginTop: 0}}>lors hesamir sók_dis_gré_ki_deraksi</p>
                 <p>Certain letters can also be spelled in different ways:</p>
                 <ol style={{fontSize: 20}}>
                     <li>í = ih</li>

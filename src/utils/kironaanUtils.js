@@ -1,4 +1,5 @@
 import nlp from 'compromise';
+import {isConceptShortcut, resolveConceptShortcut} from '../constants/conceptConstants';
 
 const MACRON = {a: 'ā', e: 'ē', i: 'ī', o: 'ō', u: 'ū'};
 const UMLAUT = {a: 'ä', e: 'ë', i: 'ï', o: 'ö', u: 'ü'};
@@ -43,7 +44,26 @@ const normalizeKr = (w) => w.toLowerCase().trim().replace(/[^a-zāēīōūäëï
 export const normalize = (w) => w.toLowerCase().replace(/[^a-z]/gi, '');
 
 export const parseSigils = (tok) => {
-    let rest = tok;
+    // Extract punctuation first
+    const leadingMatch = tok.match(/^([.()\[\],;!?]+)/);
+    const trailingMatch = tok.match(/([.()\[\],;!?]+)$/);
+    const leadingPunct = leadingMatch ? leadingMatch[1] : '';
+    const trailingPunct = trailingMatch ? trailingMatch[1] : '';
+    let rest = tok.replace(/^[.()\[\],;!?]+|[.()\[\],;!?]+$/g, '');
+
+    // Check if it's a standalone concept shortcut (single uppercase letter or special symbol)
+    if (rest.length === 1 && isConceptShortcut(rest)) {
+        return {
+            base: rest,
+            prefixes: [],
+            hasPossession: false,
+            leadingPunct,
+            trailingPunct,
+            isConceptShortcut: true
+        };
+    }
+
+    // Existing prefix/suffix logic
     const prefixes = [];
     const hasPossession = rest.endsWith('@');
     if (hasPossession) rest = rest.slice(0, -1);
@@ -59,12 +79,8 @@ export const parseSigils = (tok) => {
             }
         }
     }
-    const leadingMatch = rest.match(/^([.()\[\],;!?]+)/);
-    const trailingMatch = rest.match(/([.()\[\],;!?]+)$/);
-    const leadingPunct = leadingMatch ? leadingMatch[1] : '';
-    const trailingPunct = trailingMatch ? trailingMatch[1] : '';
-    rest = rest.replace(/^[.()\[\],;!?]+|[.()\[\],;!?]+$/g, '');
-    return {base: rest, prefixes, hasPossession, leadingPunct, trailingPunct};
+
+    return {base: rest, prefixes, hasPossession, leadingPunct, trailingPunct, isConceptShortcut: false};
 };
 
 export const buildCompound = (baseTerm, prefixes, hasPossession, adverbTerm = null, leadingPunct = '', trailingPunct = '') => {
@@ -264,7 +280,15 @@ export const findPartialPhraseMatches = (tokens, terms) => {
 export const analyzeGrammarSuggestions = (text) => {
     if (!text.trim()) return [];
     const suggestions = [];
-    const doc = nlp(text);
+
+    // Filter out concept shortcuts before NLP processing
+    const tokens = text.split(/\s+/).filter(t => {
+        const trimmed = t.replace(/^[.()\[\],;!?]+|[.()\[\],;!?]+$/g, '');
+        return !isConceptShortcut(trimmed);
+    });
+
+    const filteredText = tokens.join(' ');
+    const doc = nlp(filteredText);
     const trimmed = text.trimEnd();
 
     doc.verbs().forEach(phrase => {
@@ -286,7 +310,7 @@ export const analyzeGrammarSuggestions = (text) => {
         }
     });
 
-    const willMatch = text.match(/\bwill\s+([a-z]+)\b/i);
+    const willMatch = filteredText.match(/\bwill\s+([a-z]+)\b/i);
     if (willMatch) {
         const futureVerb = willMatch[1].toLowerCase();
         const rawToken = text.split(/\s+/).find(t => normalize(t) === futureVerb);
@@ -650,3 +674,5 @@ export const isNumberTerm = (term) => {
            n === 'ann' || 
            n === 'toran';
 };
+
+export {isConceptShortcut, resolveConceptShortcut} from '../constants/conceptConstants';
