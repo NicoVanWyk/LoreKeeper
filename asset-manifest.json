@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/LoreKeeper/static/css/main.f2014537.css",
-    "main.js": "/LoreKeeper/static/js/main.552ae5e0.js",
+    "main.css": "/LoreKeeper/static/css/main.9531d04e.css",
+    "main.js": "/LoreKeeper/static/js/main.5b9dba73.js",
     "static/js/453.ed0b1c71.chunk.js": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js",
-    "static/media/KironaanFont.woff": "/LoreKeeper/static/media/KironaanFont.881d41aeb57fe7d5926d.woff",
+    "static/media/KironaanFont.ttf": "/LoreKeeper/static/media/KironaanFont.16d20184bcfb3dae29d6.ttf",
     "static/media/Logo.jpg": "/LoreKeeper/static/media/Logo.5be397fed6557eb60aed.jpg",
-    "static/media/KironaanFont.ttf": "/LoreKeeper/static/media/KironaanFont.d6563852f38b24651528.ttf",
     "static/media/EasternFenHisanEmpire.png": "/LoreKeeper/static/media/EasternFenHisanEmpire.bf9509a6517beee2fa15.png",
     "static/media/DalwinianAlliance.png": "/LoreKeeper/static/media/DalwinianAlliance.b1143ee2d35e012750be.png",
     "static/media/HillgraveAlliance.png": "/LoreKeeper/static/media/HillgraveAlliance.d62e804e7a30e00ff10f.png",
     "static/media/FreeStates.png": "/LoreKeeper/static/media/FreeStates.8fa0090bf400a9442b32.png",
     "static/media/City&Village.png": "/LoreKeeper/static/media/City&Village.f4a1ec075f69c4791ab6.png",
+    "static/media/KironaanFont.woff": "/LoreKeeper/static/media/KironaanFont.0e95a96b92d9d1f4a4d0.woff",
     "static/media/CapitalCity.png": "/LoreKeeper/static/media/CapitalCity.a1a2436a6d6e5022d4f7.png",
+    "static/media/KironaanFont.woff2": "/LoreKeeper/static/media/KironaanFont.05368b6c9992243005e7.woff2",
     "static/media/HavarianEmpire.png": "/LoreKeeper/static/media/HavarianEmpire.c13206024373fd2ab5c5.png",
     "static/media/Ardor.png": "/LoreKeeper/static/media/Ardor.66652e79b39f217242f8.png",
     "static/media/Landmark.png": "/LoreKeeper/static/media/Landmark.2f5f64d355044996cd7e.png",
     "static/media/FullGlyph.png": "/LoreKeeper/static/media/FullGlyph.56978e6a178f376051ce.png",
     "static/media/GlyphExample.png": "/LoreKeeper/static/media/GlyphExample.a61bfaca9c64ea248d20.png",
-    "static/media/KironaanFont.woff2": "/LoreKeeper/static/media/KironaanFont.9db629163496039589e2.woff2",
     "static/media/TheTwins.png": "/LoreKeeper/static/media/TheTwins.2a79d78911b9641998b5.png",
     "static/media/CompactGlyph.png": "/LoreKeeper/static/media/CompactGlyph.cedd5083662946393052.png",
     "static/media/GlyphDuration.png": "/LoreKeeper/static/media/GlyphDuration.6f06edcc0a372b8e795e.png",
@@ -27,12 +27,12 @@
     "static/media/GlyphShape.png": "/LoreKeeper/static/media/GlyphShape.eeb70f5fe87dc5178501.png",
     "static/media/Fort.png": "/LoreKeeper/static/media/Fort.f9279d02dcd1431052b7.png",
     "index.html": "/LoreKeeper/index.html",
-    "main.f2014537.css.map": "/LoreKeeper/static/css/main.f2014537.css.map",
-    "main.552ae5e0.js.map": "/LoreKeeper/static/js/main.552ae5e0.js.map",
+    "main.9531d04e.css.map": "/LoreKeeper/static/css/main.9531d04e.css.map",
+    "main.5b9dba73.js.map": "/LoreKeeper/static/js/main.5b9dba73.js.map",
     "453.ed0b1c71.chunk.js.map": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f2014537.css",
-    "static/js/main.552ae5e0.js"
+    "static/css/main.9531d04e.css",
+    "static/js/main.5b9dba73.js"
   ]
 }
