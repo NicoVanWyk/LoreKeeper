@@ -958,7 +958,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                             }}>{kironaanDecoded.split('').map((char, i) => {
                                 if (isConceptShortcut(char)) {
                                     const concept = resolveConceptShortcut(char);
-                                    return concept?.conceptName || char;
+                                    return concept?.term || char;
                                 }
                                 return char;
                             }).join('')}</span>

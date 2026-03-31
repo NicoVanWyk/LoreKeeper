@@ -1140,7 +1140,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                         }}>{kironaanDecoded.split('').map((char, i) => {
                             if (isConceptShortcut(char)) {
                                 const concept = resolveConceptShortcut(char);
-                                return concept?.conceptName || char;
+                                return concept?.term || char;
                             }
                             return char;
                         }).join('')}</span>
