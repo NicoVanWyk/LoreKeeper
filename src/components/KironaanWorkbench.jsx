@@ -729,7 +729,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
         }).join('');
 
     const kironaan = buildKironaan();
-    const kironaaDecoded = decodeKironaan(kironaan);
+    const kironaanDecoded = decodeKironaan(kironaan);
 
     const copy = (val, label) => {
         navigator.clipboard.writeText(val);
@@ -1137,7 +1137,13 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                             marginTop: 6,
                             fontSize: 15,
                             color: '#555'
-                        }}>{kironaaDecoded}</span>
+                        }}>{kironaanDecoded.split('').map((char, i) => {
+                            if (isConceptShortcut(char)) {
+                                const concept = resolveConceptShortcut(char);
+                                return concept?.conceptName || char;
+                            }
+                            return char;
+                        }).join('')}</span>
                     </div>
 
                     <div style={{display: 'flex', gap: 8, marginTop: 8, alignItems: 'center', flexWrap: 'wrap'}}>
@@ -1149,7 +1155,7 @@ function ComposeTab({terms, onTermsChange, isAdmin}) {
                             background: 'white',
                             fontSize: 14
                         }}>{copied === 'english' ? '✓ Copied!' : 'Copy English'}</button>
-                        <button onClick={() => copy(kironaaDecoded, 'kironaan')} style={{
+                        <button onClick={() => copy(kironaanDecoded, 'kironaan')} style={{
                             padding: '7px 16px',
                             borderRadius: 6,
                             border: '1px solid #5c35d4',

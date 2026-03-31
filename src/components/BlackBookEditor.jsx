@@ -386,7 +386,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
         }).join('');
 
     const kironaan = buildKironaan();
-    const kironaaDecoded = decodeKironaan(kironaan);
+    const kironaanDecoded = decodeKironaan(kironaan);
 
     const getStatus = (base, wordIdx) => {
         if (!normalize(base)) return null;
@@ -955,7 +955,13 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                                 marginTop: 4,
                                 fontSize: 14,
                                 color: '#555'
-                            }}>{kironaaDecoded}</span>
+                            }}>{kironaanDecoded.split('').map((char, i) => {
+                                if (isConceptShortcut(char)) {
+                                    const concept = resolveConceptShortcut(char);
+                                    return concept?.conceptName || char;
+                                }
+                                return char;
+                            }).join('')}</span>
                         </div>
                     </>
                 )}

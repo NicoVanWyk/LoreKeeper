@@ -111,7 +111,7 @@ function PsalmRenderer({psalm, terms}) {
         return r.output || '';
     }).join('');
     
-    const kironaaDecoded = decodeKironaan(kironaan);
+    const kironaanDecoded = decodeKironaan(kironaan);
 
     return (
         <div style={{
@@ -141,7 +141,13 @@ function PsalmRenderer({psalm, terms}) {
                 })}
             </div>
             <div style={{fontSize: 13, color: '#666', fontStyle: 'italic', marginTop: 2}}>
-                {kironaaDecoded}
+                {kironaanDecoded.split('').map((char, i) => {
+                    if (isConceptShortcut(char)) {
+                        const concept = resolveConceptShortcut(char);
+                        return concept?.conceptName || char;
+                    }
+                    return char;
+                }).join('')}
             </div>
         </div>
     );
