@@ -1,157 +1,5 @@
-﻿import React, {useState, useMemo} from 'react';
-import {
-    parseSigils, buildCompound, normalize, computeTokenMeta, decodeKironaan
-} from '../utils/kironaanUtils';
-import {isConceptShortcut, resolveConceptShortcut} from '../utils/kironaanUtils';
-const displayType = (t) => t === 'NaN' ? 'Other' : t;
-
-// Renders a psalm's Kironaan output. termIds are resolved live from terms[],
-// so any spelling edit to a term auto-propagates here without touching the psalm doc.
-function PsalmRenderer({psalm, terms}) {
-    const tokens = useMemo(() => psalm.englishText.split(/(\s+)/), [psalm.englishText]);
-
-    // Expand tokens containing hyphens into sub-tokens
-    const expandedTokens = useMemo(() => {
-        const result = [];
-        tokens.forEach((tok) => {
-            if (/^\s+$/.test(tok)) {
-                result.push(tok);
-            } else {
-                const parts = tok.split(/(-)/);
-                parts.forEach(part => {
-                    if (part) result.push(part);
-                });
-            }
-        });
-        return result;
-    }, [tokens]);
-
-    const workingTokens = expandedTokens;
-
-    const wordTokenIndices = useMemo(
-        () => workingTokens.map((t, i) => (/^\s+$/.test(t) || t === '-') ? null : i).filter(i => i !== null),
-        [workingTokens]
-    );
-
-    const tokenMeta = useMemo(() => computeTokenMeta(workingTokens, terms), [workingTokens, terms]);
-
-    const nonPhraseTerms = terms.filter(t => t.type !== 'Phrases');
-    const findMatches = (base) => {
-        const n = normalize(base);
-        if (!n) return [];
-        return nonPhraseTerms.filter(t =>
-            t.translation.split(/[,\s]+/).some(tr => normalize(tr) === n)
-        );
-    };
-
-    // Resolve a word-index to a live term. termId takes priority; falls back to
-    // auto-resolve so unselected (unambiguous) words always stay current.
-    const resolveByWordIdx = (wIdx) => {
-        const sel = psalm.wordSelections?.[wIdx];
-        const tIdx = wordTokenIndices[wIdx];
-        if (tIdx === undefined) return null;
-        const {base, isConceptShortcut: isConcept} = parseSigils(workingTokens[tIdx]);
-
-        // Handle concept shortcuts
-        if (isConcept) {
-            return resolveConceptShortcut(base);
-        }
-
-        if (sel?.termId) {
-            const found = terms.find(t => t.id === sel.termId);
-            if (found) return found;
-        }
-        const ms = findMatches(base);
-        return ms[0] || {term: base, translation: null, type: null};
-    };
-
-    const renderItems = useMemo(() => {
-        return workingTokens.map((tok, tIdx) => {
-            if (/^\s+$/.test(tok)) return {tIdx, isSpace: true};
-            if (tok === '-') return {tIdx, isHyphen: true};
-
-            const wIdx = wordTokenIndices.indexOf(tIdx);
-
-            if (tokenMeta.absorbed.has(tIdx) && !tokenMeta.phraseHead[tIdx]) return {tIdx, skip: true};
-            if (tokenMeta.adverbOf[tIdx] !== undefined) return {tIdx, skip: true};
-
-            if (tokenMeta.phraseHead[tIdx]) {
-                const pt = tokenMeta.phraseHead[tIdx];
-                return {tIdx, output: pt.term.toLowerCase(), resolved: pt};
-            }
-
-            const {base, prefixes, hasPossession, isConceptShortcut: isConcept} = parseSigils(tok);
-
-            // Handle concept shortcuts
-            if (isConcept) {
-                const concept = resolveConceptShortcut(base);
-                return {tIdx, output: concept.term, resolved: concept};
-            }
-
-            const resolved = resolveByWordIdx(wIdx);
-
-            const nextWI = wIdx + 1;
-            const nextTI = wordTokenIndices[nextWI];
-            let adverbTerm = null;
-            if (nextTI !== undefined && tokenMeta.adverbOf[nextTI] === tIdx) {
-                adverbTerm = resolveByWordIdx(nextWI)?.term || parseSigils(workingTokens[nextTI]).base;
-            }
-
-            const output = buildCompound(
-                resolved?.term || base, prefixes, hasPossession, adverbTerm
-            ).toLowerCase();
-            return {tIdx, output, resolved};
-        });
-    }, [workingTokens, tokenMeta, psalm.wordSelections, terms, wordTokenIndices]); // eslint-disable-line
-
-    const kironaan = renderItems.map(r => {
-        if (r.isSpace) return ' ';
-        if (r.isHyphen) return '-';
-        if (r.skip) return '';
-        return r.output || '';
-    }).join('');
-    
-    const kironaanDecoded = decodeKironaan(kironaan);
-
-    return (
-        <div style={{
-            marginTop: 10,
-            padding: '10px 14px',
-            background: '#f3f0ff',
-            borderRadius: 6,
-            border: '1px solid #d1c4e9'
-        }}>
-            <div className="KironaanFont" style={{fontSize: 18, lineHeight: 1.8, marginBottom: 4}}>
-                {renderItems.map((r, i) => {
-                    if (r.isSpace) return <span key={i}> </span>;
-                    if (r.isHyphen) return <span key={i}>-</span>;
-                    if (r.skip) return null;
-                    // Keep backslashes for Kironaan font (they render special glyphs)
-                    const fontOutput = r.output || '';
-                    const decodedOutput = decodeKironaan(fontOutput);
-                    const tip = r.resolved?.translation
-                        ? `${r.resolved.translation} · ${decodedOutput} · ${displayType(r.resolved.type || '')}`
-                        : null;
-                    return (
-                        <span key={i} title={tip || undefined}
-                              style={{cursor: tip ? 'help' : 'default'}}>
-                            {fontOutput}{' '}
-                        </span>
-                    );
-                })}
-            </div>
-            <div style={{fontSize: 13, color: '#666', fontStyle: 'italic', marginTop: 2}}>
-                {kironaanDecoded.split('').map((char, i) => {
-                    if (isConceptShortcut(char)) {
-                        const concept = resolveConceptShortcut(char);
-                        return concept?.term || char;
-                    }
-                    return char;
-                }).join('')}
-            </div>
-        </div>
-    );
-}
+﻿import React, {useState} from 'react';
+import KironaanRenderer from './KironaanRenderer';
 
 function PsalmCard({psalm, terms, isAdmin, onEdit, onDelete}) {
     const [open, setOpen] = useState(false);
@@ -164,7 +12,6 @@ function PsalmCard({psalm, terms, isAdmin, onEdit, onDelete}) {
             marginBottom: 12,
             overflow: 'hidden'
         }}>
-            {/* Header row */}
             <div onClick={() => setOpen(o => !o)}
                  style={{
                      display: 'flex',
@@ -177,9 +24,7 @@ function PsalmCard({psalm, terms, isAdmin, onEdit, onDelete}) {
                      transition: 'background 0.15s'
                  }}>
                 <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
-                    <span style={{fontSize: 13, fontWeight: 700, color: '#9c27b0', minWidth: 28}}>
-                        {psalm.order}
-                    </span>
+                    <span style={{fontSize: 13, fontWeight: 700, color: '#9c27b0', minWidth: 28}}>{psalm.order}</span>
                     <span style={{fontSize: 16, fontWeight: 600}}>{psalm.title}</span>
                 </div>
                 <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
@@ -221,15 +66,17 @@ function PsalmCard({psalm, terms, isAdmin, onEdit, onDelete}) {
                 </div>
             </div>
 
-            {/* Expanded body */}
             {open && (
                 <div style={{padding: '0 16px 16px', borderTop: '1px solid #f0e8ff'}}>
-                    {/* English text */}
                     <p style={{margin: '12px 0 4px', fontSize: 15, color: '#333', lineHeight: 1.7}}>
-                        {psalm.englishText}
+                        {psalm.readableEnglish || psalm.englishText}
                     </p>
-                    {/* Live-rendered Kironaan */}
-                    <PsalmRenderer psalm={psalm} terms={terms}/>
+                    <KironaanRenderer
+                        englishText={psalm.englishText}
+                        wordSelections={psalm.wordSelections}
+                        terms={terms}
+                        mode="both"
+                    />
                 </div>
             )}
         </div>
@@ -302,14 +149,8 @@ function BlackBookViewer({psalms, terms, isAdmin, onEdit, onDelete, onNew}) {
                 </p>
             ) : (
                 filtered.map(p => (
-                    <PsalmCard
-                        key={p.id}
-                        psalm={p}
-                        terms={terms}
-                        isAdmin={isAdmin}
-                        onEdit={onEdit}
-                        onDelete={onDelete}
-                    />
+                    <PsalmCard key={p.id} psalm={p} terms={terms} isAdmin={isAdmin} onEdit={onEdit}
+                               onDelete={onDelete}/>
                 ))
             )}
         </div>

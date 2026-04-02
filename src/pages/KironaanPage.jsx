@@ -7,6 +7,7 @@ import BlackBookViewer from '../components/BlackBookViewer';
 import BlackBookEditor from '../components/BlackBookEditor';
 import {getComposerSpellingSuggestions, decodeKironaan} from '../utils/kironaanUtils';
 import {auth} from '../firebase';
+import KironaanExport from '../components/KironaanExport';
 
 const ADMIN_UID = 'baQCmZdQOna3KhFSjoTA3jt2Lw72';
 const PAGE_SIZE = 10;
@@ -435,6 +436,11 @@ function KironaanPage() {
                         onNew={() => setPsalmEditor('new')}
                     />
                 )}
+            </div>
+
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12}}>
+                <h1 style={{margin: 0}}>Terms</h1>
+                <KironaanExport terms={terms}/>
             </div>
 
             {/* Terms table */}

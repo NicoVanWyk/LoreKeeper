@@ -3,16 +3,16 @@ import nlp from 'compromise';
 import {addKironaanTerm, getAllKironaanTerms} from '../services/kironaanService';
 import {addPsalm, updatePsalm} from '../services/blackBookService';
 import {
-    SIGIL_PREFIXES, SIGIL_SUFFIX,
-    parseSigils, buildCompound, normalize, computeTokenMeta, lcsWordDiff,
-    decodeKironaan, getComposerSpellingSuggestions, findPartialPhraseMatches, findNumberPhrases,
-    isConceptShortcut, resolveConceptShortcut
+    SIGIL_PREFIXES, SIGIL_SUFFIX, parseSigils, buildCompound, normalize, computeTokenMeta,
+    lcsWordDiff, decodeKironaan, getComposerSpellingSuggestions, findPartialPhraseMatches,
+    findNumberPhrases, splitKironaanTokens, isConceptShortcut, resolveConceptShortcut
 } from '../utils/kironaanUtils';
+import KironaanRenderer from '../components/KironaanRenderer';
 
 const ADMIN_UID = 'baQCmZdQOna3KhFSjoTA3jt2Lw72';
 const TYPES = ['Noun', 'Verb', 'Adjective', 'Adverb', 'Conjunction', 'Prepositions', 'Pronouns', 'Number', 'Math', 'Phrases', 'Articles', 'Prefix', 'Suffix', 'Determiner', 'NaN'];
 const POP_PAGE_SZ = 6;
-
+const FLOATING_PUNCT = ['.', ',', '(', ')', '+', '-', '/', '*', '='];
 const displayType = (t) => t === 'NaN' ? 'Other' : t;
 
 const detectNlpType = (word) => {
@@ -34,8 +34,6 @@ const fetchDictDef = async (word) => {
         return '';
     }
 };
-
-const buildInitialSelections = (psalm) => psalm?.wordSelections?.length ? psalm.wordSelections : [];
 
 function SpellingBanner({changes, suggested, onApply}) {
     if (!changes.length) return null;
@@ -164,18 +162,17 @@ function EditorWordPopover({popover, currentTermId, terms, onSelect, onQuickAdd,
                                     borderTop: '1px solid #f0f0f0',
                                     paddingTop: 6
                                 }}>Did you mean…</div>}
-                                <div onClick={() => onSelect(wordIdx, m)}
-                                     style={{
-                                         display: 'flex',
-                                         justifyContent: 'space-between',
-                                         alignItems: 'center',
-                                         padding: '7px 8px',
-                                         borderRadius: 6,
-                                         cursor: 'pointer',
-                                         marginBottom: 3,
-                                         background: isSel ? '#e8f5e9' : '#fafafa',
-                                         border: `1px solid ${isSel ? '#4caf50' : '#e0e0e0'}`
-                                     }}>
+                                <div onClick={() => onSelect(wordIdx, m)} style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '7px 8px',
+                                    borderRadius: 6,
+                                    cursor: 'pointer',
+                                    marginBottom: 3,
+                                    background: isSel ? '#e8f5e9' : '#fafafa',
+                                    border: `1px solid ${isSel ? '#4caf50' : '#e0e0e0'}`
+                                }}>
                                     <div style={{display: 'flex', flexDirection: 'column', gap: 1}}>
                                         <span style={{fontSize: 13, fontWeight: 500}}>{m.translation}</span>
                                         <span style={{
@@ -236,7 +233,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
     const [title, setTitle] = useState(psalm?.title || '');
     const [order, setOrder] = useState(psalm?.order ?? nextOrder ?? 1);
     const [englishText, setEnglishText] = useState(psalm?.englishText || '');
-    const [wordSelections, setWordSelections] = useState(() => buildInitialSelections(psalm));
+    const [wordSelections, setWordSelections] = useState(() => psalm?.wordSelections || []);
     const [popover, setPopover] = useState(null);
     const [saving, setSaving] = useState(false);
     const [confirmingPhrase, setConfirmingPhrase] = useState(null);
@@ -267,8 +264,8 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
     }, [form.translations.join(',')]); // eslint-disable-line
 
     const handleTextChange = (newText) => {
-        const newTokens = newText.split(/(\s+)/);
-        const newBaseWords = newTokens.filter(t => !/^\s+$/.test(t)).map(t => parseSigils(t).base);
+        const newTokens = splitKironaanTokens(newText);
+        const newBaseWords = newTokens.filter(t => !/^\s+$/.test(t) && !FLOATING_PUNCT.includes(t)).map(t => parseSigils(t).base);
         const oldBaseWords = wordSelections.map(s => s.word);
         setWordSelections(lcsWordDiff(oldBaseWords, newBaseWords, wordSelections));
         setEnglishText(newText);
@@ -277,26 +274,11 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
         setRejectedPhrases(new Set());
     };
 
-    const tokens = englishText.split(/(\s+)/);
-
-    const expandedTokens = [];
-    tokens.forEach((tok) => {
-        if (/^\s+$/.test(tok)) {
-            expandedTokens.push(tok);
-        } else {
-            const parts = tok.split(/(-)/);
-            parts.forEach(part => {
-                if (part) expandedTokens.push(part);
-            });
-        }
-    });
-
-    const workingTokens = expandedTokens;
-
-    const wordTokenIndices = useMemo(
-        () => workingTokens.map((t, i) => (/^\s+$/.test(t) || t === '-') ? null : i).filter(i => i !== null),
-        [englishText] // eslint-disable-line
-    );
+    const tokens = useMemo(() => splitKironaanTokens(englishText), [englishText]);
+    const wordTokenIndices = useMemo(() => tokens.map((t, i) => {
+        if (/^\s+$/.test(t) || FLOATING_PUNCT.includes(t)) return null;
+        return i;
+    }).filter(i => i !== null), [tokens]);
 
     const nonPhraseTerms = terms.filter(t => t.type !== 'Phrases');
     const findMatches = (word) => {
@@ -310,34 +292,30 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
         return nonPhraseTerms.filter(t => t.translation.split(/[,\s]+/).some(tr => normalize(tr).startsWith(n) && normalize(tr) !== n));
     };
 
-    const tokenMeta = useMemo(() => computeTokenMeta(workingTokens, terms), [englishText, terms]); // eslint-disable-line
-    const numberPhrases = useMemo(() => findNumberPhrases(workingTokens), [englishText]); // eslint-disable-line
-    const phraseSuggestions = useMemo(() => findPartialPhraseMatches(workingTokens, terms), [englishText, terms]); // eslint-disable-line
+    const tokenMeta = useMemo(() => computeTokenMeta(tokens, terms), [tokens, terms]);
+    const numberPhrases = useMemo(() => findNumberPhrases(tokens), [tokens]);
+    const phraseSuggestions = useMemo(() => findPartialPhraseMatches(tokens, terms), [tokens, terms]);
 
     const pendingPhraseMap = useMemo(() => {
         const map = new Map();
-        const wordIndices = workingTokens.map((t, i) => (/^\s+$/.test(t) || t === '-') ? null : i).filter(i => i !== null);
         phraseSuggestions.forEach(s => {
             if (rejectedPhrases.has(s.phrase.term)) return;
-
             const phraseNorms = s.matchedMeaning.toLowerCase().split(/\s+/).map(normalize);
-            wordIndices.forEach(tIdx => {
-                const base = normalize(parseSigils(workingTokens[tIdx]).base);
+            wordTokenIndices.forEach(tIdx => {
+                const base = normalize(parseSigils(tokens[tIdx]).base);
                 if (phraseNorms.includes(base)) map.set(tIdx, s);
             });
         });
         return map;
-    }, [englishText, phraseSuggestions, rejectedPhrases]); // eslint-disable-line
+    }, [tokens, phraseSuggestions, rejectedPhrases, wordTokenIndices]);
 
     const resolveByWordIdx = (wIdx) => {
         const sel = wordSelections[wIdx];
         const tIdx = wordTokenIndices[wIdx];
         if (tIdx === undefined) return null;
-        const {base, isConceptShortcut: isConcept} = parseSigils(workingTokens[tIdx]);
+        const {base, isConceptShortcut: isConcept} = parseSigils(tokens[tIdx]);
 
-        if (isConcept) {
-            return resolveConceptShortcut(base);
-        }
+        if (isConcept) return resolveConceptShortcut(base);
 
         if (sel?.termId) {
             const found = terms.find(t => t.id === sel.termId);
@@ -346,47 +324,6 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
         const ms = findMatches(base);
         return ms[0] || {term: base, translation: null, type: null};
     };
-
-    const resolveTokenOutput = (tokenIdx, wordIdx) => {
-        if (tokenMeta.phraseHead[tokenIdx]) return tokenMeta.phraseHead[tokenIdx].term.toLowerCase();
-        const {
-            base,
-            prefixes,
-            hasPossession,
-            leadingPunct,
-            trailingPunct,
-            isConceptShortcut: isConcept
-        } = parseSigils(workingTokens[tokenIdx]);
-
-        if (isConcept) {
-            const concept = resolveConceptShortcut(base);
-            return `${leadingPunct}${concept.term}${trailingPunct}`;
-        }
-
-        const resolved = resolveByWordIdx(wordIdx);
-        const nextWI = wordIdx + 1;
-        const nextTI = wordTokenIndices[nextWI];
-        let adverbTerm = null;
-        if (nextTI !== undefined && tokenMeta.adverbOf[nextTI] === tokenIdx)
-            adverbTerm = resolveByWordIdx(nextWI)?.term || parseSigils(workingTokens[nextTI]).base;
-        return buildCompound(resolved?.term || base, prefixes, hasPossession, adverbTerm, leadingPunct, trailingPunct).toLowerCase();
-    };
-
-    const buildKironaan = () =>
-        workingTokens.map((tok, tIdx) => {
-            if (/^\s+$/.test(tok)) return tok;
-            if (tok === '-') return '-';
-            if (tokenMeta.phraseHead[tIdx]) {
-                return tokenMeta.phraseHead[tIdx].term.toLowerCase();
-            }
-            const wIdx = wordTokenIndices.indexOf(tIdx);
-            if (tokenMeta.absorbed.has(tIdx)) return '';
-            if (tokenMeta.adverbOf[tIdx] !== undefined) return '';
-            return resolveTokenOutput(tIdx, wIdx);
-        }).join('');
-
-    const kironaan = buildKironaan();
-    const kironaanDecoded = decodeKironaan(kironaan);
 
     const getStatus = (base, wordIdx) => {
         if (!normalize(base)) return null;
@@ -412,6 +349,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
             rect: e.currentTarget.getBoundingClientRect()
         });
     };
+
     const handleSelect = (wordIdx, term) => {
         setWordSelections(prev => {
             const next = [...prev];
@@ -432,11 +370,13 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
         setModal(word);
         setPopover(null);
     };
+
     const addTag = () => {
         const v = tagInput.trim().toLowerCase();
         if (v && !form.translations.includes(v)) setForm(p => ({...p, translations: [...p.translations, v]}));
         setTagInput('');
     };
+
     const handleQuickSave = async () => {
         await addKironaanTerm({translation: form.translations.join(', '), term: form.term, type: form.type});
         onTermsChange(await getAllKironaanTerms());
@@ -450,7 +390,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
         if (!title.trim() || !englishText.trim()) return;
         setSaving(true);
         const syncedSelections = wordTokenIndices.map((tIdx, wIdx) => ({
-            word: parseSigils(workingTokens[tIdx]).base,
+            word: parseSigils(tokens[tIdx]).base,
             termId: wordSelections[wIdx]?.termId || null
         }));
         const data = {
@@ -545,7 +485,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                                 fontSize: 12
                             }}>
                                 <code style={{color: s.color, fontWeight: 700}}>{s.sigil}word</code>
-                                <span style={{color: '#777'}}>→ {s.prefix}-</span>
+                                <span style={{color: '#777'}}>→ {s.prefix}_</span>
                             </span>
                         ))}
                         <span style={{
@@ -559,7 +499,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                             fontSize: 12
                         }}>
                             <code style={{color: SIGIL_SUFFIX.color, fontWeight: 700}}>word{SIGIL_SUFFIX.sigil}</code>
-                            <span style={{color: '#777'}}>→ -Orsik</span>
+                            <span style={{color: '#777'}}>→ _{SIGIL_SUFFIX.suffix}</span>
                         </span>
                     </div>
                 </details>
@@ -611,8 +551,8 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                         borderRadius: 6,
                         border: '1px solid #64b5f6'
                     }}>
-                        <div style={{fontSize: 12, fontWeight: 700, color: '#1565c0', marginBottom: 6}}>
-                            ✦ Number conversions available
+                        <div style={{fontSize: 12, fontWeight: 700, color: '#1565c0', marginBottom: 6}}>✦ Number
+                            conversions available
                         </div>
                         {numberPhrases.map((np, i) => (
                             <div key={i} style={{
@@ -704,9 +644,12 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                             marginBottom: 10,
                             minHeight: 38
                         }}>
-                            {workingTokens.map((tok, tIdx) => {
+                            {tokens.map((tok, tIdx) => {
                                 if (/^\s+$/.test(tok)) return <span key={tIdx} style={{width: 6}}/>;
-                                if (tok === '-') return <span key={tIdx} style={{color: '#999', fontSize: 14}}>-</span>;
+                                if (FLOATING_PUNCT.includes(tok)) return <span key={tIdx} style={{
+                                    color: '#999',
+                                    fontSize: 14
+                                }}>{tok}</span>;
                                 const wIdx = wordTokenIndices.indexOf(tIdx);
 
                                 if (tokenMeta.absorbed.has(tIdx) && !tokenMeta.phraseHead[tIdx]) return (
@@ -783,8 +726,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                                     const {base} = parseSigils(tok);
                                     const isConfirming = confirmingPhrase?.phrase.term === pendingSuggestion.phrase.term;
                                     return (
-                                        <span key={tIdx}
-                                              onClick={() => setConfirmingPhrase(pendingSuggestion)}
+                                        <span key={tIdx} onClick={() => setConfirmingPhrase(pendingSuggestion)}
                                               title={`Click to use phrase "${pendingSuggestion.phrase.translation}"`}
                                               style={{
                                                   display: 'inline-flex',
@@ -816,8 +758,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                                 if (isConcept) {
                                     const concept = resolveConceptShortcut(base);
                                     return (
-                                        <span key={tIdx}
-                                              title={`${concept.symbol} → ${concept.conceptName}`}
+                                        <span key={tIdx} title={`${concept.symbol} → ${concept.conceptName}`}
                                               style={{
                                                   display: 'inline-flex',
                                                   alignItems: 'center',
@@ -831,9 +772,11 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                                                   cursor: 'help'
                                               }}>
                                             {base}
-                                            <span style={{fontSize: 11, color: '#b8860b', fontStyle: 'italic'}}>
-                                                {concept.conceptName}
-                                            </span>
+                                            <span style={{
+                                                fontSize: 11,
+                                                color: '#b8860b',
+                                                fontStyle: 'italic'
+                                            }}>{concept.conceptName}</span>
                                             <span style={{
                                                 width: 7,
                                                 height: 7,
@@ -869,7 +812,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                                             background: `${p.color}18`,
                                             borderRadius: 4,
                                             padding: '0 4px'
-                                        }}>{p.prefix}-</span>)}
+                                        }}>{p.prefix}_</span>)}
                                         {base}
                                         {hasPossession && <span style={{
                                             fontSize: 10,
@@ -878,7 +821,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                                             background: `${SIGIL_SUFFIX.color}18`,
                                             borderRadius: 4,
                                             padding: '0 4px'
-                                        }}>-Orsik</span>}
+                                        }}>_{SIGIL_SUFFIX.suffix}</span>}
                                         {selTerm && <span style={{
                                             fontSize: 11,
                                             color: '#555',
@@ -896,72 +839,10 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                             })}
                         </div>
 
-                        <div style={{
-                            marginBottom: 18,
-                            padding: '8px 12px',
-                            background: '#f3f0ff',
-                            borderRadius: 6,
-                            border: '1px solid #d1c4e9'
-                        }}>
+                        <div style={{marginBottom: 18}}>
                             <span style={{fontSize: 11, color: '#888', display: 'block', marginBottom: 3}}>KIRONAAN PREVIEW</span>
-                            <span className="KironaanFont" style={{fontSize: 19}}>
-                                {workingTokens.map((tok, tIdx) => {
-                                    if (/^\s+$/.test(tok)) return <span key={tIdx}> </span>;
-                                    if (tok === '-') return <span key={tIdx}>-</span>;
-
-                                    if (tokenMeta.phraseHead[tIdx]) {
-                                        const pt = tokenMeta.phraseHead[tIdx];
-                                        const fontTerm = pt.term.toLowerCase();
-                                        const decodedTerm = decodeKironaan(fontTerm);
-                                        return (
-                                            <span key={tIdx} title={`${pt.translation} · ${decodedTerm} · Phrases`}
-                                                  style={{cursor: 'help'}}>
-                                                {fontTerm}{' '}
-                                            </span>
-                                        );
-                                    }
-
-                                    if ((tokenMeta.absorbed.has(tIdx) && !tokenMeta.phraseHead[tIdx]) ||
-                                        tokenMeta.adverbOf[tIdx] !== undefined) return null;
-
-                                    const wIdx = wordTokenIndices.indexOf(tIdx);
-                                    const output = resolveTokenOutput(tIdx, wIdx);
-                                    const decodedOutput = decodeKironaan(output);
-
-                                    const {isConceptShortcut: isConcept} = parseSigils(tok);
-                                    if (isConcept) {
-                                        const concept = resolveConceptShortcut(parseSigils(tok).base);
-                                        return (
-                                            <span key={tIdx}
-                                                  title={`${concept.conceptName} · ${concept.symbol} · ${displayType(concept.type)}`}
-                                                  style={{cursor: 'help'}}>
-                                                {output}{' '}
-                                            </span>
-                                        );
-                                    }
-
-                                    const res = resolveByWordIdx(wIdx);
-                                    return (
-                                        <span key={tIdx}
-                                              title={res?.translation ? `${res.translation} · ${decodedOutput} · ${displayType(res.type)}` : ''}
-                                              style={{cursor: res?.translation ? 'help' : 'default'}}>
-                                            {output}{' '}
-                                        </span>
-                                    );
-                                })}
-                            </span>
-                            <span style={{
-                                display: 'block',
-                                marginTop: 4,
-                                fontSize: 14,
-                                color: '#555'
-                            }}>{kironaanDecoded.split('').map((char, i) => {
-                                if (isConceptShortcut(char)) {
-                                    const concept = resolveConceptShortcut(char);
-                                    return concept?.term || char;
-                                }
-                                return char;
-                            }).join('')}</span>
+                            <KironaanRenderer englishText={englishText} wordSelections={wordSelections} terms={terms}
+                                              mode="both"/>
                         </div>
                     </>
                 )}
@@ -994,15 +875,9 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
             </div>
 
             {popover && (
-                <EditorWordPopover
-                    popover={popover}
-                    currentTermId={wordSelections[popover.wordIdx]?.termId || null}
-                    terms={terms}
-                    onSelect={handleSelect}
-                    onQuickAdd={openQuickAdd}
-                    isAdmin={isAdmin}
-                    popRef={popRef}
-                />
+                <EditorWordPopover popover={popover} currentTermId={wordSelections[popover.wordIdx]?.termId || null}
+                                   terms={terms}
+                                   onSelect={handleSelect} onQuickAdd={openQuickAdd} isAdmin={isAdmin} popRef={popRef}/>
             )}
 
             {modal && (
@@ -1109,7 +984,8 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                                 }}>
                                     {form.translations.map(w => defs[w] ?
                                         <div key={w} style={{fontSize: 12, color: '#555', lineHeight: 1.6}}><span
-                                            style={{fontWeight: 600}}>{w}:</span> {defs[w]}</div> : null)}
+                                            style={{fontWeight: 600, color: '#333'}}>{w}:</span> {defs[w]}
+                                        </div> : null)}
                                 </div>
                             )}
                         </div>
@@ -1155,32 +1031,7 @@ function BlackBookEditor({psalm, terms, onTermsChange, onSave, onClose, userId, 
                                             onApply={v => setForm(p => ({...p, term: v}))}/>
                         </div>
                         <div style={{marginBottom: 20}}>
-                            <label style={{display: 'block', fontSize: 13, marginBottom: 4, color: '#555'}}>
-                                Type
-                                {form.detectedType && <span style={{
-                                    marginLeft: 6,
-                                    fontSize: 12,
-                                    padding: '2px 7px',
-                                    borderRadius: 10,
-                                    background: '#e3f2fd',
-                                    color: '#1565c0'
-                                }}>NLP: {form.detectedType}</span>}
-                                {form.type !== form.detectedType && (
-                                    <span style={{marginLeft: 8, fontSize: 11, color: '#ff9800'}}>
-                                        (overriding)
-                                        <button onClick={() => setForm(p => ({...p, type: p.detectedType}))} style={{
-                                            marginLeft: 5,
-                                            fontSize: 11,
-                                            color: '#1976d2',
-                                            background: 'none',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            padding: 0,
-                                            textDecoration: 'underline'
-                                        }}>reset</button>
-                                    </span>
-                                )}
-                            </label>
+                            <label style={{display: 'block', fontSize: 13, marginBottom: 4, color: '#555'}}>Type</label>
                             <select value={form.type} onChange={e => setForm(p => ({...p, type: e.target.value}))}
                                     style={{
                                         width: '100%',
