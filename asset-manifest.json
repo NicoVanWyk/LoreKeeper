@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/LoreKeeper/static/css/main.9531d04e.css",
-    "main.js": "/LoreKeeper/static/js/main.83c0b9c6.js",
+    "main.js": "/LoreKeeper/static/js/main.800fd207.js",
     "static/js/453.ed0b1c71.chunk.js": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js",
     "static/media/KironaanFont.ttf": "/LoreKeeper/static/media/KironaanFont.16d20184bcfb3dae29d6.ttf",
     "static/media/Logo.jpg": "/LoreKeeper/static/media/Logo.5be397fed6557eb60aed.jpg",
@@ -28,11 +28,11 @@
     "static/media/Fort.png": "/LoreKeeper/static/media/Fort.f9279d02dcd1431052b7.png",
     "index.html": "/LoreKeeper/index.html",
     "main.9531d04e.css.map": "/LoreKeeper/static/css/main.9531d04e.css.map",
-    "main.83c0b9c6.js.map": "/LoreKeeper/static/js/main.83c0b9c6.js.map",
+    "main.800fd207.js.map": "/LoreKeeper/static/js/main.800fd207.js.map",
     "453.ed0b1c71.chunk.js.map": "/LoreKeeper/static/js/453.ed0b1c71.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9531d04e.css",
-    "static/js/main.83c0b9c6.js"
+    "static/js/main.800fd207.js"
   ]
 }
